@@ -18,21 +18,19 @@
 /**
  * @module org/forgerock/commons/ui/common/components/hoc/withRouterPropType
  */
-define([
-    "prop-types"
-], function (PropTypes) {
-    /**
-     * Prop type for {@link module:org/forgerock/commons/ui/common/components/hoc/withRouter|withRouter}.
-     * @example
-     * import withRouterPropType from "org/forgerock/commons/ui/common/components/hoc/withRouterPropType"
-     *
-     * MyReactComponent.propTypes = {
-     *     router: withRouterPropType
-     * };
-     */
-    var exports = PropTypes.shape({
-        params: PropTypes.array.isRequired
-    });
+import PropTypes from "prop-types";
 
-    return exports;
+/**
+ * Prop type for {@link module:org/forgerock/commons/ui/common/components/hoc/withRouter|withRouter}.
+ * @example
+ * import withRouterPropType from "org/forgerock/commons/ui/common/components/hoc/withRouterPropType"
+ *
+ * MyReactComponent.propTypes = {
+ *     router: withRouterPropType
+ * };
+ */
+var exports = PropTypes.shape({
+    params: PropTypes.array.isRequired
 });
+
+export default exports;

@@ -127,13 +127,12 @@ export function useEslint(options = {}) {
     };
 }
 
-
 /**
  * @typedef {Object} BuildScriptsOptions
- * @property {string} src - source glob pattern (defaults to `src/scripts/**\/*.{js,jsm}`)
+ * @property {string} src - source glob pattern
  * @property {string} dest - target path (defaults to `dist/js`)
  * @property {string[]} presets - array with Babel presets (defaults to `["@babel/preset-env"]`)
- * @property {string[]} plugins - array with Babel plugins (defaults to `["@babel/plugin-transform-modules-amd"]`)
+ * @property {string[]} plugins - array with Babel plugins (defaults to *none*)
  */
 
 /**
@@ -144,7 +143,7 @@ export function useEslint(options = {}) {
 export function useBuildScripts(options = {}) {
     return async () => {
         const babel = (await import('@babel/core')).default;
-        await finished(gulp.src(options.src || "src/scripts/**/*.jsm")
+        await finished(gulp.src(options.src)
             .pipe(new Transform({
                 transform(file, encoding, callback) {
                     const output = babel.transform(file.contents.toString("utf-8"), {
@@ -152,10 +151,7 @@ export function useBuildScripts(options = {}) {
                             // transpile new syntax into something that r.js can handle
                             "@babel/preset-env"
                         ],
-                        plugins: options.plugins ?? [
-                            // transform ESM into AMD so that it is RequireJS compatible
-                            "@babel/plugin-transform-modules-amd"
-                        ],
+                        plugins: options.plugins,
                         sourceMaps: false
                     });
                     file.extname = ".js"; // force JS extension

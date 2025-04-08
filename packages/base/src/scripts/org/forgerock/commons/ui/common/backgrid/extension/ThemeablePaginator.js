@@ -27,58 +27,58 @@
  * // ...or the reference on Backgrid.Extension
  * new Backgrid.Extension.ThemeablePaginator({ ... });
  */
-define([
-    "jquery",
-    "backgrid.paginator",
-    "org/forgerock/commons/ui/common/backgrid/Backgrid"
-], function ($, BackgridPaginator, Backgrid) {
-    Backgrid.Extension.ThemeablePaginator = Backgrid.Extension.Paginator.extend({
-        /**
-         * @default
-         */
-        className: "text-center",
+import $ from "jquery";
+// TODO this was probably added for the side-effects
+// eslint-disable-next-line
+import BackgridPaginator from "backgrid.paginator";
+import Backgrid from "org/forgerock/commons/ui/common/backgrid/Backgrid";
 
-        /**
-         * @inheritdoc
-         */
-        controls: {
-            rewind: {
-                label: "&laquo;",
-                title: $.t("common.grid.pagination.first")
-            },
-            back: {
-                label: "&lsaquo;",
-                title: $.t("common.grid.pagination.previous")
-            },
-            forward: {
-                label: "&rsaquo;",
-                title: $.t("common.grid.pagination.next")
-            },
-            fastForward: {
-                label: "&raquo;",
-                title: $.t("common.grid.pagination.last")
-            }
+Backgrid.Extension.ThemeablePaginator = Backgrid.Extension.Paginator.extend({
+    /**
+     * @default
+     */
+    className: "text-center",
+
+    /**
+     * @inheritdoc
+     */
+    controls: {
+        rewind: {
+            label: "&laquo;",
+            title: $.t("common.grid.pagination.first")
         },
-
-        /**
-         * @property CSS class name to add to <code>ul</code> element
-         * @default
-         */
-        ulClassName: "pagination",
-
-        /**
-         * @inheritdoc
-         */
-        render: function () {
-            Backgrid.Extension.Paginator.prototype.render.call(this);
-
-            if (this.ulClassName) {
-                this.$el.find("ul").addClass(this.ulClassName);
-            }
-
-            return this;
+        back: {
+            label: "&lsaquo;",
+            title: $.t("common.grid.pagination.previous")
+        },
+        forward: {
+            label: "&rsaquo;",
+            title: $.t("common.grid.pagination.next")
+        },
+        fastForward: {
+            label: "&raquo;",
+            title: $.t("common.grid.pagination.last")
         }
-    });
+    },
 
-    return Backgrid.Extension.ThemeablePaginator;
+    /**
+     * @property CSS class name to add to <code>ul</code> element
+     * @default
+     */
+    ulClassName: "pagination",
+
+    /**
+     * @inheritdoc
+     */
+    render: function () {
+        Backgrid.Extension.Paginator.prototype.render.call(this);
+
+        if (this.ulClassName) {
+            this.$el.find("ul").addClass(this.ulClassName);
+        }
+
+        return this;
+    }
 });
+
+export default Backgrid.Extension.ThemeablePaginator;

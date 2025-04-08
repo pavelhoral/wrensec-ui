@@ -14,103 +14,101 @@
  * Copyright 2011-2016 ForgeRock AS.
  */
 
-define([
-    "jquery",
-    "lodash",
-    "backbone"
-], function($, _, Backbone) {
+import $ from "jquery";
+import _ from "lodash";
+import Backbone from "backbone";
+
+/**
+ * @exports org/forgerock/commons/ui/common/components/Breadcrumbs
+ */
+var Breadcrumbs= Backbone.View.extend({
+
+    size: 0,
+    element: "#nav-content",
+
     /**
-     * @exports org/forgerock/commons/ui/common/components/Breadcrumbs
+     * Registers listeners and creates links using URL
      */
-    var Breadcrumbs= Backbone.View.extend({
+    init: function() {
+        $(window).on('hashchange', _.bind(this.buildByUrl, this));
+        this.baseTitle = document.title;
+        this.buildByUrl();
+    },
 
-        size: 0,
-        element: "#nav-content",
+    /**
+     * Creates links using URL
+     */
+    buildByUrl: function() {
+        var path, parts, url, i, humanized;
 
-        /**
-         * Registers listeners and creates links using URL
-         */
-        init: function() {
-            $(window).on('hashchange', _.bind(this.buildByUrl, this));
-            this.baseTitle = document.title;
-            this.buildByUrl();
-        },
+        path = window.location.href.match(/#([a-zA-Z\/_.@]+)/);
 
-        /**
-         * Creates links using URL
-         */
-        buildByUrl: function() {
-            var path, parts, url, i, humanized;
+        if (path === null) {
+            document.title = this.baseTitle;
+        } else {
+            path = path[1];
 
-            path = window.location.href.match(/#([a-zA-Z\/_.@]+)/);
+            parts = _.compact(path.split('/'));
+            humanized = this.getHumanizedUrls(parts);
 
-            if (path === null) {
-                document.title = this.baseTitle;
-            } else {
-                path = path[1];
+            url = "#";
 
-                parts = _.compact(path.split('/'));
-                humanized = this.getHumanizedUrls(parts);
-
-                url = "#";
-
-                this.clear();
-                for (i = 0; i < parts.length - 1; i++) {
-                    url += parts[i] + "/";
-                    this.push(humanized[i], url);
-                }
-                this.set(humanized[humanized.length-1]);
-
-                document.title = this.baseTitle + " - " + humanized.join(" - ");
-
+            this.clear();
+            for (i = 0; i < parts.length - 1; i++) {
+                url += parts[i] + "/";
+                this.push(humanized[i], url);
             }
-        },
+            this.set(humanized[humanized.length-1]);
 
-        /**
-         * Replaces '_' to ' ' and capitalize first letter in array of strings
-         */
-        getHumanizedUrls: function(urls) {
-            return _.map(urls, function (url) {
-                return url.split("_").join(" ").replace(new RegExp("^(.)(.*)"), function (all, first, rest) {
-                    return first.toUpperCase() + rest;
-                });
-            });
-        },
+            document.title = this.baseTitle + " - " + humanized.join(" - ");
 
-        clear: function() {
-            while (this.size > 0) {
-                this.pop();
-            }
-        },
-
-        /**
-         * Sets the name of last breadcrumb item
-         */
-        set: function(name) {
-            $(this.element).find("span:last").html(name);
-        },
-
-        /**
-         * Appends link to the breadcrumbs list and an arrow after it.
-         */
-        push: function(name, url) {
-            $(this.element).find("a:last").after(' <a href="'+url+'" class="active">' + name + '</a>');
-            $(this.element).find("a:last").before('<img src="images/navi-next.png" width="3" height="5"'
-                + ' alt="" align="absmiddle" class="navi-next" /><span></span>');
-
-            this.size++;
-        },
-
-        pop: function() {
-            if ($("#nav-content").find("a").length > 1) {
-                $(this.element).find("a:last").remove();
-                $(this.element).find("img:last").remove();
-                $(this.element).find("span:last").remove();
-            }
-
-            this.size--;
         }
-    });
+    },
 
-    return new Breadcrumbs();
+    /**
+     * Replaces '_' to ' ' and capitalize first letter in array of strings
+     */
+    getHumanizedUrls: function(urls) {
+        return _.map(urls, function (url) {
+            return url.split("_").join(" ").replace(new RegExp("^(.)(.*)"), function (all, first, rest) {
+                return first.toUpperCase() + rest;
+            });
+        });
+    },
+
+    clear: function() {
+        while (this.size > 0) {
+            this.pop();
+        }
+    },
+
+    /**
+     * Sets the name of last breadcrumb item
+     */
+    set: function(name) {
+        $(this.element).find("span:last").html(name);
+    },
+
+    /**
+     * Appends link to the breadcrumbs list and an arrow after it.
+     */
+    push: function(name, url) {
+        $(this.element).find("a:last").after(' <a href="'+url+'" class="active">' + name + '</a>');
+        $(this.element).find("a:last").before('<img src="images/navi-next.png" width="3" height="5"'
+            + ' alt="" align="absmiddle" class="navi-next" /><span></span>');
+
+        this.size++;
+    },
+
+    pop: function() {
+        if ($("#nav-content").find("a").length > 1) {
+            $(this.element).find("a:last").remove();
+            $(this.element).find("img:last").remove();
+            $(this.element).find("span:last").remove();
+        }
+
+        this.size--;
+    }
 });
+
+export default new Breadcrumbs();

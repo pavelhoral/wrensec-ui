@@ -14,29 +14,27 @@
  * Copyright 2015-2016 ForgeRock AS.
  */
 
-define([
-    "UserProfileView"
-], function(UserProfileView) {
-    var obj = {},
-        kbaEnabled = true;
+import UserProfileView from "UserProfileView";
 
-    obj.getConfiguration = function(successCallback) {
+var obj = {},
+    kbaEnabled = true;
 
-        // based on whatever environmental condition able to be read, register the additional KBA
-        // tab with UserProfileView. In this case, it is hard-coded to include the KBA tab.
-        if (kbaEnabled === true) {
-            require(["org/forgerock/commons/ui/user/profile/UserProfileKBATab"], function (UserProfileKBATab) {
-                UserProfileView.registerTab(UserProfileKBATab);
-            });
-        }
+obj.getConfiguration = function(successCallback) {
 
-        successCallback({
-            "passwordResetLink": "",
-            "forgotUsername": true,
-            "selfRegistration": true,
-            "passwordReset": true,
-            "lang": "en"
+    // based on whatever environmental condition able to be read, register the additional KBA
+    // tab with UserProfileView. In this case, it is hard-coded to include the KBA tab.
+    if (kbaEnabled === true) {
+        require(["org/forgerock/commons/ui/user/profile/UserProfileKBATab"], function (UserProfileKBATab) {
+            UserProfileView.registerTab(UserProfileKBATab);
         });
-    };
-    return obj;
-});
+    }
+
+    successCallback({
+        "passwordResetLink": "",
+        "forgotUsername": true,
+        "selfRegistration": true,
+        "passwordReset": true,
+        "lang": "en"
+    });
+};
+export default obj;

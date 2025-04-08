@@ -15,16 +15,14 @@
  */
 
 // add new test modules here:
-define([
-    "./commons/AbstractCollection",
-    "./commons/AbstractModel",
-    "./commons/Base64",
-    "./commons/form2js",
-    "./commons/OAuth",
-    "./commons/ObjectUtil",
-    "./commons/Queue",
-    "./commons/Router",
-    "./commons/UIUtils",
-    "./commons/ValidatorsManager",
-    "./user/AnonymousProcessView"
-]);
+import "./commons/AbstractCollection";
+import "./commons/AbstractModel";
+import "./commons/Base64";
+import "./commons/form2js";
+import "./commons/OAuth";
+import "./commons/ObjectUtil";
+import "./commons/Queue";
+import "./commons/Router";
+import "./commons/UIUtils";
+import "./commons/ValidatorsManager";
+import "./user/AnonymousProcessView";

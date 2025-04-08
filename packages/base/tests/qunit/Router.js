@@ -14,22 +14,19 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-define([
-    "org/forgerock/commons/ui/common/main/Router"
-], function (Router) {
-    QUnit.module('Router Functions');
+import Router from "org/forgerock/commons/ui/common/main/Router";
 
-    QUnit.test("getLink", function (assert) {
-        var fakeRoute = {
-            url: /fake-(.+)\-(.+)/,
-            pattern: "fake-?-?"
-        };
+QUnit.module('Router Functions');
 
-        assert.equal(Router.getLink(fakeRoute, ["simple", "value"]), "fake-simple-value");
-        assert.equal(Router.getLink(fakeRoute, ["comp?lex", "value"]), "fake-comp?lex-value");
-        assert.equal(Router.getLink(fakeRoute, ["part?ial"]), "fake-part?ial-");
-        assert.equal(Router.getLink(fakeRoute, []), "fake--");
+QUnit.test("getLink", function (assert) {
+    var fakeRoute = {
+        url: /fake-(.+)\-(.+)/,
+        pattern: "fake-?-?"
+    };
 
-    });
+    assert.equal(Router.getLink(fakeRoute, ["simple", "value"]), "fake-simple-value");
+    assert.equal(Router.getLink(fakeRoute, ["comp?lex", "value"]), "fake-comp?lex-value");
+    assert.equal(Router.getLink(fakeRoute, ["part?ial"]), "fake-part?ial-");
+    assert.equal(Router.getLink(fakeRoute, []), "fake--");
 
 });

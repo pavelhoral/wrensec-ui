@@ -14,51 +14,48 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-define([
-    "sinon",
-    "org/forgerock/commons/ui/common/util/OAuth",
-    "org/forgerock/commons/ui/common/util/URIUtils"
-], function (sinon, OAuth, URIUtils) {
-    QUnit.module('OAuth Functions');
+import sinon from "sinon";
+import OAuth from "org/forgerock/commons/ui/common/util/OAuth";
+import URIUtils from "org/forgerock/commons/ui/common/util/URIUtils";
 
-    QUnit.moduleStart(function() {
-        sinon.stub(URIUtils, "getCurrentOrigin").callsFake(function () {
-            return "http://rp.com";
-        });
-        sinon.stub(URIUtils, "getCurrentPathName").callsFake(function () {
-            return "/app/index.html";
-        });
-    });
+QUnit.module('OAuth Functions');
 
-    QUnit.moduleDone(function() {
-        URIUtils.getCurrentOrigin.restore();
-        URIUtils.getCurrentPathName.restore();
+QUnit.moduleStart(function() {
+    sinon.stub(URIUtils, "getCurrentOrigin").callsFake(function () {
+        return "http://rp.com";
     });
+    sinon.stub(URIUtils, "getCurrentPathName").callsFake(function () {
+        return "/app/index.html";
+    });
+});
 
-    QUnit.test("oAuth redirect uri", function (assert) {
-        assert.equal(OAuth.getRedirectURI(),"http://rp.com/app/oauthReturn.html",
-            "default oAuth redirect_uri matches"
-        );
-        assert.equal(OAuth.getRedirectURI('customOAuthReturn.html'),"http://rp.com/app/customOAuthReturn.html",
-            "custom oAuth redirect_uri matches"
-        );
-    });
-    QUnit.test("oAuth request url", function (assert) {
-        sinon.stub(OAuth, "generateNonce").callsFake(function () {
-            return "nonceValue";
-        });
-        assert.equal(OAuth.getRequestURL(
-                "http://idp.com/request",
-                "myClientId",
-                "openid profile email",
-                "MyState1234"
-            ),
-            "http://idp.com/request?response_type=code&scope=openid%20profile%20email&"+
-            "redirect_uri=http://rp.com/app/oauthReturn.html&state=MyState1234"+
-            "&nonce=nonceValue&client_id=myClientId",
-            "generated oAuth request url matches expected value"
-        );
-        OAuth.generateNonce.restore();
-    });
+QUnit.moduleDone(function() {
+    URIUtils.getCurrentOrigin.restore();
+    URIUtils.getCurrentPathName.restore();
+});
 
+QUnit.test("oAuth redirect uri", function (assert) {
+    assert.equal(OAuth.getRedirectURI(),"http://rp.com/app/oauthReturn.html",
+        "default oAuth redirect_uri matches"
+    );
+    assert.equal(OAuth.getRedirectURI('customOAuthReturn.html'),"http://rp.com/app/customOAuthReturn.html",
+        "custom oAuth redirect_uri matches"
+    );
+});
+QUnit.test("oAuth request url", function (assert) {
+    sinon.stub(OAuth, "generateNonce").callsFake(function () {
+        return "nonceValue";
+    });
+    assert.equal(OAuth.getRequestURL(
+            "http://idp.com/request",
+            "myClientId",
+            "openid profile email",
+            "MyState1234"
+        ),
+        "http://idp.com/request?response_type=code&scope=openid%20profile%20email&"+
+        "redirect_uri=http://rp.com/app/oauthReturn.html&state=MyState1234"+
+        "&nonce=nonceValue&client_id=myClientId",
+        "generated oAuth request url matches expected value"
+    );
+    OAuth.generateNonce.restore();
 });

@@ -11,26 +11,7 @@
  * Header, with the fields enclosed by brackets [] replaced by your own identifying
  * information: "Portions copyright [year] [name of copyright owner]".
  *
- * Copyright 2023 Wren Security.
+ * Copyright 2025 Wren Security.
  */
-import { nodeResolve } from "@rollup/plugin-node-resolve";
-import { spawn } from "child_process";
-import { mkdir } from "fs/promises";
-import { join } from "path";
-import { rollup } from "rollup";
-import { fileURLToPath } from "url";
-
-const TARGET_PATH = fileURLToPath(new URL("../dist", import.meta.url));
-await mkdir(TARGET_PATH, { recursive: true });
-
-const bundle = await rollup({
-    input: "src/index.mjs",
-    plugins: [nodeResolve()],
-    external: /node_modules/
-});
-await bundle.write({
-    format: "cjs",
-    file: join(TARGET_PATH, "index.cjs")
-});
-
-spawn("npm", ["pack", "--pack-destination", TARGET_PATH]);
+export * from "./gulp.js";
+export * from "./vite.js";

@@ -14,15 +14,13 @@
  * Copyright 2011-2016 ForgeRock AS.
  */
 
-define("config/main", [
-    "./routes/CommonRoutesConfig",
-    "./routes/UserRoutesConfig",
-    "./routes/MockRoutesConfig",
-    "./messages/CommonMessages",
-    "./messages/UserMessages",
-    "./validators/CommonValidators",
-    "./AppConfiguration",
-    "./process/CommonConfig",
-    "./process/MockConfig",
-    "./errorhandlers/CommonErrorHandlers"
-]);
+import "./routes/CommonRoutesConfig";
+import "./routes/UserRoutesConfig";
+import "./routes/MockRoutesConfig";
+import "./messages/CommonMessages";
+import "./messages/UserMessages";
+import "./validators/CommonValidators";
+import "./AppConfiguration";
+import "./process/CommonConfig";
+import "./process/MockConfig";
+import "./errorhandlers/CommonErrorHandlers";

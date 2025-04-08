@@ -17,34 +17,32 @@
 /**
  * Fake server to handle AJAX requests.
  */
-define([
-    "mock/Data",
-    "sinon"
-], function (mockData, sinon) {
-    var instance = null,
-        server;
+import mockData from "mock/Data";
+import sinon from "sinon";
 
-    function init() {
+var instance = null,
+    server;
 
-        sinon.FakeXMLHttpRequest.useFilters = true;
-        sinon.FakeXMLHttpRequest.addFilter(function (method, url) {
-            return (/((\.html)|(\.css)|(\.less)|(\.json))$/).test(url);
-        });
+function init() {
 
-        server = sinon.fakeServer.create();
-        server.autoRespond = true;
+    sinon.FakeXMLHttpRequest.useFilters = true;
+    sinon.FakeXMLHttpRequest.addFilter(function (method, url) {
+        return (/((\.html)|(\.css)|(\.less)|(\.json))$/).test(url);
+    });
 
-        mockData(server);
-        return server;
-    }
+    server = sinon.fakeServer.create();
+    server.autoRespond = true;
 
-    return {
-        instance: (function () {
-            if (!instance) {
-                instance = init();
-            }
+    mockData(server);
+    return server;
+}
 
-            return instance;
-        }())
-    };
-});
+export default {
+    instance: (function () {
+        if (!instance) {
+            instance = init();
+        }
+
+        return instance;
+    }())
+};

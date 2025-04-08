@@ -14,22 +14,19 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-define([
-    "org/forgerock/commons/ui/common/util/Queue"
-], function (Queue) {
-    QUnit.module('Queue Functions');
+import Queue from "org/forgerock/commons/ui/common/util/Queue";
 
-    QUnit.test("core operations", function (assert) {
-        var q = new Queue(["a","b"]);
+QUnit.module('Queue Functions');
 
-        assert.equal(q.peek(), "a");
-        assert.equal(q.remove(), "a");
-        assert.equal(q.remove(), "b");
-        q.add("c");
-        assert.equal(q.remove(), "c");
-        assert.equal(q.peek(), undefined);
-        assert.equal(q.remove(), undefined);
+QUnit.test("core operations", function (assert) {
+    var q = new Queue(["a","b"]);
 
-    });
+    assert.equal(q.peek(), "a");
+    assert.equal(q.remove(), "a");
+    assert.equal(q.remove(), "b");
+    q.add("c");
+    assert.equal(q.remove(), "c");
+    assert.equal(q.peek(), undefined);
+    assert.equal(q.remove(), undefined);
 
 });

@@ -14,143 +14,141 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-define([
-    "jquery",
-    "lodash",
-    "org/forgerock/commons/ui/common/main/AbstractView",
-    "org/forgerock/commons/ui/user/anonymousProcess/KBAQuestionView"
-], function ($, _, AbstractView, KBAQuestionView) {
-    var KBAView = AbstractView.extend({
-        element: "#kbaQuestions",
-        template: "templates/user/process/KBATemplate.html",
-        noBaseTemplate: true,
-        MIN_NUMBER_OF_QUESTIONS: 1,
-        events: {
-            "click [data-add-question]": "addQuestion"
-        },
+import $ from "jquery";
+import _ from "lodash";
+import AbstractView from "org/forgerock/commons/ui/common/main/AbstractView";
+import KBAQuestionView from "org/forgerock/commons/ui/user/anonymousProcess/KBAQuestionView";
 
-        /**
-         * TODO Implement mechanism of passing existing KBA questions to this view, as this is to be used on the profile
-         * page as well.
-         *
-         * The format of existing KBA questions is the following:
-         *  "kbaInfo":[
-         *      {
-         *          "customQuestion": "question2",
-         *          "answer":{"$crypto":{"value":{"algorithm":"SHA-256","data":"....."},"type":"salted-hash"}}
-         *      },
-         *      {
-         *          "questionId": "2",
-         *          "answer":{"$crypto":{"value":{"algorithm":"SHA-256","data":"....."},"type":"salted-hash"}}
-         *      }
-         * ]
-         */
-        render: function (kbaConfig) {
-            this.allQuestions = kbaConfig.questions;
-            this.minNumberOfQuestions = kbaConfig.minItems || this.MIN_NUMBER_OF_QUESTIONS;
-            this.selectedQuestions = [];
-            this.questionsCounter = 0;
+var KBAView = AbstractView.extend({
+    element: "#kbaQuestions",
+    template: "templates/user/process/KBATemplate.html",
+    noBaseTemplate: true,
+    MIN_NUMBER_OF_QUESTIONS: 1,
+    events: {
+        "click [data-add-question]": "addQuestion"
+    },
 
-            this.parentRender(function () {
-                this.setDescription();
+    /**
+     * TODO Implement mechanism of passing existing KBA questions to this view, as this is to be used on the profile
+     * page as well.
+     *
+     * The format of existing KBA questions is the following:
+     *  "kbaInfo":[
+     *      {
+     *          "customQuestion": "question2",
+     *          "answer":{"$crypto":{"value":{"algorithm":"SHA-256","data":"....."},"type":"salted-hash"}}
+     *      },
+     *      {
+     *          "questionId": "2",
+     *          "answer":{"$crypto":{"value":{"algorithm":"SHA-256","data":"....."},"type":"salted-hash"}}
+     *      }
+     * ]
+     */
+    render: function (kbaConfig) {
+        this.allQuestions = kbaConfig.questions;
+        this.minNumberOfQuestions = kbaConfig.minItems || this.MIN_NUMBER_OF_QUESTIONS;
+        this.selectedQuestions = [];
+        this.questionsCounter = 0;
 
-                this.itemsContainer = this.$el.find("#kbaItems");
+        this.parentRender(function () {
+            this.setDescription();
 
-                _.times(this.minNumberOfQuestions, _.bind(function () {
-                    this.addQuestion();
-                }, this));
-            });
-        },
+            this.itemsContainer = this.$el.find("#kbaItems");
 
-        setDescription: function () {
-            this.$el.find("#kbaDescription").text($.t("common.user.kba.description", {
-                numberOfQuestions: this.minNumberOfQuestions
-            }));
-        },
-
-        getUnSelectedQuestions: function () {
-            var selectedQuestions = _(this.selectedQuestions)
-                .map(function (questionView) {
-                    return questionView.getSelectedQuestionId();
-                })
-                .compact()
-                .value();
-
-            return _.filter(this.allQuestions, function (question) {
-                return selectedQuestions.indexOf(question.id) === -1;
-            });
-        },
-
-        addQuestion: function (e) {
-            if (e) {
-                e.preventDefault();
-            }
-
-            var atMinimumThresholdBeforeAdding = this.isAtMinimumThreshold(),
-                question = new KBAQuestionView({ id: this.questionsCounter++ });
-
-            this.selectedQuestions.push(question);
-
-            question.render({
-                possibleQuestions: this.getUnSelectedQuestions(),
-                numberOfQuestionsSufficient: this.isNumberOfQuestionsSufficient()
-            }, this.itemsContainer);
-
-            if (atMinimumThresholdBeforeAdding) {
-                this.reRenderAllQuestions();
-            }
-        },
-
-        reRenderAllQuestions: function () {
-            var unSelectedQuestions = this.getUnSelectedQuestions();
-
-            _.each(this.selectedQuestions, _.bind(function (questionView) {
-                var currentViewQuestion = _.find(this.allQuestions, { id: questionView.getSelectedQuestionId() }),
-                    possibleQuestions = _.clone(unSelectedQuestions);
-
-                if (currentViewQuestion) {
-                    possibleQuestions.push(currentViewQuestion);
-                    possibleQuestions.sort(function (q1, q2) {
-                        return q1.id - q2.id;
-                    });
-                }
-
-                questionView.updateQuestionWithNewData({
-                    possibleQuestions: possibleQuestions,
-                    numberOfQuestionsSufficient: this.isNumberOfQuestionsSufficient()
-                });
+            _.times(this.minNumberOfQuestions, _.bind(function () {
+                this.addQuestion();
             }, this));
-        },
+        });
+    },
 
-        isNumberOfQuestionsSufficient: function () {
-            return this.minNumberOfQuestions < this.selectedQuestions.length;
-        },
+    setDescription: function () {
+        this.$el.find("#kbaDescription").text($.t("common.user.kba.description", {
+            numberOfQuestions: this.minNumberOfQuestions
+        }));
+    },
 
-        deleteQuestion: function (viewId) {
-            var questionView = _.find(this.selectedQuestions, { id: viewId });
+    getUnSelectedQuestions: function () {
+        var selectedQuestions = _(this.selectedQuestions)
+            .map(function (questionView) {
+                return questionView.getSelectedQuestionId();
+            })
+            .compact()
+            .value();
 
-            questionView.remove();
-            this.selectedQuestions = _.without(this.selectedQuestions, questionView);
+        return _.filter(this.allQuestions, function (question) {
+            return selectedQuestions.indexOf(question.id) === -1;
+        });
+    },
 
-            if (questionView.getSelectedQuestionId() || this.isAtMinimumThreshold()) {
-                this.reRenderAllQuestions();
-            }
-        },
-
-        changeQuestion: function () {
-            this.reRenderAllQuestions();
-        },
-
-        isAtMinimumThreshold: function () {
-            return this.minNumberOfQuestions === this.selectedQuestions.length;
-        },
-
-        getQuestions: function () {
-            return _.map(this.selectedQuestions, function (questionView) {
-                return questionView.getPair();
-            });
+    addQuestion: function (e) {
+        if (e) {
+            e.preventDefault();
         }
-    });
 
-    return new KBAView();
+        var atMinimumThresholdBeforeAdding = this.isAtMinimumThreshold(),
+            question = new KBAQuestionView({ id: this.questionsCounter++ });
+
+        this.selectedQuestions.push(question);
+
+        question.render({
+            possibleQuestions: this.getUnSelectedQuestions(),
+            numberOfQuestionsSufficient: this.isNumberOfQuestionsSufficient()
+        }, this.itemsContainer);
+
+        if (atMinimumThresholdBeforeAdding) {
+            this.reRenderAllQuestions();
+        }
+    },
+
+    reRenderAllQuestions: function () {
+        var unSelectedQuestions = this.getUnSelectedQuestions();
+
+        _.each(this.selectedQuestions, _.bind(function (questionView) {
+            var currentViewQuestion = _.find(this.allQuestions, { id: questionView.getSelectedQuestionId() }),
+                possibleQuestions = _.clone(unSelectedQuestions);
+
+            if (currentViewQuestion) {
+                possibleQuestions.push(currentViewQuestion);
+                possibleQuestions.sort(function (q1, q2) {
+                    return q1.id - q2.id;
+                });
+            }
+
+            questionView.updateQuestionWithNewData({
+                possibleQuestions: possibleQuestions,
+                numberOfQuestionsSufficient: this.isNumberOfQuestionsSufficient()
+            });
+        }, this));
+    },
+
+    isNumberOfQuestionsSufficient: function () {
+        return this.minNumberOfQuestions < this.selectedQuestions.length;
+    },
+
+    deleteQuestion: function (viewId) {
+        var questionView = _.find(this.selectedQuestions, { id: viewId });
+
+        questionView.remove();
+        this.selectedQuestions = _.without(this.selectedQuestions, questionView);
+
+        if (questionView.getSelectedQuestionId() || this.isAtMinimumThreshold()) {
+            this.reRenderAllQuestions();
+        }
+    },
+
+    changeQuestion: function () {
+        this.reRenderAllQuestions();
+    },
+
+    isAtMinimumThreshold: function () {
+        return this.minNumberOfQuestions === this.selectedQuestions.length;
+    },
+
+    getQuestions: function () {
+        return _.map(this.selectedQuestions, function (questionView) {
+            return questionView.getPair();
+        });
+    }
 });
+
+export default new KBAView();

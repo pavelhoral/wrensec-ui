@@ -14,10 +14,8 @@
  * Copyright 2015-2016 ForgeRock AS.
  */
 
-define([
-    "org/forgerock/commons/ui/common/util/Constants"
-], function (commonConstants) {
-    commonConstants.context = "mock";
+import commonConstants from "org/forgerock/commons/ui/common/util/Constants";
 
-    return commonConstants;
-});
+commonConstants.context = "mock";
+
+export default commonConstants;

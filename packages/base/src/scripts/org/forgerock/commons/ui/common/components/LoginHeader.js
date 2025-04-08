@@ -14,14 +14,12 @@
  * Copyright 2015-2016 ForgeRock AS.
  */
 
-define([
-    "org/forgerock/commons/ui/common/main/AbstractView"
-], function(AbstractView) {
-    var LoginHeader = AbstractView.extend({
-        element: "#loginBaseLogo",
-        template: "templates/common/LoginHeaderTemplate.html",
-        noBaseTemplate: true
-    });
+import AbstractView from "org/forgerock/commons/ui/common/main/AbstractView";
 
-    return new LoginHeader();
+var LoginHeader = AbstractView.extend({
+    element: "#loginBaseLogo",
+    template: "templates/common/LoginHeaderTemplate.html",
+    noBaseTemplate: true
 });
+
+export default new LoginHeader();

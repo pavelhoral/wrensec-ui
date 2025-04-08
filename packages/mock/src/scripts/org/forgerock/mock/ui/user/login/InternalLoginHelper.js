@@ -14,36 +14,34 @@
  * Copyright 2011-2016 ForgeRock AS.
  */
 
-define([
-    "jquery",
-    "org/forgerock/mock/ui/user/UserModel",
-    "org/forgerock/commons/ui/common/main/EventManager",
-    "org/forgerock/commons/ui/common/util/Constants",
-    "org/forgerock/commons/ui/common/main/AbstractConfigurationAware",
-    "org/forgerock/commons/ui/common/main/ServiceInvoker",
-    "org/forgerock/commons/ui/common/main/Configuration"
-], function ($, UserModel, eventManager, constants, AbstractConfigurationAware, serviceInvoker, conf) {
-    var obj = new AbstractConfigurationAware();
+import $ from "jquery";
+import UserModel from "org/forgerock/mock/ui/user/UserModel";
+import eventManager from "org/forgerock/commons/ui/common/main/EventManager";
+import constants from "org/forgerock/commons/ui/common/util/Constants";
+import AbstractConfigurationAware from "org/forgerock/commons/ui/common/main/AbstractConfigurationAware";
+import serviceInvoker from "org/forgerock/commons/ui/common/main/ServiceInvoker";
+import conf from "org/forgerock/commons/ui/common/main/Configuration";
 
-    obj.login = function (params, successCallback, errorCallback) {
-        return UserModel.getProfile(params.userName, params.password).then(successCallback,errorCallback);
-    };
+var obj = new AbstractConfigurationAware();
 
-    obj.logout = function (successCallback) {
-        delete conf.loggedUser;
-        if (successCallback) {
-            successCallback();
-        }
-        return $.Deferred().resolve();
-    };
+obj.login = function (params, successCallback, errorCallback) {
+    return UserModel.getProfile(params.userName, params.password).then(successCallback,errorCallback);
+};
 
-    obj.getLoggedUser = function (successCallback, errorCallback) {
-        // the mock project doesn't support sessions, so there is no point in checking
-        if (conf.loggedUser && successCallback) {
-            successCallback(conf.loggedUser);
-        } else if (errorCallback) {
-            errorCallback();
-        }
-    };
-    return obj;
-});
+obj.logout = function (successCallback) {
+    delete conf.loggedUser;
+    if (successCallback) {
+        successCallback();
+    }
+    return $.Deferred().resolve();
+};
+
+obj.getLoggedUser = function (successCallback, errorCallback) {
+    // the mock project doesn't support sessions, so there is no point in checking
+    if (conf.loggedUser && successCallback) {
+        successCallback(conf.loggedUser);
+    } else if (errorCallback) {
+        errorCallback();
+    }
+};
+export default obj;

@@ -14,88 +14,87 @@
  * Copyright 2011-2016 ForgeRock AS.
  */
 
-define([
-    "jquery",
-    "lodash",
-    "org/forgerock/commons/ui/common/util/Constants",
-    "org/forgerock/commons/ui/common/main/EventManager",
-    "org/forgerock/commons/ui/common/main/Configuration",
-    "org/forgerock/commons/ui/common/main/AbstractConfigurationAware",
-    "org/forgerock/commons/ui/common/util/ModuleLoader"
-], function($, _, constants, eventManager, configuration, AbstractConfigurationAware, ModuleLoader) {
+import $ from "jquery";
+import _ from "lodash";
+import constants from "org/forgerock/commons/ui/common/util/Constants";
+import eventManager from "org/forgerock/commons/ui/common/main/EventManager";
+// TODO this was probably added for the side-effects
+// eslint-disable-next-line
+import configuration from "org/forgerock/commons/ui/common/main/Configuration";
+import AbstractConfigurationAware from "org/forgerock/commons/ui/common/main/AbstractConfigurationAware";
+import ModuleLoader from "org/forgerock/commons/ui/common/util/ModuleLoader";
 
-    var obj = new AbstractConfigurationAware();
-    obj.em = eventManager;
+var obj = new AbstractConfigurationAware();
+obj.em = eventManager;
 
-    eventManager.registerListener(constants.EVENT_CONFIGURATION_CHANGED, function(event) {
-        obj.callService(event.moduleClass, "updateConfigurationCallback", [event.configuration]);
+eventManager.registerListener(constants.EVENT_CONFIGURATION_CHANGED, function(event) {
+    obj.callService(event.moduleClass, "updateConfigurationCallback", [event.configuration]);
+});
+
+eventManager.registerListener(constants.EVENT_DEPENDENCIES_LOADED, function() {
+    obj.callService("org/forgerock/commons/ui/common/main/Configuration","sendConfigurationChangeInfo");
+});
+
+obj.callRegisterListenerFromConfig = function (config) {
+    var dependencies = _.map(config.dependencies, function (dep) {
+        return ModuleLoader.load(dep);
     });
-
-    eventManager.registerListener(constants.EVENT_DEPENDENCIES_LOADED, function() {
-        obj.callService("org/forgerock/commons/ui/common/main/Configuration","sendConfigurationChangeInfo");
+    eventManager.registerListener(config.startEvent, function (event) {
+        if (dependencies.length) {
+            // legacy async processing
+            return $.when.apply($, dependencies).then(function () {
+                return config.processDescription.apply(this, [event].concat(_.toArray(arguments)));
+            });
+        } else {
+            return config.processDescription(event);
+        }
     });
+};
 
-    obj.callRegisterListenerFromConfig = function (config) {
-        var dependencies = _.map(config.dependencies, function (dep) {
-            return ModuleLoader.load(dep);
-        });
-        eventManager.registerListener(config.startEvent, function (event) {
-            if (dependencies.length) {
-                // legacy async processing
-                return $.when.apply($, dependencies).then(function () {
-                    return config.processDescription.apply(this, [event].concat(_.toArray(arguments)));
-                });
-            } else {
-                return config.processDescription(event);
-            }
-        });
-    };
+obj.updateConfigurationCallback = function(configuration) {
+    AbstractConfigurationAware.prototype.updateConfigurationCallback
+        .call(this, configuration)
+        .then(function () {
 
-    obj.updateConfigurationCallback = function(configuration) {
-        AbstractConfigurationAware.prototype.updateConfigurationCallback
-            .call(this, configuration)
-            .then(function () {
+            $.when.apply($, _.map(obj.configuration.processConfigurationFiles, ModuleLoader.load))
+                .then(function () {
 
-                $.when.apply($, _.map(obj.configuration.processConfigurationFiles, ModuleLoader.load))
-                    .then(function () {
-
-                        var // all processes
-                            processArray = _.flatten(_.toArray(arguments)),
-                            // processes which override the default of the same name
-                            overrideArray = _.filter(processArray, function (process) {
-                                return !!process.override;
-                            });
-
-                        // remove those processes which have been overridden
-                        processArray = _.reject(processArray, function (process) {
-                            return !process.override && _.find(overrideArray, function (override) {
-                                return override.startEvent === process.startEvent && !!override.override;
-                            });
+                    var // all processes
+                        processArray = _.flatten(_.toArray(arguments)),
+                        // processes which override the default of the same name
+                        overrideArray = _.filter(processArray, function (process) {
+                            return !!process.override;
                         });
 
-                        _.map(processArray, obj.callRegisterListenerFromConfig);
-
-                        eventManager.sendEvent(constants.EVENT_READ_CONFIGURATION_REQUEST);
+                    // remove those processes which have been overridden
+                    processArray = _.reject(processArray, function (process) {
+                        return !process.override && _.find(overrideArray, function (override) {
+                            return override.startEvent === process.startEvent && !!override.override;
+                        });
                     });
 
-            });
-    };
+                    _.map(processArray, obj.callRegisterListenerFromConfig);
 
-    obj.callService = function(serviceId, methodName, params) {
-        ModuleLoader.load(serviceId).then(
-            function (service) {
-                if (service) {
-                    service[methodName].apply(service, params || []);
-                }
-            }, function (exception) {
-                if (params) {
-                    params = JSON.stringify(params);
-                }
-                console.warn("Unable to invoke serviceId=" + serviceId + " method=" + methodName
-                    + " params=" + params + " exception=" + exception);
+                    eventManager.sendEvent(constants.EVENT_READ_CONFIGURATION_REQUEST);
+                });
+
+        });
+};
+
+obj.callService = function(serviceId, methodName, params) {
+    ModuleLoader.load(serviceId).then(
+        function (service) {
+            if (service) {
+                service[methodName].apply(service, params || []);
             }
-        );
-    };
+        }, function (exception) {
+            if (params) {
+                params = JSON.stringify(params);
+            }
+            console.warn("Unable to invoke serviceId=" + serviceId + " method=" + methodName
+                + " params=" + params + " exception=" + exception);
+        }
+    );
+};
 
-    return obj;
-});
+export default obj;

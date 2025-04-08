@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "description": "Wren Security UI Commons - User",
   "private": true,
+  "type": "module",
   "scripts": {
     "build": "gulp",
     "clean": "rimraf dist"

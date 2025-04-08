@@ -14,22 +14,19 @@
  * Copyright 2014-2016 ForgeRock AS.
  */
 
-define([
-    "org/forgerock/commons/ui/common/util/Base64"
-], function (base64) {
+import base64 from "org/forgerock/commons/ui/common/util/Base64";
 
-    var obj = {};
+var obj = {};
 
-    /**
-     * Encodes a header value as MIME base-64 encoded UTF-8 as per RFC 2047. This allows passing
-     * Unicode characters beyond ASCII in a header value (which are limited to US-ASCII or ISO-8859-1).
-     *
-     * @param headerValue the header value to encode.
-     * @returns {string} the base-64 encoded, UTF-8 MIME "text" token encoding of the header value.
-     */
-    obj.encodeHeader = function (headerValue) {
-        return "=?UTF-8?B?" + base64.encodeUTF8(headerValue) + "?=";
-    };
+/**
+ * Encodes a header value as MIME base-64 encoded UTF-8 as per RFC 2047. This allows passing
+ * Unicode characters beyond ASCII in a header value (which are limited to US-ASCII or ISO-8859-1).
+ *
+ * @param headerValue the header value to encode.
+ * @returns {string} the base-64 encoded, UTF-8 MIME "text" token encoding of the header value.
+ */
+obj.encodeHeader = function (headerValue) {
+    return "=?UTF-8?B?" + base64.encodeUTF8(headerValue) + "?=";
+};
 
-    return obj;
-});
+export default obj;

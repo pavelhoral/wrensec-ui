@@ -14,18 +14,21 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-define(["lodash", "react", "react-dom"], function (_, React, ReactDOM) {
-    /**
-     * Given a component, render it into the given DOM element.
-     * @exports org/forgerock/commons/ui/common/util/reactify
-     * @param  {ReactElement} component The React element to render
-     * @param  {jQuery} el A jQuery object containing a collection of DOM elements
-     * @return {ReactComponent} Rendered component
-     * @example reactify(<Title>My Text</Title>, this.$el.find("[data-title]"));
-     */
-    var exports = function (component, el) {
-        return ReactDOM.render(component, el[0]);
-    };
+// TODO this was probably added for the side-effects
+// eslint-disable-next-line
+import React from "react";
+import ReactDOM from "react-dom";
 
-    return exports;
-});
+/**
+ * Given a component, render it into the given DOM element.
+ * @exports org/forgerock/commons/ui/common/util/reactify
+ * @param  {ReactElement} component The React element to render
+ * @param  {jQuery} el A jQuery object containing a collection of DOM elements
+ * @return {ReactComponent} Rendered component
+ * @example reactify(<Title>My Text</Title>, this.$el.find("[data-title]"));
+ */
+var exports = function (component, el) {
+    return ReactDOM.render(component, el[0]);
+};
+
+export default exports;

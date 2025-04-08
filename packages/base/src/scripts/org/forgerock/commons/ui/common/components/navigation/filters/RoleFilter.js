@@ -21,25 +21,23 @@
  *
  * @module org/forgerock/commons/ui/common/components/navigation/filters/RoleFilter
  */
-define([
-    "lodash",
-    "org/forgerock/commons/ui/common/main/Configuration"
-], function(_, Configuration) {
-    return {
-        filter: function(links) {
-            var link, linkName, linkHasNoRole, userHasNecessaryRole;
+import _ from "lodash";
+import Configuration from "org/forgerock/commons/ui/common/main/Configuration";
 
-            for (linkName in links) {
-                link = links[linkName];
+export default {
+    filter: function(links) {
+        var link, linkName, linkHasNoRole, userHasNecessaryRole;
 
-                linkHasNoRole = !link.role;
-                userHasNecessaryRole = link.role && Configuration.loggedUser
-                    && _.includes(Configuration.loggedUser.uiroles, link.role);
+        for (linkName in links) {
+            link = links[linkName];
 
-                if (linkHasNoRole || userHasNecessaryRole) {
-                    return links[linkName];
-                }
+            linkHasNoRole = !link.role;
+            userHasNecessaryRole = link.role && Configuration.loggedUser
+                && _.includes(Configuration.loggedUser.uiroles, link.role);
+
+            if (linkHasNoRole || userHasNecessaryRole) {
+                return links[linkName];
             }
         }
-    };
-});
+    }
+};

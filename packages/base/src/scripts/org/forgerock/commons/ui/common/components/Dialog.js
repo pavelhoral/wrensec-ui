@@ -14,122 +14,120 @@
  * Copyright 2011-2016 ForgeRock AS.
  */
 
-define([
-    "jquery",
-    "lodash",
-    "org/forgerock/commons/ui/common/main/AbstractView",
-    "org/forgerock/commons/ui/common/util/UIUtils",
-    "org/forgerock/commons/ui/common/util/Constants",
-    "org/forgerock/commons/ui/common/main/EventManager",
-    "org/forgerock/commons/ui/common/main/Configuration"
-], function($, _, AbstractView, UIUtils, Constants, EventManager, Configuration) {
+import $ from "jquery";
+import _ from "lodash";
+import AbstractView from "org/forgerock/commons/ui/common/main/AbstractView";
+import UIUtils from "org/forgerock/commons/ui/common/util/UIUtils";
+import Constants from "org/forgerock/commons/ui/common/util/Constants";
+import EventManager from "org/forgerock/commons/ui/common/main/EventManager";
+import Configuration from "org/forgerock/commons/ui/common/main/Configuration";
+
+/**
+ * @exports org/forgerock/commons/ui/common/components/Dialog
+ */
+export default AbstractView.extend({
+    template: "templates/common/DialogTemplate.html",
+    element: "#dialogs",
+
+    data: { },
+
+    mode: "append",
+
+    events: {
+        "click .dialogCloseCross": "close",
+        "click input[name='close']": "close",
+        "click .dialogContainer": "stop"
+    },
+
+    actions: [
+        {
+            "type": "button",
+            "name": "close"
+        }
+    ],
+
+    stop: function(event) {
+        event.stopPropagation();
+    },
+
     /**
-     * @exports org/forgerock/commons/ui/common/components/Dialog
+     * Creates new dialog in #dialogs div. Fills it with dialog template.
+     * Then creates actions buttons and bind events. If actions map is empty, default
+     * close action is added.
      */
-    return AbstractView.extend({
-        template: "templates/common/DialogTemplate.html",
-        element: "#dialogs",
+    show: function(callback) {
 
-        data: { },
-
-        mode: "append",
-
-        events: {
-            "click .dialogCloseCross": "close",
-            "click input[name='close']": "close",
-            "click .dialogContainer": "stop"
-        },
-
-        actions: [
-            {
-                "type": "button",
-                "name": "close"
+        this.data.actions = _.map(this.actions, function (a) {
+            if (a.type === "submit") {
+                a.buttonClass = "btn-primary";
+            } else {
+                a.buttonClass = "btn-default";
             }
-        ],
+            return a;
+        });
 
-        stop: function(event) {
-            event.stopPropagation();
-        },
+        this.setElement($("#dialogs"));
+        this.parentRender(_.bind(function() {
 
-        /**
-         * Creates new dialog in #dialogs div. Fills it with dialog template.
-         * Then creates actions buttons and bind events. If actions map is empty, default
-         * close action is added.
-         */
-        show: function(callback) {
+            this.$el.addClass('show');
+            this.setElement(this.$el.find(".dialogContainer:last"));
 
-            this.data.actions = _.map(this.actions, function (a) {
-                if (a.type === "submit") {
-                    a.buttonClass = "btn-primary";
-                } else {
-                    a.buttonClass = "btn-default";
-                }
-                return a;
-            });
+            $("#dialog-background").addClass('show');
+            this.$el.off('click').on('click', _.bind(this.close, this));
 
-            this.setElement($("#dialogs"));
-            this.parentRender(_.bind(function() {
+            this.loadContent(callback);
+            this.delegateEvents();
+        }, this));
+    },
 
-                this.$el.addClass('show');
-                this.setElement(this.$el.find(".dialogContainer:last"));
+    /**
+     * Loads template from 'contentTemplate'
+     */
+    loadContent: function(callback) {
+        UIUtils.renderTemplate(
+            this.contentTemplate,
+            this.$el.find(".dialogContent"),
+            _.extend({}, Configuration.globalData, this.data),
+            callback ? _.bind(callback, this) : _.noop(),
+            "append");
+    },
 
-                $("#dialog-background").addClass('show');
-                this.$el.off('click').on('click', _.bind(this.close, this));
+    render: function() {
+        this.show();
+    },
 
-                this.loadContent(callback);
-                this.delegateEvents();
-            }, this));
-        },
+    close: function(e) {
+        if (e) {
+            e.preventDefault();
+        }
 
-        /**
-         * Loads template from 'contentTemplate'
-         */
-        loadContent: function(callback) {
-            UIUtils.renderTemplate(
-                this.contentTemplate,
-                this.$el.find(".dialogContent"),
-                _.extend({}, Configuration.globalData, this.data),
-                callback ? _.bind(callback, this) : _.noop(),
-                "append");
-        },
+        if ($(".dialogContainer").length < 2) {
+            $("#dialog-background").removeClass('show');
+            $("#dialogs").removeClass('show');
+            $("#dialogs").hide();
+        }
 
-        render: function() {
-            this.show();
-        },
+        EventManager.sendEvent(Constants.EVENT_DIALOG_CLOSE);
 
-        close: function(e) {
-            if (e) {
-                e.preventDefault();
-            }
+        this.$el.remove();
+    },
 
-            if ($(".dialogContainer").length < 2) {
-                $("#dialog-background").removeClass('show');
-                $("#dialogs").removeClass('show');
-                $("#dialogs").hide();
-            }
-
-            EventManager.sendEvent(Constants.EVENT_DIALOG_CLOSE);
-
-            this.$el.remove();
-        },
-
-        addAction: function(name, type) {
-            if (!this.getAction(name)) {
-                this.actions.push({
-                    "name" : name,
-                    "type" : type
-                });
-            }
-        },
-
-        addTitle: function(title) {
-            this.data.dialogTitle = title;
-        },
-
-        getAction: function(name) {
-            return _.find(this.actions, function(a) {
-                return a.name === name;
+    addAction: function(name, type) {
+        if (!this.getAction(name)) {
+            this.actions.push({
+                "name" : name,
+                "type" : type
             });
         }
-    });
+    },
+
+    addTitle: function(title) {
+        this.data.dialogTitle = title;
+    },
+
+    getAction: function(name) {
+        return _.find(this.actions, function(a) {
+            return a.name === name;
+        });
+    }
 });

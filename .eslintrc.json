@@ -7,6 +7,9 @@
         "es6": true,
         "qunit": true
     },
+    "parserOptions": {
+        "sourceType": "module"
+    },
     "overrides": [
         {
             "files": [

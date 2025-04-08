@@ -14,38 +14,35 @@
  * Copyright 2011-2016 ForgeRock AS.
  */
 
-define([
-    "jquery",
-    "org/forgerock/commons/ui/common/components/Dialog",
-    "org/forgerock/commons/ui/common/components/BootstrapDialogView"
-], function($, Dialog, BootstrapDialogView) {
-    var ConfirmationDialog = BootstrapDialogView.extend({
-        render: function(title, msg, actionName, okCallback) {
-            this.setElement($('<div id="CommonConfirmationDialog"></div>'));
-            this.title = title;
-            this.message = msg;
-            this.actions = [
-                {
-                    label: $.t("common.form.cancel"),
-                    action: function (dialogRef) {
-                        dialogRef.close();
-                    }
-                },
-                {
-                    label: actionName,
-                    cssClass: "btn-primary",
-                    action: function (dialogRef) {
-                        if (okCallback) {
-                            okCallback();
-                        }
-                        dialogRef.close();
-                    }
+import $ from "jquery";
+import BootstrapDialogView from "org/forgerock/commons/ui/common/components/BootstrapDialogView";
+
+var ConfirmationDialog = BootstrapDialogView.extend({
+    render: function(title, msg, actionName, okCallback) {
+        this.setElement($('<div id="CommonConfirmationDialog"></div>'));
+        this.title = title;
+        this.message = msg;
+        this.actions = [
+            {
+                label: $.t("common.form.cancel"),
+                action: function (dialogRef) {
+                    dialogRef.close();
                 }
-            ];
+            },
+            {
+                label: actionName,
+                cssClass: "btn-primary",
+                action: function (dialogRef) {
+                    if (okCallback) {
+                        okCallback();
+                    }
+                    dialogRef.close();
+                }
+            }
+        ];
 
-            this.show();
-        }
-    });
-
-    return new ConfirmationDialog();
+        this.show();
+    }
 });
+
+export default new ConfirmationDialog();

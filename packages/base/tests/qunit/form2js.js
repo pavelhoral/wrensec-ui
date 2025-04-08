@@ -14,25 +14,22 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-define([
-    "jquery",
-    "form2js",
-    "js2form"
-], function ($, form2js, js2form) {
-    QUnit.module('form2js usage');
+import $ from "jquery";
+import form2js from "form2js";
+import js2form from "js2form";
 
-    QUnit.test("boolean fields", function (assert) {
-        var form = $('<form><input type="checkbox" value="true" name="testBool"></form>')
+QUnit.module('form2js usage');
 
-        $("#qunit-fixture").append(form);
+QUnit.test("boolean fields", function (assert) {
+    var form = $('<form><input type="checkbox" value="true" name="testBool"></form>')
 
-        js2form(form[0], {testBool: true});
-        assert.equal(form.find("[name=testBool]").prop("checked"), true);
-        assert.equal(form2js(form[0]).testBool, true);
+    $("#qunit-fixture").append(form);
 
-        js2form(form[0], {testBool: false});
-        assert.equal(form.find("[name=testBool]").prop("checked"), false);
-        assert.equal(form2js(form[0]).testBool, false);
-    });
+    js2form(form[0], {testBool: true});
+    assert.equal(form.find("[name=testBool]").prop("checked"), true);
+    assert.equal(form2js(form[0]).testBool, true);
 
+    js2form(form[0], {testBool: false});
+    assert.equal(form.find("[name=testBool]").prop("checked"), false);
+    assert.equal(form2js(form[0]).testBool, false);
 });

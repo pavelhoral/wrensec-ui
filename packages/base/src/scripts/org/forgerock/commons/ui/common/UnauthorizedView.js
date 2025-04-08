@@ -14,23 +14,21 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-define([
-    "org/forgerock/commons/ui/common/main/AbstractView",
-    "org/forgerock/commons/ui/common/main/Configuration",
-    "org/forgerock/commons/ui/common/util/URIUtils"
-], function(AbstractView, Configuration, URIUtils) {
-    var UnauthorizedView = AbstractView.extend({
-        template: "templates/common/UnauthorizedTemplate.html",
-        baseTemplate: "templates/common/LoginBaseTemplate.html",
-        events: {
-            "click #goBack": function() {
-                window.history.go(-1);
-            },
-            "click #logout": function() {
-                Configuration.gotoURL = "#" + URIUtils.getCurrentFragment();
-            }
-        }
-    });
+import AbstractView from "org/forgerock/commons/ui/common/main/AbstractView";
+import Configuration from "org/forgerock/commons/ui/common/main/Configuration";
+import URIUtils from "org/forgerock/commons/ui/common/util/URIUtils";
 
-    return new UnauthorizedView();
+var UnauthorizedView = AbstractView.extend({
+    template: "templates/common/UnauthorizedTemplate.html",
+    baseTemplate: "templates/common/LoginBaseTemplate.html",
+    events: {
+        "click #goBack": function() {
+            window.history.go(-1);
+        },
+        "click #logout": function() {
+            Configuration.gotoURL = "#" + URIUtils.getCurrentFragment();
+        }
+    }
 });
+
+export default new UnauthorizedView();

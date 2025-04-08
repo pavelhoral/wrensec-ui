@@ -14,105 +14,98 @@
  * Copyright 2015-2016 ForgeRock AS.
  */
 
-define([
-    "jquery",
-    "lodash",
-    "org/forgerock/mock/ui/examples/CodeMirror",
-    "bootstrap",
-    "selectize",
-    "org/forgerock/commons/ui/common/main/AbstractView"
-], function($, _,
-        CodeMirror,
-        bootstrap,
-        selectize,
-        AbstractView) {
+import $ from "jquery";
+import _ from "lodash";
+import CodeMirror from "org/forgerock/mock/ui/examples/CodeMirror";
+import bootstrap from "bootstrap";
+import selectize from "selectize";
+import AbstractView from "org/forgerock/commons/ui/common/main/AbstractView";
 
-    var ExamplesView = AbstractView.extend({
-        template: "templates/mock/ExamplesTemplate.html",
-        events: {
-            "click #sidebar a": "slideNavigation"
-        },
-        model: {
-            leftNavOffset: 360
-        },
-        render: function(args, callback) {
-            this.parentRender(_.bind(function() {
-                /*
-                Code Snippets
-                */
-                this.$el.find('.example').each(function(i, elem) {
+var ExamplesView = AbstractView.extend({
+    template: "templates/mock/ExamplesTemplate.html",
+    events: {
+        "click #sidebar a": "slideNavigation"
+    },
+    model: {
+        leftNavOffset: 360
+    },
+    render: function(args, callback) {
+        this.parentRender(_.bind(function() {
+            /*
+            Code Snippets
+            */
+            this.$el.find('.example').each(function(i, elem) {
 
-                    var snippet = $('.snippet')[i].innerHTML;
+                var snippet = $('.snippet')[i].innerHTML;
 
-                    CodeMirror(elem, {
-                        value: snippet,
-                        mode: 'xml',
-                        lineNumbers: false,
-                        readOnly: true,
-                        lineWrapping: false
-                    });
+                CodeMirror(elem, {
+                    value: snippet,
+                    mode: 'xml',
+                    lineNumbers: false,
+                    readOnly: true,
+                    lineWrapping: false
                 });
+            });
 
-                this.$el.find('.code').each(function() {
+            this.$el.find('.code').each(function() {
 
-                    var $this = $(this),
-                        $code = $this.html();
+                var $this = $(this),
+                    $code = $this.html();
 
-                    $this.empty();
+                $this.empty();
 
-                    CodeMirror(this, {
-                        value: $code,
-                        mode: 'javascript',
-                        lineNumbers: true,
-                        readOnly: true,
-                        lineWrapping: true
-                    });
+                CodeMirror(this, {
+                    value: $code,
+                    mode: 'javascript',
+                    lineNumbers: true,
+                    readOnly: true,
+                    lineWrapping: true
                 });
+            });
 
-                /*
-                 Selectize
-                 */
-                this.$el.find('#selectizeExample').selectize({
-                    create: true
-                });
+            /*
+             Selectize
+             */
+            this.$el.find('#selectizeExample').selectize({
+                create: true
+            });
 
-                this.$el.find('#selectizePillExample').selectize({
-                    create: true,
-                    maxItems: 3
-                });
+            this.$el.find('#selectizePillExample').selectize({
+                create: true,
+                maxItems: 3
+            });
 
-                this.$el.find('#sidebar').affix({
-                    offset: {
-                        top: this.model.leftNavOffset
-                    }
-                });
-
-                $(document.body).scrollspy({
-                    target: '#rightCol'
-                });
-
-                if (callback){
-                    callback();
+            this.$el.find('#sidebar').affix({
+                offset: {
+                    top: this.model.leftNavOffset
                 }
-            }, this));
-        },
-        /*
-         Prevents redirection from hash. Also animates a smooth scroll
-         */
-        slideNavigation : function(event) {
-            event.preventDefault();
+            });
 
-            var target = $(event.target);
+            $(document.body).scrollspy({
+                target: '#rightCol'
+            });
 
-            target = $(target.attr("href"));
-
-            if (target.length) {
-                $('html,body').animate({
-                    scrollTop: target.offset().top
-                }, 1000);
+            if (callback){
+                callback();
             }
-        }
-    });
+        }, this));
+    },
+    /*
+     Prevents redirection from hash. Also animates a smooth scroll
+     */
+    slideNavigation : function(event) {
+        event.preventDefault();
 
-    return new ExamplesView();
+        var target = $(event.target);
+
+        target = $(target.attr("href"));
+
+        if (target.length) {
+            $('html,body').animate({
+                scrollTop: target.offset().top
+            }, 1000);
+        }
+    }
 });
+
+export default new ExamplesView();

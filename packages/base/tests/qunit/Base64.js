@@ -14,62 +14,60 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-define([
-    "org/forgerock/commons/ui/common/util/Base64",
-    "org/forgerock/commons/ui/common/util/Mime"
-], function (Base64, Mime) {
-    QUnit.module('Base64 Functions');
+import Base64 from "org/forgerock/commons/ui/common/util/Base64";
+import Mime from "org/forgerock/commons/ui/common/util/Mime";
 
-    QUnit.test("Base64.encodeUTF8", function (assert) {
-        var input = "パスワードパスワード";
+QUnit.module('Base64 Functions');
 
-        assert.strictEqual(Base64.encodeUTF8(input), "44OR44K544Ov44O844OJ44OR44K544Ov44O844OJ",
-            "Incorrect base-64 encoding");
-    });
+QUnit.test("Base64.encodeUTF8", function (assert) {
+    var input = "パスワードパスワード";
 
-    QUnit.test("Base64.encodeUTF8 - 2 pad chars", function(assert) {
-        var input = "パスワードパスワードx";
+    assert.strictEqual(Base64.encodeUTF8(input), "44OR44K544Ov44O844OJ44OR44K544Ov44O844OJ",
+        "Incorrect base-64 encoding");
+});
 
-        assert.strictEqual(Base64.encodeUTF8(input), "44OR44K544Ov44O844OJ44OR44K544Ov44O844OJeA==",
-            "Incorrect base-64 encoding - 2 pad char case");
-    });
+QUnit.test("Base64.encodeUTF8 - 2 pad chars", function(assert) {
+    var input = "パスワードパスワードx";
 
-    QUnit.test("Base64.encodeUTF8 - 1 pad char", function(assert) {
-        var input = "パスワードパスワードxx";
+    assert.strictEqual(Base64.encodeUTF8(input), "44OR44K544Ov44O844OJ44OR44K544Ov44O844OJeA==",
+        "Incorrect base-64 encoding - 2 pad char case");
+});
 
-        assert.strictEqual(Base64.encodeUTF8(input), "44OR44K544Ov44O844OJ44OR44K544Ov44O844OJeHg=",
-            "Incorrect base-64 encoding - 1 pad char case");
-    });
+QUnit.test("Base64.encodeUTF8 - 1 pad char", function(assert) {
+    var input = "パスワードパスワードxx";
 
-    QUnit.test("Base64.decodeUTF8", function(assert) {
-        var input = "44OR44K544Ov44O844OJ44OR44K544Ov44O844OJ";
+    assert.strictEqual(Base64.encodeUTF8(input), "44OR44K544Ov44O844OJ44OR44K544Ov44O844OJeHg=",
+        "Incorrect base-64 encoding - 1 pad char case");
+});
 
-        assert.strictEqual(Base64.decodeUTF8(input), "パスワードパスワード",
-            "Incorrect base-64 decoding");
-    });
-    QUnit.test("Base64.decodeUTF8 - 1 pad char", function(assert) {
-        var input = "44OR44K544Ov44O844OJ44OR44K544Ov44O844OJeHg=";
-        assert.strictEqual(Base64.decodeUTF8(input), "パスワードパスワードxx",
-            "Incorrect base-64 decoding");
-    });
+QUnit.test("Base64.decodeUTF8", function(assert) {
+    var input = "44OR44K544Ov44O844OJ44OR44K544Ov44O844OJ";
 
-    QUnit.test("Base64.decodeUTF8 - 2 pad chars", function(assert) {
-        var input = "44OR44K544Ov44O844OJ44OR44K544Ov44O844OJeA==";
-        assert.strictEqual(Base64.decodeUTF8(input), "パスワードパスワードx",
-            "Incorrect base-64 decoding");
-    });
+    assert.strictEqual(Base64.decodeUTF8(input), "パスワードパスワード",
+        "Incorrect base-64 decoding");
+});
+QUnit.test("Base64.decodeUTF8 - 1 pad char", function(assert) {
+    var input = "44OR44K544Ov44O844OJ44OR44K544Ov44O844OJeHg=";
+    assert.strictEqual(Base64.decodeUTF8(input), "パスワードパスワードxx",
+        "Incorrect base-64 decoding");
+});
 
-    QUnit.test("Base64.encodeUTF8/decodeUTF8 - various punctuation characters", function(assert) {
-        var input = "43uin 98e2 + 343_ {} 43qafdgfREER\'FDj ionk/.,<>`fj iod Hdfjl";
+QUnit.test("Base64.decodeUTF8 - 2 pad chars", function(assert) {
+    var input = "44OR44K544Ov44O844OJ44OR44K544Ov44O844OJeA==";
+    assert.strictEqual(Base64.decodeUTF8(input), "パスワードパスワードx",
+        "Incorrect base-64 decoding");
+});
 
-        assert.strictEqual(Base64.decodeUTF8(Base64.encodeUTF8(input)), input,
-            "Unable to round-trip Base64 special characters");
-    });
+QUnit.test("Base64.encodeUTF8/decodeUTF8 - various punctuation characters", function(assert) {
+    var input = "43uin 98e2 + 343_ {} 43qafdgfREER\'FDj ionk/.,<>`fj iod Hdfjl";
 
-    QUnit.test("Mime.encodeHeader", function(assert) {
-        var input = "パスワードパスワード";
+    assert.strictEqual(Base64.decodeUTF8(Base64.encodeUTF8(input)), input,
+        "Unable to round-trip Base64 special characters");
+});
 
-        assert.strictEqual(Mime.encodeHeader(input), "=?UTF-8?B?44OR44K544Ov44O844OJ44OR44K544Ov44O844OJ?=",
-            "Incorrect Mime encoding in header");
-    });
+QUnit.test("Mime.encodeHeader", function(assert) {
+    var input = "パスワードパスワード";
+
+    assert.strictEqual(Mime.encodeHeader(input), "=?UTF-8?B?44OR44K544Ov44O844OJ44OR44K544Ov44O844OJ?=",
+        "Incorrect Mime encoding in header");
 });

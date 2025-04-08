@@ -13,83 +13,80 @@
  *
  * Copyright 2016 ForgeRock AS.
  */
- /*globals QUnit */
+/*globals QUnit */
 
-define([
-    "jquery",
-    "sinon",
-    "org/forgerock/commons/ui/common/main/AbstractCollection",
-    "org/forgerock/commons/ui/common/main/ServiceInvoker"
-], function ($, sinon, AbstractCollection, ServiceInvoker) {
-    QUnit.module('AbstractCollection Functions');
+import $ from "jquery";
+import sinon from "sinon";
+import AbstractCollection from "org/forgerock/commons/ui/common/main/AbstractCollection";
+import ServiceInvoker from "org/forgerock/commons/ui/common/main/ServiceInvoker";
 
-    QUnit.test("query operations", function (assert) {
-        var testCollection = new AbstractCollection(),
-            restCallArg;
+QUnit.module('AbstractCollection Functions');
 
-        testCollection.url = "/crestResource?_queryFilter=true";
+QUnit.test("query operations", function (assert) {
+    var testCollection = new AbstractCollection(),
+        restCallArg;
 
-        sinon.stub(ServiceInvoker, "restCall").callsFake(function (options) {
-            var response = {
-                "result": [{
-                    "_id": 1,
-                    "givenName": "Boaty",
-                    "sn": "McBoatface"
-                },{
-                    "_id": 2,
-                    "givenName": "Testy",
-                    "sn": "Testerton"
-                }],
-                "resultCount": 2,
-                "pagedResultsCookie": "2",
-                "totalPagedResultsPolicy": "EXACT",
-                "totalPagedResults": 5
-            };
-            // backbone uses the success handler associated with the fetch request to invoke the parse method
-            if (options.success) {
-                options.success(response);
-            }
-            return $.Deferred().resolve(response);
-        });
+    testCollection.url = "/crestResource?_queryFilter=true";
 
-        testCollection.setPageSize(2, {fetch: false});
-        testCollection.setSorting("givenName");
-        testCollection.setPagingType("cookie");
-        testCollection.setTotalPagedResultsPolicy("EXACT");
+    sinon.stub(ServiceInvoker, "restCall").callsFake(function (options) {
+        var response = {
+            "result": [{
+                "_id": 1,
+                "givenName": "Boaty",
+                "sn": "McBoatface"
+            },{
+                "_id": 2,
+                "givenName": "Testy",
+                "sn": "Testerton"
+            }],
+            "resultCount": 2,
+            "pagedResultsCookie": "2",
+            "totalPagedResultsPolicy": "EXACT",
+            "totalPagedResults": 5
+        };
+        // backbone uses the success handler associated with the fetch request to invoke the parse method
+        if (options.success) {
+            options.success(response);
+        }
+        return $.Deferred().resolve(response);
+    });
 
-        return testCollection.getFirstPage().then(function () {
-            assert.equal(ServiceInvoker.restCall.callCount, 1, "Only one REST call produced");
-            restCallArg = ServiceInvoker.restCall.args[0][0]; // first invocation, first argument
-            assert.equal(testCollection.length, 2, "collection contains two records from the backend");
-            assert.equal(testCollection.where({givenName: "Boaty"}).length, 1,
-                "able to find expected model content in collection");
-            assert.ok(testCollection.hasNext(), "response with cookie indicates that hasNext is true");
-            assert.equal(testCollection.state.totalRecords, 5, "Total records correctly populated in collection state");
-            assert.equal(testCollection.state.totalPages, 3, "Total pages correctly populated in collection state");
-            assert.equal(restCallArg.url, "/crestResource", "correct url used to query backend");
-            assert.equal(restCallArg.data,
-                "_queryFilter=true&_pageSize=2&_sortKeys=givenName&_totalPagedResultsPolicy=EXACT",
-                "correct data submitted to backend for first page");
-        }).then(function () {
-            testCollection.setSorting("givenName", 1);
-            return testCollection.getFirstPage();
-        }).then(function () {
-            restCallArg = ServiceInvoker.restCall.args[1][0]; // second invocation, first argument
-            assert.equal(restCallArg.data,
-                "_queryFilter=true&_pageSize=2&_sortKeys=-givenName&_totalPagedResultsPolicy=EXACT",
-                "correct data submitted to backend for descending sortKey");
-        }).then(function () {
-            return testCollection.getNextPage();
-        }).then(function () {
-            restCallArg = ServiceInvoker.restCall.args[2][0]; // third invocation, first argument
-            assert.equal(restCallArg.data,
-                "_queryFilter=true&_pageSize=2&_sortKeys=-givenName"+
-                "&_totalPagedResultsPolicy=EXACT&_pagedResultsCookie=2",
-                "correct data submitted to backend for next page");
-        }).then(function () {
-            ServiceInvoker.restCall.restore();
-        });
+    testCollection.setPageSize(2, {fetch: false});
+    testCollection.setSorting("givenName");
+    testCollection.setPagingType("cookie");
+    testCollection.setTotalPagedResultsPolicy("EXACT");
 
+    return testCollection.getFirstPage().then(function () {
+        assert.equal(ServiceInvoker.restCall.callCount, 1, "Only one REST call produced");
+        restCallArg = ServiceInvoker.restCall.args[0][0]; // first invocation, first argument
+        assert.equal(testCollection.length, 2, "collection contains two records from the backend");
+        assert.equal(testCollection.where({givenName: "Boaty"}).length, 1,
+            "able to find expected model content in collection");
+        assert.ok(testCollection.hasNext(), "response with cookie indicates that hasNext is true");
+        assert.equal(testCollection.state.totalRecords, 5, "Total records correctly populated in collection state");
+        assert.equal(testCollection.state.totalPages, 3, "Total pages correctly populated in collection state");
+        assert.equal(restCallArg.url, "/crestResource", "correct url used to query backend");
+        assert.equal(restCallArg.data,
+            "_queryFilter=true&_pageSize=2&_sortKeys=givenName&_totalPagedResultsPolicy=EXACT",
+            "correct data submitted to backend for first page");
+    }).then(function () {
+        testCollection.setSorting("givenName", 1);
+        return testCollection.getFirstPage();
+    }).then(function () {
+        restCallArg = ServiceInvoker.restCall.args[1][0]; // second invocation, first argument
+        assert.equal(restCallArg.data,
+            "_queryFilter=true&_pageSize=2&_sortKeys=-givenName&_totalPagedResultsPolicy=EXACT",
+            "correct data submitted to backend for descending sortKey");
+    }).then(function () {
+        return testCollection.getNextPage();
+    }).then(function () {
+        restCallArg = ServiceInvoker.restCall.args[2][0]; // third invocation, first argument
+        assert.equal(restCallArg.data,
+            "_queryFilter=true&_pageSize=2&_sortKeys=-givenName"+
+            "&_totalPagedResultsPolicy=EXACT&_pagedResultsCookie=2",
+            "correct data submitted to backend for next page");
+    }).then(function () {
+        ServiceInvoker.restCall.restore();
     });
 
 });

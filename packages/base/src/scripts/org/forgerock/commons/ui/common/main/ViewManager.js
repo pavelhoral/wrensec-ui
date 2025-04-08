@@ -14,115 +14,111 @@
  * Copyright 2012-2016 ForgeRock AS.
  */
 
-define([
-    "jquery",
-    "lodash",
-    "org/forgerock/commons/ui/common/components/Messages",
-    "org/forgerock/commons/ui/common/main/AbstractView",
-    "org/forgerock/commons/ui/common/util/ModuleLoader"
-], function($, _, msg, AbstractView, ModuleLoader) {
-    var obj = {},
-        decodeArgs = function (args) {
-            return _.map(args, function (a) {
-                return (a && decodeURIComponent(a)) || "";
-            });
-        },
-        isBackboneView = function(view) { return view.render && !_.isFunction(view); },
-        isReactView = function(view) { return !view.render && _.isFunction(view); };
+import $ from "jquery";
+import _ from "lodash";
+import msg from "org/forgerock/commons/ui/common/components/Messages";
+import ModuleLoader from "org/forgerock/commons/ui/common/util/ModuleLoader";
 
-    obj.currentView = null;
-    obj.currentDialog = null;
-    obj.currentViewArgs = null;
-    obj.currentDialogArgs = null;
+var obj = {},
+    decodeArgs = function (args) {
+        return _.map(args, function (a) {
+            return (a && decodeURIComponent(a)) || "";
+        });
+    },
+    isBackboneView = function(view) { return view.render && !_.isFunction(view); },
+    isReactView = function(view) { return !view.render && _.isFunction(view); };
 
-    /**
-     * Initializes view if it is not equal to current view.
-     * Changes URL without triggering event.
-     */
-    obj.changeView = function(viewPath, args, callback, forceUpdate) {
-        var decodedArgs = decodeArgs(args);
+obj.currentView = null;
+obj.currentDialog = null;
+obj.currentViewArgs = null;
+obj.currentDialogArgs = null;
 
-        if (obj.currentView !== viewPath || forceUpdate || !_.isEqual(obj.currentViewArgs, args)) {
-            if (obj.currentDialog !== null) {
-                ModuleLoader.load(obj.currentDialog).then(function (dialog) {
-                    dialog.close();
-                });
-            }
+/**
+ * Initializes view if it is not equal to current view.
+ * Changes URL without triggering event.
+ */
+obj.changeView = function(viewPath, args, callback, forceUpdate) {
+    var decodedArgs = decodeArgs(args);
 
-            //close all existing dialogs
-            if (typeof $.prototype.modal === "function") {
-                $('.modal.in').modal('hide');
-            }
-
-            obj.currentDialog = null;
-
-            msg.messages.hideMessages();
-            ModuleLoader.load(viewPath).then(function (view) {
-                // For ES6 modules, we require that the view is the default export.
-                if (view.__esModule) {
-                    view = view.default;
-                }
-
-                // TODO: Investigate whether this is required anymore
-                if (view.init) {
-                    view.init();
-                }
-
-                if (isBackboneView(view)) {
-                    view.render(decodedArgs, callback);
-                } else if (isReactView(view)) {
-                    // ReactAdapterView (and thus React and React-DOM) are only loaded when a React view is encountered
-                    require(["org/forgerock/commons/ui/common/main/ReactAdapterView"], function(ReactAdapterView) {
-                        (new ReactAdapterView({ reactView: view })).render();
-                    });
-                } else {
-                    throw new Error("[ViewManager] Unable to determine view type (Backbone or React).");
-                }
-            });
-
-        } else {
-            ModuleLoader.load(obj.currentView).then(function (view) {
-                view.rebind();
-
-                if (callback) {
-                    callback();
-                }
-            });
-        }
-
-        obj.currentViewArgs = args;
-        obj.currentView = viewPath;
-    };
-
-    obj.showDialog = function(dialogPath, args, callback) {
-        var decodedArgs = decodeArgs(args);
-
-        if (obj.currentDialog !== dialogPath || !_.isEqual(obj.currentDialogArgs, decodedArgs)) {
-            msg.messages.hideMessages();
-            ModuleLoader.load(dialogPath).then(function (dialog) {
-                dialog.render(decodedArgs, callback);
-            });
-        }
-
+    if (obj.currentView !== viewPath || forceUpdate || !_.isEqual(obj.currentViewArgs, args)) {
         if (obj.currentDialog !== null) {
             ModuleLoader.load(obj.currentDialog).then(function (dialog) {
                 dialog.close();
             });
         }
 
-        obj.currentDialog = dialogPath;
-        obj.currentDialogArgs = decodedArgs;
-    };
-
-    obj.refresh = function() {
-        var cDialog = obj.currentDialog, cDialogArgs = obj.currentDialogArgs;
-
-        obj.changeView(obj.currentView, obj.currentViewArgs, function() {}, true);
-        if (cDialog && cDialog !== null) {
-            obj.showDialog(cDialog, cDialogArgs);
+        //close all existing dialogs
+        if (typeof $.prototype.modal === "function") {
+            $('.modal.in').modal('hide');
         }
-    };
 
-    return obj;
+        obj.currentDialog = null;
 
-});
+        msg.messages.hideMessages();
+        ModuleLoader.load(viewPath).then(function (view) {
+            // For ES6 modules, we require that the view is the default export.
+            if (view.__esModule) {
+                view = view.default;
+            }
+
+            // TODO: Investigate whether this is required anymore
+            if (view.init) {
+                view.init();
+            }
+
+            if (isBackboneView(view)) {
+                view.render(decodedArgs, callback);
+            } else if (isReactView(view)) {
+                // ReactAdapterView (and thus React and React-DOM) are only loaded when a React view is encountered
+                require(["org/forgerock/commons/ui/common/main/ReactAdapterView"], function(ReactAdapterView) {
+                    (new ReactAdapterView({ reactView: view })).render();
+                });
+            } else {
+                throw new Error("[ViewManager] Unable to determine view type (Backbone or React).");
+            }
+        });
+
+    } else {
+        ModuleLoader.load(obj.currentView).then(function (view) {
+            view.rebind();
+
+            if (callback) {
+                callback();
+            }
+        });
+    }
+
+    obj.currentViewArgs = args;
+    obj.currentView = viewPath;
+};
+
+obj.showDialog = function(dialogPath, args, callback) {
+    var decodedArgs = decodeArgs(args);
+
+    if (obj.currentDialog !== dialogPath || !_.isEqual(obj.currentDialogArgs, decodedArgs)) {
+        msg.messages.hideMessages();
+        ModuleLoader.load(dialogPath).then(function (dialog) {
+            dialog.render(decodedArgs, callback);
+        });
+    }
+
+    if (obj.currentDialog !== null) {
+        ModuleLoader.load(obj.currentDialog).then(function (dialog) {
+            dialog.close();
+        });
+    }
+
+    obj.currentDialog = dialogPath;
+    obj.currentDialogArgs = decodedArgs;
+};
+
+obj.refresh = function() {
+    var cDialog = obj.currentDialog, cDialogArgs = obj.currentDialogArgs;
+
+    obj.changeView(obj.currentView, obj.currentViewArgs, function() {}, true);
+    if (cDialog && cDialog !== null) {
+        obj.showDialog(cDialog, cDialogArgs);
+    }
+};
+
+export default obj;

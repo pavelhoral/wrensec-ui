@@ -14,45 +14,41 @@
  * Copyright 2011-2016 ForgeRock AS.
  */
 
-define([
-    "jquery"
-], function($) {
+import $ from "jquery";
 
-    var obj = {};
+var obj = {};
 
-    obj.init = function() {
-        $("#popup").on('mouseleave', function() {
-            obj.hide();
-        });
-    };
+obj.init = function() {
+    $("#popup").on('mouseleave', function() {
+        obj.hide();
+    });
+};
 
-    obj.setContent = function(content) {
-        $("#popup-content").html(content);
-    };
+obj.setContent = function(content) {
+    $("#popup-content").html(content);
+};
 
-    obj.setPositionBy = function(element) {
-        var ph, left = $(element).position().left, top = $(element).position().top, h = $(element).height();
+obj.setPositionBy = function(element) {
+    var ph, left = $(element).position().left, top = $(element).position().top, h = $(element).height();
 
-        $("#popup").css('left', left);
-        $("#popup").css('top', top);
+    $("#popup").css('left', left);
+    $("#popup").css('top', top);
 
-        $("#popup").css('height', h);
-        $("#popup-content").css("margin-left", 20);
+    $("#popup").css('height', h);
+    $("#popup-content").css("margin-left", 20);
 
-        ph = $("#popup-content").height();
-        $("#popup-content").css("margin-top", -ph * 1.2);
-    };
+    ph = $("#popup-content").height();
+    $("#popup-content").css("margin-top", -ph * 1.2);
+};
 
-    obj.show = function() {
-        $("#popup").show();
-    };
+obj.show = function() {
+    $("#popup").show();
+};
 
-    obj.hide = function() {
-        $("#popup").hide();
-    };
+obj.hide = function() {
+    $("#popup").hide();
+};
 
-    return obj;
-
-});
+export default obj;
 
 

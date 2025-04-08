@@ -13,15 +13,16 @@
  *
  * Copyright 2023 Wren Security.
  */
-const {
+import {
     useEslint,
     useLessStyles,
     useLocalResources,
     useModuleResources,
     useBuildModule
-} = require("@wrensecurity/commons-ui-build");
-const gulp = require("gulp");
-const { join } = require("path");
+} from "@wrensecurity/commons-ui-build/gulp";
+import gulp from "gulp";
+import { dirname, join } from "path";
+import { fileURLToPath } from "url";
 
 const MODULE_RESOURCES = {
     "@mstyk/jquery-placeholder": "libs/jquery.placeholder.js",
@@ -76,7 +77,7 @@ gulp.task("build:assets", useLocalResources({ "src/assets/**": "" }));
 gulp.task("build:scripts", useLocalResources({ "src/scripts/**": "" }));
 
 gulp.task("build:libs", async () => {
-    await useModuleResources(MODULE_RESOURCES, { path: __filename })();
+    await useModuleResources(MODULE_RESOURCES, { path: import.meta.url })();
     await useLocalResources(LOCAL_RESOURCES)();
     await useBuildModule({
         id: "i18next",
@@ -86,7 +87,7 @@ gulp.task("build:libs", async () => {
             entries: [
                 {
                     find: "./getFetch.cjs",
-                    replacement: join(__dirname, "src/modules/undefined.mjs")
+                    replacement: join(dirname(fileURLToPath(new URL(import.meta.url))) , "src/modules/undefined.mjs")
                 }
             ]
         },

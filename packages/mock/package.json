@@ -2,6 +2,7 @@
   "name": "@wrensecurity/commons-ui-mock",
   "description": "Wren Security UI Commons - Mock",
   "private": true,
+  "type": "module",
   "scripts": {
     "build": "gulp",
     "test": "gulp test",
@@ -16,7 +17,8 @@
     "eslint": "^8.54.0",
     "node-qunit-puppeteer": "^2.1.2",
     "rollup": "^4.5.1",
-    "rollup-plugin-amd": "^4.0.0"
+    "rollup-plugin-amd": "^4.0.0",
+    "vite": "^6.2.5"
   },
   "dependencies": {
     "qunit": "^2.20.0",

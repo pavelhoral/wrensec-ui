@@ -14,15 +14,12 @@
  * Copyright 2015-2016 ForgeRock AS.
  */
 
-define([
-], function() {
-    var obj = {
-        "examplesPage" : {
-            view: "org/forgerock/mock/ui/examples/ExamplesView",
-            role: "ui-user",
-            url: "examples/"
-        }
-    };
+var obj = {
+    "examplesPage" : {
+        view: "org/forgerock/mock/ui/examples/ExamplesView",
+        role: "ui-user",
+        url: "examples/"
+    }
+};
 
-    return obj;
-});
+export default obj;

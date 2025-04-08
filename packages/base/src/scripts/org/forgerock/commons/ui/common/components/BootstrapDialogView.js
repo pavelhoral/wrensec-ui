@@ -14,91 +14,89 @@
  * Copyright 2015-2016 ForgeRock AS.
  */
 
-define([
-    "jquery",
-    "lodash",
-    "org/forgerock/commons/ui/common/main/AbstractView",
-    "org/forgerock/commons/ui/common/util/ModuleLoader",
-    "org/forgerock/commons/ui/common/util/UIUtils"
-], function($, _, AbstractView, ModuleLoader, UIUtils) {
-    /**
-     * @exports org/forgerock/commons/ui/common/components/BootstrapDialogView
-     * @deprecated
-     */
-    var BootstrapDialogView = AbstractView.extend({
-        contentTemplate: "templates/common/DefaultBaseTemplate.html",
-        data: { },
-        noButtons: false,
-        closable : true,
-        actions: [{
-            label: function (){return $.t('common.form.close');},
-            cssClass: "btn-default",
-            type: "close"
-        }],
+import $ from "jquery";
+import _ from "lodash";
+import AbstractView from "org/forgerock/commons/ui/common/main/AbstractView";
+import ModuleLoader from "org/forgerock/commons/ui/common/util/ModuleLoader";
+import UIUtils from "org/forgerock/commons/ui/common/util/UIUtils";
 
-        show: function(callback) {
-            var self = this;
-            self.setButtons();
-            $.when(ModuleLoader.load("org/forgerock/commons/ui/common/components/BootstrapDialog"), self.loadContent())
-                .then(_.bind(function (BootstrapDialog, content) {
-                    self.type = self.type || BootstrapDialog.TYPE_DEFAULT;
-                    self.size = self.size || BootstrapDialog.SIZE_NORMAL;
+/**
+ * @exports org/forgerock/commons/ui/common/components/BootstrapDialogView
+ * @deprecated
+ */
+var BootstrapDialogView = AbstractView.extend({
+    contentTemplate: "templates/common/DefaultBaseTemplate.html",
+    data: { },
+    noButtons: false,
+    closable : true,
+    actions: [{
+        label: function (){return $.t('common.form.close');},
+        cssClass: "btn-default",
+        type: "close"
+    }],
 
-                    self.message = $("<div></div>").append(content);
-                    BootstrapDialog.show(self);
-                    if (callback) {
-                        callback();
-                    }
-                }, this));
-        },
+    show: function(callback) {
+        var self = this;
+        self.setButtons();
+        $.when(ModuleLoader.load("org/forgerock/commons/ui/common/components/BootstrapDialog"), self.loadContent())
+            .then(_.bind(function (BootstrapDialog, content) {
+                self.type = self.type || BootstrapDialog.TYPE_DEFAULT;
+                self.size = self.size || BootstrapDialog.SIZE_NORMAL;
 
-        loadContent: function() {
-            var promise = $.Deferred();
-            if (this.message === undefined) {
-                UIUtils.fillTemplateWithData(this.contentTemplate, this.data, function(template) {
-                    promise.resolve(template);
-                });
-            } else {
-                promise.resolve(this.message);
-            }
-            return promise;
-        },
+                self.message = $("<div></div>").append(content);
+                BootstrapDialog.show(self);
+                if (callback) {
+                    callback();
+                }
+            }, this));
+    },
 
-        setTitle: function(title) {
-            this.title = title;
-        },
-
-        addButton: function(button){
-            if (!this.getButtons(button.label)){
-                this.buttons.push(button);
-            }
-        },
-
-        getButtons: function(label) {
-            return _.find(this.buttons, function(a) {
-                return a.label === label;
+    loadContent: function() {
+        var promise = $.Deferred();
+        if (this.message === undefined) {
+            UIUtils.fillTemplateWithData(this.contentTemplate, this.data, function(template) {
+                promise.resolve(template);
             });
-        },
-
-        setButtons: function() {
-            var buttons = [];
-            if (this.noButtons) {
-                this.buttons = [];
-            } else if (this.actions !== undefined && this.actions.length !== 0){
-                $.each (this.actions, function(i, action){
-                    if (action.type === "close") {
-                        action.label = $.t('common.form.close');
-                        action.cssClass = (action.cssClass ? action.cssClass : "btn-default");
-                        action.action = function(dialog) {
-                            dialog.close();
-                        };
-                    }
-                    buttons.push(action);
-                });
-                this.buttons = buttons;
-            }
+        } else {
+            promise.resolve(this.message);
         }
-    });
+        return promise;
+    },
 
-    return BootstrapDialogView;
+    setTitle: function(title) {
+        this.title = title;
+    },
+
+    addButton: function(button){
+        if (!this.getButtons(button.label)){
+            this.buttons.push(button);
+        }
+    },
+
+    getButtons: function(label) {
+        return _.find(this.buttons, function(a) {
+            return a.label === label;
+        });
+    },
+
+    setButtons: function() {
+        var buttons = [];
+        if (this.noButtons) {
+            this.buttons = [];
+        } else if (this.actions !== undefined && this.actions.length !== 0){
+            $.each (this.actions, function(i, action){
+                if (action.type === "close") {
+                    action.label = $.t('common.form.close');
+                    action.cssClass = (action.cssClass ? action.cssClass : "btn-default");
+                    action.action = function(dialog) {
+                        dialog.close();
+                    };
+                }
+                buttons.push(action);
+            });
+            this.buttons = buttons;
+        }
+    }
 });
+
+export default BootstrapDialogView;

@@ -17,117 +17,119 @@
 /**
  * Local storage helper.
  */
-define([
-    "lodash"
-], function (_) {
-    var mockPrefix = 'forgerock-mock-';
+import _ from "lodash";
 
-    function isLocalStorageSupported() {
-        return typeof localStorage !== 'undefined';
-    }
+var mockPrefix = 'forgerock-mock-';
 
-    if (isLocalStorageSupported()) {
-        return {
-            /**
-             * Adds data.
-             *
-             * @param key
-             * @param data
-             * @returns {Object} newly added data
-             */
-            add: function (key, data) {
-                if (!this.get(key)) {
-                    console.log('Adding item to localStorage: ' + data);
-                    localStorage.setItem(mockPrefix + key, JSON.stringify(data));
-                    return key;
-                }
+function isLocalStorageSupported() {
+    return typeof localStorage !== 'undefined';
+}
 
-                return null;
-            },
+var localStorage = undefined;
 
-            /**
-             * Applies a patch definition object to an item in localstorage
-             *
-             * @param key
-             * @param data
-             * @returns {Object} patched data
-             */
-            patch: function (key, data) {
-                var item = this.get(key),
-                    node,
-                    pathParts;
+if (isLocalStorageSupported()) {
+    localStorage = {
+        /**
+         * Adds data.
+         *
+         * @param key
+         * @param data
+         * @returns {Object} newly added data
+         */
+        add: function (key, data) {
+            if (!this.get(key)) {
+                console.log('Adding item to localStorage: ' + data);
+                localStorage.setItem(mockPrefix + key, JSON.stringify(data));
+                return key;
+            }
 
-                if (item) {
-                    _.each(data, function (patchEntry) {
-                        pathParts = _.filter(patchEntry.field.split('/'), function (part) {
-                            return part.length > 0;
-                        });
+            return null;
+        },
 
-                        node = item;
+        /**
+         * Applies a patch definition object to an item in localstorage
+         *
+         * @param key
+         * @param data
+         * @returns {Object} patched data
+         */
+        patch: function (key, data) {
+            var item = this.get(key),
+                node,
+                pathParts;
 
-                        _.each(pathParts, function (part, index) {
-                            if (index !== (pathParts.length-1)) {
-                                if (node[part] === undefined) {
-                                    node[part] = {};
-                                }
-                                node = node[part];
-                            } else if (index === (pathParts.length-1)) {
-                                if (patchEntry.operation === "add" || patchEntry.operation === "replace") {
-                                    node[part] = patchEntry.value;
-                                } else if (patchEntry.operation === "remove") {
-                                    if (_.isArray(node)) {
-                                        node.splice(part, 1);
-                                    } else {
-                                        delete node[part];
-                                    }
-                                }
-                            }
-                        });
-
+            if (item) {
+                _.each(data, function (patchEntry) {
+                    pathParts = _.filter(patchEntry.field.split('/'), function (part) {
+                        return part.length > 0;
                     });
 
-                    localStorage.setItem(mockPrefix + key, JSON.stringify(item));
-                }
-                return item;
-            },
+                    node = item;
 
-            /**
-             * Gets data by key.
-             *
-             * @param key
-             * @returns {Object}
-             */
-            get: function (key) {
-                return JSON.parse(localStorage.getItem(mockPrefix + key));
-            },
+                    _.each(pathParts, function (part, index) {
+                        if (index !== (pathParts.length-1)) {
+                            if (node[part] === undefined) {
+                                node[part] = {};
+                            }
+                            node = node[part];
+                        } else if (index === (pathParts.length-1)) {
+                            if (patchEntry.operation === "add" || patchEntry.operation === "replace") {
+                                node[part] = patchEntry.value;
+                            } else if (patchEntry.operation === "remove") {
+                                if (_.isArray(node)) {
+                                    node.splice(part, 1);
+                                } else {
+                                    delete node[part];
+                                }
+                            }
+                        }
+                    });
 
-            /**
-             * Removes data by key.
-             *
-             * @param key
-             * @returns {boolean} whether data was removed
-             */
-            remove: function (key) {
-                return delete localStorage[mockPrefix + key];
+                });
+
+                localStorage.setItem(mockPrefix + key, JSON.stringify(item));
             }
-        };
-    } else {
-        return {
-            add: function () {
-                console.log('LocalStorage is not supported');
-            },
+            return item;
+        },
 
-            patch: function () {
-                console.log('LocalStorage is not supported');
-            },
+        /**
+         * Gets data by key.
+         *
+         * @param key
+         * @returns {Object}
+         */
+        get: function (key) {
+            return JSON.parse(localStorage.getItem(mockPrefix + key));
+        },
 
-            get: function () {
-                console.log('LocalStorage is not supported');
-            },
+        /**
+         * Removes data by key.
+         *
+         * @param key
+         * @returns {boolean} whether data was removed
+         */
+        remove: function (key) {
+            return delete localStorage[mockPrefix + key];
+        }
+    };
+} else {
+    localStorage = {
+        add: function () {
+            console.log('LocalStorage is not supported');
+        },
 
-            remove: function () {
-                console.log('LocalStorage is not supported');
-            }
-        };
-    }
-});
+        patch: function () {
+            console.log('LocalStorage is not supported');
+        },
+
+        get: function () {
+            console.log('LocalStorage is not supported');
+        },
+
+        remove: function () {
+            console.log('LocalStorage is not supported');
+        }
+    };
+}
+
+export default localStorage;

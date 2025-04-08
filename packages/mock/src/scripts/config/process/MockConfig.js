@@ -14,20 +14,18 @@
  * Copyright 2015-2016 ForgeRock AS.
  */
 
-define([
-    "org/forgerock/mock/ui/common/util/Constants"
-], function(Constants) {
-    var obj = [
-        {
-            startEvent: Constants.EVENT_HANDLE_DEFAULT_ROUTE,
-            description: "",
-            dependencies: [
-                "org/forgerock/commons/ui/common/main/Router"
-            ],
-            processDescription: function(event, router) {
-                router.routeTo(router.configuration.routes.profile, {trigger: true});
-            }
+import Constants from "org/forgerock/mock/ui/common/util/Constants";
+
+var obj = [
+    {
+        startEvent: Constants.EVENT_HANDLE_DEFAULT_ROUTE,
+        description: "",
+        dependencies: [
+            "org/forgerock/commons/ui/common/main/Router"
+        ],
+        processDescription: function(event, router) {
+            router.routeTo(router.configuration.routes.profile, {trigger: true});
         }
-    ];
-    return obj;
-});
+    }
+];
+export default obj;

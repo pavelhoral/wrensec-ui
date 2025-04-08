@@ -14,33 +14,30 @@
  * Copyright 2015-2016 ForgeRock AS.
  */
 
-define([
-    "jquery",
-    "form2js",
-    "org/forgerock/commons/ui/user/anonymousProcess/AnonymousProcessView",
-    "org/forgerock/commons/ui/user/anonymousProcess/KBAView"
-], function($, form2js, AnonymousProcessView, KBAView) {
+import $ from "jquery";
+import form2js from "form2js";
+import AnonymousProcessView from "org/forgerock/commons/ui/user/anonymousProcess/AnonymousProcessView";
+import KBAView from "org/forgerock/commons/ui/user/anonymousProcess/KBAView";
 
-    var SelfRegistrationView = AnonymousProcessView.extend({
-        processType: "registration",
-        i18nBase: "common.user.selfRegistration",
-        getFormContent: function () {
-            var form = $(this.element).find("form")[0];
+var SelfRegistrationView = AnonymousProcessView.extend({
+    processType: "registration",
+    i18nBase: "common.user.selfRegistration",
+    getFormContent: function () {
+        var form = $(this.element).find("form")[0];
 
-            if (form.hasAttribute("data-kba-questions")) {
-                return { "kba": KBAView.getQuestions() };
-            } else {
-                return form2js(form);
-            }
-        },
-        renderProcessState: function (response) {
-            AnonymousProcessView.prototype.renderProcessState.call(this, response).then(function () {
-                if (response.type === "kbaSecurityAnswerDefinitionStage" && response.tag === "initial") {
-                    KBAView.render(response.requirements.properties.kba);
-                }
-            });
+        if (form.hasAttribute("data-kba-questions")) {
+            return { "kba": KBAView.getQuestions() };
+        } else {
+            return form2js(form);
         }
-    });
-
-    return new SelfRegistrationView();
+    },
+    renderProcessState: function (response) {
+        AnonymousProcessView.prototype.renderProcessState.call(this, response).then(function () {
+            if (response.type === "kbaSecurityAnswerDefinitionStage" && response.tag === "initial") {
+                KBAView.render(response.requirements.properties.kba);
+            }
+        });
+    }
 });
+
+export default new SelfRegistrationView();

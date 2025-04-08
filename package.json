@@ -15,5 +15,12 @@
     "glob-watcher": "6.0.0",
     "node-fetch": "2.7.0",
     "puppeteer": "21.5.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.0",
+    "commander": "^13.1.0",
+    "fast-glob": "^3.3.3",
+    "jscodeshift": "^17.3.0",
+    "typescript": "^5.8.3"
   }
 }

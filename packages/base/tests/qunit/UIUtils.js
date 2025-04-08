@@ -14,42 +14,40 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-define([
-    "lodash",
-    "handlebars",
-    "org/forgerock/commons/ui/common/util/UIUtils"
-], function (_, Handlebars, UIUtils) {
-    QUnit.module('UIUtils Functions');
+import _ from "lodash";
+import Handlebars from "handlebars";
+import UIUtils from "org/forgerock/commons/ui/common/util/UIUtils";
 
-    QUnit.test("Static Select", function (assert) {
-        var template = Handlebars.compile("<select>" +
-            "{{#staticSelect testVal}}" +
-            "<option value='1'>1</option>" +
-            "<option value='2'>2</option>" +
-            "<option value='text/html'>text/html</option>" +
-            "<option value=\"tick'test\">tick'test</option>" +
-            "<option value='less<test'>less&lt;test</option>" +
-            "<option value='and&test'>and&amp;test</option>" +
-            "<option value='false'>boolean&amp;test</option>" +
-            "{{/staticSelect}}" +
-        "</select>");
+QUnit.module('UIUtils Functions');
 
-        var testHTML = template({"testVal": "2"});
-        assert.equal($(testHTML).val(), "2", "2 option selected");
+QUnit.test("Static Select", function (assert) {
+    var template = Handlebars.compile("<select>" +
+        "{{#staticSelect testVal}}" +
+        "<option value='1'>1</option>" +
+        "<option value='2'>2</option>" +
+        "<option value='text/html'>text/html</option>" +
+        "<option value=\"tick'test\">tick'test</option>" +
+        "<option value='less<test'>less&lt;test</option>" +
+        "<option value='and&test'>and&amp;test</option>" +
+        "<option value='false'>boolean&amp;test</option>" +
+        "{{/staticSelect}}" +
+    "</select>");
 
-        testHTML = template({"testVal": "text/html"});
-        assert.equal($(testHTML).val(), "text/html", "text/html option selected");
+    var testHTML = template({"testVal": "2"});
+    assert.equal($(testHTML).val(), "2", "2 option selected");
 
-        testHTML = template({"testVal": "tick'test"});
-        assert.equal($(testHTML).val(), "tick'test", "tick'test option selected");
+    testHTML = template({"testVal": "text/html"});
+    assert.equal($(testHTML).val(), "text/html", "text/html option selected");
 
-        testHTML = template({"testVal": "less<test"});
-        assert.equal($(testHTML).val(), "less<test", "less<test option selected");
+    testHTML = template({"testVal": "tick'test"});
+    assert.equal($(testHTML).val(), "tick'test", "tick'test option selected");
 
-        testHTML = template({"testVal": "and&test"});
-        assert.equal($(testHTML).val(), "and&test", "and&test option selected");
+    testHTML = template({"testVal": "less<test"});
+    assert.equal($(testHTML).val(), "less<test", "less<test option selected");
 
-        testHTML = template({"testVal": false});
-        assert.equal($(testHTML).val(), "false", "boolean&amp;test option selected");
-    });
+    testHTML = template({"testVal": "and&test"});
+    assert.equal($(testHTML).val(), "and&test", "and&test option selected");
+
+    testHTML = template({"testVal": false});
+    assert.equal($(testHTML).val(), "false", "boolean&amp;test option selected");
 });

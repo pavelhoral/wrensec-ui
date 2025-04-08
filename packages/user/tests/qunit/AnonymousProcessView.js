@@ -14,43 +14,41 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-define([
-    "jquery",
-    "org/forgerock/commons/ui/user/anonymousProcess/AnonymousProcessView",
-    "org/forgerock/commons/ui/common/util/UIUtils"
-], function ($, AnonymousProcessView, UIUtils) {
-    QUnit.module('AnonymousProcessView Functions');
+import $ from "jquery";
+import AnonymousProcessView from "org/forgerock/commons/ui/user/anonymousProcess/AnonymousProcessView";
+import UIUtils from "org/forgerock/commons/ui/common/util/UIUtils";
 
-    QUnit.test("buildQueryFilter", function(assert) {
-        var ready = assert.async();
-        var el = $("#qunit-fixture #wrapper");
+QUnit.module('AnonymousProcessView Functions');
 
-        UIUtils.renderTemplate(
-            "templates/user/process/reset/userQuery-initial.html",
-            el,
-            {},
-            function () {
-                el.find(":input[name=userName]").val("bjensen");
+QUnit.test("buildQueryFilter", function(assert) {
+    var ready = assert.async();
+    var el = $("#qunit-fixture #wrapper");
 
-                assert.equal(
-                    AnonymousProcessView.prototype.walkTreeForFilterStrings(el.find("#filterContainer")),
-                    'userName eq "bjensen"',
-                    "Simple query filter generated from template matches expected input"
-                );
+    UIUtils.renderTemplate(
+        "templates/user/process/reset/userQuery-initial.html",
+        el,
+        {},
+        function () {
+            el.find(":input[name=userName]").val("bjensen");
 
-                el.find(":input[name=userName]").val("bjensen");
-                el.find(":input[name=mail]").val("bjensen@example.com");
-                el.find(":input[name=givenName]").val("Barbara");
-                el.find(":input[name=sn]").val("Jensen");
+            assert.equal(
+                AnonymousProcessView.prototype.walkTreeForFilterStrings(el.find("#filterContainer")),
+                'userName eq "bjensen"',
+                "Simple query filter generated from template matches expected input"
+            );
 
-                assert.equal(
-                    AnonymousProcessView.prototype.walkTreeForFilterStrings(el.find("#filterContainer")),
-                    '(userName eq "bjensen" OR mail eq "bjensen@example.com" OR (givenName eq "Barbara" AND sn eq "Jensen"))',
-                    "Complex query filter generated from template matches expected input"
-                );
+            el.find(":input[name=userName]").val("bjensen");
+            el.find(":input[name=mail]").val("bjensen@example.com");
+            el.find(":input[name=givenName]").val("Barbara");
+            el.find(":input[name=sn]").val("Jensen");
 
-                ready();
-            }
-        );
-    });
+            assert.equal(
+                AnonymousProcessView.prototype.walkTreeForFilterStrings(el.find("#filterContainer")),
+                '(userName eq "bjensen" OR mail eq "bjensen@example.com" OR (givenName eq "Barbara" AND sn eq "Jensen"))',
+                "Complex query filter generated from template matches expected input"
+            );
+
+            ready();
+        }
+    );
 });

@@ -13,8 +13,11 @@
  *
  * Copyright 2023 Wren Security.
  */
-const { useEslint, useLocalResources } = require("@wrensecurity/commons-ui-build");
-const gulp = require("gulp");
+import {
+    useEslint,
+    useLocalResources
+} from "@wrensecurity/commons-ui-build/gulp";
+import gulp from "gulp";
 
 gulp.task("eslint", useEslint());
 

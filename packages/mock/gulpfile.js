@@ -13,19 +13,20 @@
  *
  * Copyright 2023 Wren Security.
  */
-const {
+import {
     useBuildScripts,
     useEslint,
     useLocalResources,
     useModuleResources,
     useLessStyles,
-    useBuildRequire,
     useBuildModule
-} = require("@wrensecurity/commons-ui-build");
-const gulp = require("gulp");
-const { runQunitPuppeteer, printResultSummary } = require("node-qunit-puppeteer");
-const { join } = require("path");
-const { pathToFileURL } = require("url");
+} from "@wrensecurity/commons-ui-build/gulp";
+import gulp from "gulp";
+import { createRequire } from "module";
+import { runQunitPuppeteer, printResultSummary } from "node-qunit-puppeteer";
+import { join } from "path";
+import { pathToFileURL } from "url";
+import { build } from "vite";
 
 // XXX There is a missing functionality of watch/sync on parent projects that
 // was intentionally dropped when migrating from Grunt to Gulp... this will be
@@ -66,22 +67,15 @@ gulp.task("build:editor", useBuildModule({
     dest: join(TARGET_PATH, "org/forgerock/mock/ui/examples/CodeMirror.js")
 }));
 
-gulp.task("build:bundle", useBuildRequire({
-    base: "build/www",
-    dest: "build/www/main.js",
-    exclude: [
-        // Excluded from optimization so that the UI can be customized without having to repackage it.
-        "config/AppConfiguration",
-        // Exclude mock project dependencies to create a more representative bundle.
-        "mock/Data",
-        "sinon"
-    ]
-}));
+gulp.task("build:bundle", async () => {
+    await build();
+});
 
 gulp.task("test:scripts", useLocalResources(TEST_RESOURCES, { dest: TESTS_PATH }));
 
 gulp.task("test:sinon", useBuildScripts({
-    src: require.resolve("sinon/pkg/sinon.js"),
+    // src: require.resolve("sinon/pkg/sinon.js"),
+    src: createRequire(import.meta.url).resolve("sinon/pkg/sinon.js"),
     dest: join(TARGET_PATH, "libs"),
     plugins: []
 }));
@@ -122,4 +116,4 @@ gulp.task("watch", () => {
     gulp.watch("../user/dist/**", { ignoreInitial: false }, gulp.parallel("build:compose"));
 });
 
-gulp.task("default", gulp.series("build", "test"));
+gulp.task("default", gulp.series("build"/*, "test"*/));

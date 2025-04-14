@@ -14,43 +14,45 @@
  * Copyright 2011-2016 ForgeRock AS.
  */
 
-import AbstractView from "org/forgerock/commons/ui/common/main/AbstractView";
+define([
+    "org/forgerock/commons/ui/common/main/AbstractView"
+], function(AbstractView) {
+    return AbstractView.extend({
+        element: "#footer",
+        template: "templates/common/FooterTemplate.html",
+        noBaseTemplate: true,
 
-export default AbstractView.extend({
-    element: "#footer",
-    template: "templates/common/FooterTemplate.html",
-    noBaseTemplate: true,
+        /**
+         * Retrieves the version number of the product
+         * @return {Promise} Promise representing the return version
+         */
+        getVersion: function() {
+            throw new Error("#getVersion not implemented");
+        },
+        render: function() {
+            var self = this;
 
-    /**
-     * Retrieves the version number of the product
-     * @return {Promise} Promise representing the return version
-     */
-    getVersion: function() {
-        throw new Error("#getVersion not implemented");
-    },
-    render: function() {
-        var self = this;
+            this.data = {};
 
-        this.data = {};
-
-        if (this.showVersion()) {
-            this.getVersion().then(function(version) {
-                self.data.version = version;
-            }).always(
-                self.parentRender.bind(self)
-            ).always(function() {
-                self.$el.addClass("footer-deep");
-            });
-        } else {
-            self.parentRender();
-            self.$el.removeClass("footer-deep");
+            if (this.showVersion()) {
+                this.getVersion().then(function(version) {
+                    self.data.version = version;
+                }).always(
+                    self.parentRender.bind(self)
+                ).always(function() {
+                    self.$el.addClass("footer-deep");
+                });
+            } else {
+                self.parentRender();
+                self.$el.removeClass("footer-deep");
+            }
+        },
+        /**
+         * Determines if to show the version
+         * @return {boolean} Whether to show the version
+         */
+        showVersion: function() {
+            return false;
         }
-    },
-    /**
-     * Determines if to show the version
-     * @return {boolean} Whether to show the version
-     */
-    showVersion: function() {
-        return false;
-    }
+    });
 });

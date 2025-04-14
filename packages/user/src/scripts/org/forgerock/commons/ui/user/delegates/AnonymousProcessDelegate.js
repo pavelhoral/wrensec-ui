@@ -14,70 +14,73 @@
  * Copyright 2015-2016 ForgeRock AS.
  */
 
-import $ from "jquery";
-import _ from "lodash";
-import AbstractDelegate from "org/forgerock/commons/ui/common/main/AbstractDelegate";
-import Constants from "org/forgerock/commons/ui/common/util/Constants";
+define([
+    "jquery",
+    "lodash",
+    "org/forgerock/commons/ui/common/main/AbstractDelegate",
+    "org/forgerock/commons/ui/common/util/Constants"
+], function ($, _, AbstractDelegate, Constants) {
 
-var AnonymousProcessDelegate = function (path, token, additional) {
-    this.token = token;
-    this.additional = additional || "";
-    return AbstractDelegate.call(this, "/" + Constants.context + "/" + path);
-};
+    var AnonymousProcessDelegate = function (path, token, additional) {
+        this.token = token;
+        this.additional = additional || "";
+        return AbstractDelegate.call(this, "/" + Constants.context + "/" + path);
+    };
 
-AnonymousProcessDelegate.prototype = Object.create(AbstractDelegate.prototype);
-AnonymousProcessDelegate.prototype.constructor = AnonymousProcessDelegate;
+    AnonymousProcessDelegate.prototype = Object.create(AbstractDelegate.prototype);
+    AnonymousProcessDelegate.prototype.constructor = AnonymousProcessDelegate;
 
-AnonymousProcessDelegate.prototype.start = function () {
-    if (!this.lastResponse) {
-        return this.serviceCall({
-            "type": "GET",
-            "url" : ""
-        }).done(function (response) {
-            this.lastResponse = response;
-        });
-    } else { // the presence of a token means this can be treated as more of a "resume" than a start
-        return $.Deferred().resolve(this.lastResponse);
-    }
-};
-
-/**
- * Takes a generic object as input to submit to the process, intended to fulfill the requirements
- * outlined by the previous request.
- * @returns {Object} A promise that is resolved when the backend responses to the provided input
- */
-AnonymousProcessDelegate.prototype.submit = function (input) {
-    return this.serviceCall({
-        "type": "POST",
-        "url": "?_action=submitRequirements" + this.additional,
-        "data": JSON.stringify({
-            "token" : this.token,
-            "input" : input
-        }),
-        "errorsHandlers": {
-            "failed" : {
-                status: "400"
-            }
+    AnonymousProcessDelegate.prototype.start = function () {
+        if (!this.lastResponse) {
+            return this.serviceCall({
+                "type": "GET",
+                "url" : ""
+            }).done(function (response) {
+                this.lastResponse = response;
+            });
+        } else { // the presence of a token means this can be treated as more of a "resume" than a start
+            return $.Deferred().resolve(this.lastResponse);
         }
-    }).then(
-        _.bind(function (response) {
-            if (_.has(response, "token")) {
-                this.token = response.token;
-            }
-            this.lastResponse = response;
-            return response;
-        }, this),
-        _.bind(function (xhr) {
-            delete this.token;
-            delete this.lastResponse;
-            return {
-                "status": {
-                    "success": false,
-                    "reason": xhr.responseJSON.message
-                }
-            };
-        }, this)
-    );
-};
+    };
 
-export default AnonymousProcessDelegate;
+    /**
+     * Takes a generic object as input to submit to the process, intended to fulfill the requirements
+     * outlined by the previous request.
+     * @returns {Object} A promise that is resolved when the backend responses to the provided input
+     */
+    AnonymousProcessDelegate.prototype.submit = function (input) {
+        return this.serviceCall({
+            "type": "POST",
+            "url": "?_action=submitRequirements" + this.additional,
+            "data": JSON.stringify({
+                "token" : this.token,
+                "input" : input
+            }),
+            "errorsHandlers": {
+                "failed" : {
+                    status: "400"
+                }
+            }
+        }).then(
+            _.bind(function (response) {
+                if (_.has(response, "token")) {
+                    this.token = response.token;
+                }
+                this.lastResponse = response;
+                return response;
+            }, this),
+            _.bind(function (xhr) {
+                delete this.token;
+                delete this.lastResponse;
+                return {
+                    "status": {
+                        "success": false,
+                        "reason": xhr.responseJSON.message
+                    }
+                };
+            }, this)
+        );
+    };
+
+    return AnonymousProcessDelegate;
+});

@@ -14,50 +14,54 @@
  * Copyright 2012-2016 ForgeRock AS.
  */
 
-var proto = "__proto__";
+define([
+], function () {
 
-// From html5-boilerplate: https://raw2.github.com/h5bp/html5-boilerplate/master/js/plugins.js
-(function() {
-    var method,
-        noop = function () {},
-        methods = [
-            'assert', 'clear', 'count', 'debug', 'dir', 'dirxml', 'error',
-            'exception', 'group', 'groupCollapsed', 'groupEnd', 'info', 'log',
-            'markTimeline', 'profile', 'profileEnd', 'table', 'time', 'timeEnd',
-            'timeStamp', 'trace', 'warn'
-        ],
-        length = methods.length,
-        console = (window.console = window.console || {});
+    var proto = "__proto__";
 
-    while (length--) {
-        method = methods[length];
+    // From html5-boilerplate: https://raw2.github.com/h5bp/html5-boilerplate/master/js/plugins.js
+    (function() {
+        var method,
+            noop = function () {},
+            methods = [
+                'assert', 'clear', 'count', 'debug', 'dir', 'dirxml', 'error',
+                'exception', 'group', 'groupCollapsed', 'groupEnd', 'info', 'log',
+                'markTimeline', 'profile', 'profileEnd', 'table', 'time', 'timeEnd',
+                'timeStamp', 'trace', 'warn'
+            ],
+            length = methods.length,
+            console = (window.console = window.console || {});
 
-        // Only stub undefined methods.
-        if (!console[method]) {
-            console[method] = noop;
+        while (length--) {
+            method = methods[length];
+
+            // Only stub undefined methods.
+            if (!console[method]) {
+                console[method] = noop;
+            }
+        }
+    }());
+
+
+    //this is here to catch the issue IE 8 has with getPrototypeOf method
+    if (typeof Object.getPrototypeOf !== "function"){
+        if (typeof "internet_explorer"[proto] === "object"){
+            Object.getPrototypeOf = function(o){
+                return o[proto];
+            };
+        }
+        else {
+            Object.getPrototypeOf = function(o){
+                return o.constructor.prototype;
+            };
         }
     }
-}());
 
-
-//this is here to catch the issue IE 8 has with getPrototypeOf method
-if (typeof Object.getPrototypeOf !== "function"){
-    if (typeof "internet_explorer"[proto] === "object"){
-        Object.getPrototypeOf = function(o){
-            return o[proto];
+    if (typeof Object.create !== "function") {
+        Object.create = function(o){
+            function F() { }
+            F.prototype = o;
+            return new F();
         };
     }
-    else {
-        Object.getPrototypeOf = function(o){
-            return o.constructor.prototype;
-        };
-    }
-}
-
-if (typeof Object.create !== "function") {
-    Object.create = function(o){
-        function F() { }
-        F.prototype = o;
-        return new F();
-    };
-}
+});

@@ -14,6 +14,8 @@
  * Copyright 2015-2016 ForgeRock AS.
  */
 
-import Footer from "org/forgerock/commons/ui/common/components/Footer";
-
-export default new Footer();
+define([
+    "org/forgerock/commons/ui/common/components/Footer"
+], function (Footer) {
+    return new Footer();
+});

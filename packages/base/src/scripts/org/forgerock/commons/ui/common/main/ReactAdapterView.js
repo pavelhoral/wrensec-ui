@@ -14,64 +14,66 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-import _ from "lodash";
-import Backbone from "backbone";
-import ReactDOM from "react-dom";
-import React from "react";
-import Configuration from "org/forgerock/commons/ui/common/main/Configuration";
-import EventManager from "org/forgerock/commons/ui/common/main/EventManager";
-import Constants from "org/forgerock/commons/ui/common/util/Constants";
-import UIUtils from "org/forgerock/commons/ui/common/util/UIUtils";
+define([
+    "lodash",
+    "backbone",
+    "react-dom",
+    "react",
+    "org/forgerock/commons/ui/common/main/Configuration",
+    "org/forgerock/commons/ui/common/main/EventManager",
+    "org/forgerock/commons/ui/common/util/Constants",
+    "org/forgerock/commons/ui/common/util/UIUtils"
+], function(_, Backbone, ReactDOM, React, Configuration, EventManager, Constants, UIUtils) {
+    var BASE_TEMPLATE = "templates/common/DefaultBaseTemplate.html";
 
-var BASE_TEMPLATE = "templates/common/DefaultBaseTemplate.html";
-
-function throwOnNoInitializationOptions (options) {
-    if (!options) {
-        throw new Error("[ReactAdapterView] No initialization options found.");
-    }
-}
-
-function throwOnNoReactView (options) {
-    if (!options.reactView) {
-        throw new Error("[ReactAdapterView] No \"reactView\" option found on initialization options.");
-    }
-}
-
-export default Backbone.View.extend({
-    initialize: function (options) {
-        throwOnNoInitializationOptions(options);
-        throwOnNoReactView(options);
-
-        this.options = options;
-
-        _.defaults(this.options, {
-            reactProps: {},
-            needsBaseTemplate: true
-        });
-    },
-
-    setBaseTemplate: function () {
-        Configuration.setProperty("baseTemplate", BASE_TEMPLATE);
-        EventManager.sendEvent(Constants.EVENT_CHANGE_BASE_VIEW);
-    },
-
-    renderReactComponent: function () {
-        ReactDOM.render(React.createElement(this.options.reactView, this.options.reactProps), this.el);
-    },
-
-    render: function() {
-        var view = this;
-
-        if (this.options.needsBaseTemplate) {
-            this.setBaseTemplate();
-
-            UIUtils.compileTemplate(BASE_TEMPLATE).then(function (template) {
-                document.getElementById("wrapper").innerHTML = template;
-                view.setElement("#content");
-                view.renderReactComponent();
-            });
-        } else {
-            view.renderReactComponent();
+    function throwOnNoInitializationOptions (options) {
+        if (!options) {
+            throw new Error("[ReactAdapterView] No initialization options found.");
         }
     }
+
+    function throwOnNoReactView (options) {
+        if (!options.reactView) {
+            throw new Error("[ReactAdapterView] No \"reactView\" option found on initialization options.");
+        }
+    }
+
+    return Backbone.View.extend({
+        initialize: function (options) {
+            throwOnNoInitializationOptions(options);
+            throwOnNoReactView(options);
+
+            this.options = options;
+
+            _.defaults(this.options, {
+                reactProps: {},
+                needsBaseTemplate: true
+            });
+        },
+
+        setBaseTemplate: function () {
+            Configuration.setProperty("baseTemplate", BASE_TEMPLATE);
+            EventManager.sendEvent(Constants.EVENT_CHANGE_BASE_VIEW);
+        },
+
+        renderReactComponent: function () {
+            ReactDOM.render(React.createElement(this.options.reactView, this.options.reactProps), this.el);
+        },
+
+        render: function() {
+            var view = this;
+
+            if (this.options.needsBaseTemplate) {
+                this.setBaseTemplate();
+
+                UIUtils.compileTemplate(BASE_TEMPLATE).then(function (template) {
+                    document.getElementById("wrapper").innerHTML = template;
+                    view.setElement("#content");
+                    view.renderReactComponent();
+                });
+            } else {
+                view.renderReactComponent();
+            }
+        }
+    });
 });

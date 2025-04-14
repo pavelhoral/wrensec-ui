@@ -14,11 +14,14 @@
  * Copyright 2015-2016 ForgeRock AS.
  */
 
-import AnonymousProcessView from "org/forgerock/commons/ui/user/anonymousProcess/AnonymousProcessView";
+define([
+    "org/forgerock/commons/ui/user/anonymousProcess/AnonymousProcessView"
+], function(AnonymousProcessView) {
 
-var PasswordResetView = AnonymousProcessView.extend({
-    processType: "reset",
-    i18nBase: "common.user.passwordReset"
+    var PasswordResetView = AnonymousProcessView.extend({
+        processType: "reset",
+        i18nBase: "common.user.passwordReset"
+    });
+
+    return new PasswordResetView();
 });
-
-export default new PasswordResetView();

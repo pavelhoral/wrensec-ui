@@ -14,37 +14,40 @@
  * Copyright 2011-2016 ForgeRock AS.
  */
 
-import $ from "jquery";
-import Spinner from "spin";
+define([
+    "jquery",
+    "spin"
+], function($, Spinner) {
 
-var obj = {};
+    var obj = {};
 
-obj.showSpinner = function(priority) {
-    if (obj.spinner) {
-        obj.hideSpinner();
-    }
+    obj.showSpinner = function(priority) {
+        if (obj.spinner) {
+            obj.hideSpinner();
+        }
 
-    obj.spinner = new Spinner().spin(document.getElementById('wrapper'));
-    $(".spinner").position({
-        of: $(window),
-        my: "center center",
-        at: "center center"
-    });
+        obj.spinner = new Spinner().spin(document.getElementById('wrapper'));
+        $(".spinner").position({
+            of: $(window),
+            my: "center center",
+            at: "center center"
+        });
 
-    if (priority && (!obj.priority || priority > obj.priority)) {
-        obj.priority = priority;
-    }
+        if (priority && (!obj.priority || priority > obj.priority)) {
+            obj.priority = priority;
+        }
 
-    $("#wrapper").attr("aria-busy", true);
-};
+        $("#wrapper").attr("aria-busy", true);
+    };
 
-obj.hideSpinner = function(priority) {
-    if (obj.spinner && (!obj.priority || (priority && priority >= obj.priority))) {
-        obj.spinner.stop();
-        delete obj.priority;
-    }
+    obj.hideSpinner = function(priority) {
+        if (obj.spinner && (!obj.priority || (priority && priority >= obj.priority))) {
+            obj.spinner.stop();
+            delete obj.priority;
+        }
 
-    $("#wrapper").attr("aria-busy", false);
-};
+        $("#wrapper").attr("aria-busy", false);
+    };
 
-export default obj;
+    return obj;
+});

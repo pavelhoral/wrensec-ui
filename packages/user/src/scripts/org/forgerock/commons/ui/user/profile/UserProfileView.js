@@ -14,126 +14,130 @@
  * Copyright 2011-2016 ForgeRock AS.
  */
 
-import $ from "jquery";
-import _ from "lodash";
-// TODO this was probably added for the side-effects
-// eslint-disable-next-line
-import form2js from "form2js";
-// TODO this was probably added for the side-effects
-// eslint-disable-next-line
-import js2form from "js2form";
-import AbstractUserProfileTab from "org/forgerock/commons/ui/user/profile/AbstractUserProfileTab";
-import AbstractView from "org/forgerock/commons/ui/common/main/AbstractView";
-import Configuration from "org/forgerock/commons/ui/common/main/Configuration";
-import Constants from "org/forgerock/commons/ui/common/util/Constants";
-import EventManager from "org/forgerock/commons/ui/common/main/EventManager";
-import "bootstrap";
-
-/**
- * Manages the tabs and routing amongst them for the user's profile
- * @exports org/forgerock/commons/ui/user/profile/UserProfileView
- */
-var UserProfileView = AbstractView.extend({
-    template: "templates/user/UserProfileTemplate.html",
-    partials: [
-        "partials/form/_basicInput.html",
-        "partials/form/_basicSaveReset.html"
-    ],
-    events: {
-        "click a[role=tab]": "updateRoute",
-        "shown.bs.tab": "focusInput"
-    },
-    dynamicTabs: [],
-    /**
-     * Accepts an instance of AbstractUserProfileTab (or an extension of it) as a new tab
-     * to include in the profile
-     */
-    registerTab : function (tabView) {
-        this.dynamicTabs.push(tabView);
-    },
+define([
+    "jquery",
+    "lodash",
+    "form2js",
+    "js2form",
+    "org/forgerock/commons/ui/user/profile/AbstractUserProfileTab",
+    "org/forgerock/commons/ui/common/main/AbstractView",
+    "org/forgerock/commons/ui/common/main/Configuration",
+    "org/forgerock/commons/ui/common/util/Constants",
+    "org/forgerock/commons/ui/common/main/EventManager",
+    "bootstrap"
+], function($, _, form2js, js2form,
+        AbstractUserProfileTab,
+        AbstractView,
+        Configuration,
+        Constants,
+        EventManager) {
 
     /**
-     * Removes any tabs which had been added dynamically
+     * Manages the tabs and routing amongst them for the user's profile
+     * @exports org/forgerock/commons/ui/user/profile/UserProfileView
      */
-    resetTabs: function () {
-        this.dynamicTabs = [];
-    },
+    var UserProfileView = AbstractView.extend({
+        template: "templates/user/UserProfileTemplate.html",
+        partials: [
+            "partials/form/_basicInput.html",
+            "partials/form/_basicSaveReset.html"
+        ],
+        events: {
+            "click a[role=tab]": "updateRoute",
+            "shown.bs.tab": "focusInput"
+        },
+        dynamicTabs: [],
+        /**
+         * Accepts an instance of AbstractUserProfileTab (or an extension of it) as a new tab
+         * to include in the profile
+         */
+        registerTab : function (tabView) {
+            this.dynamicTabs.push(tabView);
+        },
 
-    /**
-     * As the tabs change, place the focus on the first editable form field
-     */
-    focusInput: function (event) {
-        $($(event.target).attr("href")).find(":input:not([readonly]):first").focus();
-    },
+        /**
+         * Removes any tabs which had been added dynamically
+         */
+        resetTabs: function () {
+            this.dynamicTabs = [];
+        },
 
-    /**
-     * When clicking on a new tab, the route needs to be updated to reflect the new nav state
-     */
-    updateRoute: function (event) {
-        var tabPane = $($(event.target).attr("href")),
-            form = tabPane.find("form"),
-            tabRoute = form.attr("id");
+        /**
+         * As the tabs change, place the focus on the first editable form field
+         */
+        focusInput: function (event) {
+            $($(event.target).attr("href")).find(":input:not([readonly]):first").focus();
+        },
 
-        EventManager.sendEvent(Constants.ROUTE_REQUEST, {routeName: "profile", args: [tabRoute], trigger: false});
-    },
+        /**
+         * When clicking on a new tab, the route needs to be updated to reflect the new nav state
+         */
+        updateRoute: function (event) {
+            var tabPane = $($(event.target).attr("href")),
+                form = tabPane.find("form"),
+                tabRoute = form.attr("id");
 
-    /**
-     * Show the main view container along with any tabs which are declared statically within
-     * the UserProfileView template. Then load any additional tabs which have been registered.
-     * Finally, show the appropriate tab based on the "args" provided (via URL params).
-     */
-    render: function (args, callback) {
-        var tabName = args[0] || "details";
+            EventManager.sendEvent(Constants.ROUTE_REQUEST, {routeName: "profile", args: [tabRoute], trigger: false});
+        },
 
-        this.data.user = Configuration.loggedUser.toJSON();
+        /**
+         * Show the main view container along with any tabs which are declared statically within
+         * the UserProfileView template. Then load any additional tabs which have been registered.
+         * Finally, show the appropriate tab based on the "args" provided (via URL params).
+         */
+        render: function (args, callback) {
+            var tabName = args[0] || "details";
 
-        this.parentRender(function () {
+            this.data.user = Configuration.loggedUser.toJSON();
 
-            // instantiate a profile tab view which covers the DOM elements created
-            // statically as part of the UserProfileTemplate
-            this.staticTabs = _.map(this.$el.find('.tab-content>.tab-pane'), function (tabPanel) {
-                var tab = new AbstractUserProfileTab({
-                    el: tabPanel
+            this.parentRender(function () {
+
+                // instantiate a profile tab view which covers the DOM elements created
+                // statically as part of the UserProfileTemplate
+                this.staticTabs = _.map(this.$el.find('.tab-content>.tab-pane'), function (tabPanel) {
+                    var tab = new AbstractUserProfileTab({
+                        el: tabPanel
+                    });
+                    //tab.delegateEvents();
+                    return tab;
                 });
-                //tab.delegateEvents();
-                return tab;
+
+                // build the dynamically-registered tabs
+                $.when.apply($, _.map(this.dynamicTabs, _.bind(function (tab) {
+                    var promise = $.Deferred(),
+                        tabDetail = tab.getTabDetail(),
+                        tabPanel = $('<div role="tabpanel" class="tab-pane panel panel-default fr-panel-tab">');
+                    tabPanel.attr('id', tabDetail.panelId);
+                    this.$el.find(".tab-content").append(tabPanel);
+                    tab.element = tabPanel[0];
+
+                    tab.render(_.cloneDeep(this.data), _.bind(function () {
+                        this.$el.find(".nav-tabs").append(
+                            $('<li role="presentation">').append(
+                                $('<a href="#'+tabDetail.panelId+'" role="tab" data-toggle="tab">')
+                                    .text(tabDetail.label)
+                            )
+                        );
+                        promise.resolve();
+                    }, this));
+                    return promise;
+                }, this))).then(_.bind(function () {
+                    var selectedTabId = this.$el.find('form#'+tabName).closest(".tab-pane").attr("id"),
+                        selectedTab = this.$el.find("ul.nav-tabs a[href='#"+selectedTabId+"']");
+
+                    _.each(this.staticTabs.concat(this.dynamicTabs), _.bind(function (tab) {
+                        tab.reloadFormData(_.cloneDeep(this.data.user));
+                    }, this));
+
+                    selectedTab.tab('show');
+                    this.$el.find("#" + selectedTabId).find(":input:not([readonly]):first").focus();
+                    if (callback) {
+                        callback();
+                    }
+                }, this));
             });
+        }
+    });
 
-            // build the dynamically-registered tabs
-            $.when.apply($, _.map(this.dynamicTabs, _.bind(function (tab) {
-                var promise = $.Deferred(),
-                    tabDetail = tab.getTabDetail(),
-                    tabPanel = $('<div role="tabpanel" class="tab-pane panel panel-default fr-panel-tab">');
-                tabPanel.attr('id', tabDetail.panelId);
-                this.$el.find(".tab-content").append(tabPanel);
-                tab.element = tabPanel[0];
-
-                tab.render(_.cloneDeep(this.data), _.bind(function () {
-                    this.$el.find(".nav-tabs").append(
-                        $('<li role="presentation">').append(
-                            $('<a href="#'+tabDetail.panelId+'" role="tab" data-toggle="tab">')
-                                .text(tabDetail.label)
-                        )
-                    );
-                    promise.resolve();
-                }, this));
-                return promise;
-            }, this))).then(_.bind(function () {
-                var selectedTabId = this.$el.find('form#'+tabName).closest(".tab-pane").attr("id"),
-                    selectedTab = this.$el.find("ul.nav-tabs a[href='#"+selectedTabId+"']");
-
-                _.each(this.staticTabs.concat(this.dynamicTabs), _.bind(function (tab) {
-                    tab.reloadFormData(_.cloneDeep(this.data.user));
-                }, this));
-
-                selectedTab.tab('show');
-                this.$el.find("#" + selectedTabId).find(":input:not([readonly]):first").focus();
-                if (callback) {
-                    callback();
-                }
-            }, this));
-        });
-    }
+    return new UserProfileView();
 });
-
-export default new UserProfileView();

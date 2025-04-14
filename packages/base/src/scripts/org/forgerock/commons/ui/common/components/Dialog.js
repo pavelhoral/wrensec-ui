@@ -14,120 +14,122 @@
  * Copyright 2011-2016 ForgeRock AS.
  */
 
-import $ from "jquery";
-import _ from "lodash";
-import AbstractView from "org/forgerock/commons/ui/common/main/AbstractView";
-import UIUtils from "org/forgerock/commons/ui/common/util/UIUtils";
-import Constants from "org/forgerock/commons/ui/common/util/Constants";
-import EventManager from "org/forgerock/commons/ui/common/main/EventManager";
-import Configuration from "org/forgerock/commons/ui/common/main/Configuration";
-
-/**
- * @exports org/forgerock/commons/ui/common/components/Dialog
- */
-export default AbstractView.extend({
-    template: "templates/common/DialogTemplate.html",
-    element: "#dialogs",
-
-    data: { },
-
-    mode: "append",
-
-    events: {
-        "click .dialogCloseCross": "close",
-        "click input[name='close']": "close",
-        "click .dialogContainer": "stop"
-    },
-
-    actions: [
-        {
-            "type": "button",
-            "name": "close"
-        }
-    ],
-
-    stop: function(event) {
-        event.stopPropagation();
-    },
-
+define([
+    "jquery",
+    "lodash",
+    "org/forgerock/commons/ui/common/main/AbstractView",
+    "org/forgerock/commons/ui/common/util/UIUtils",
+    "org/forgerock/commons/ui/common/util/Constants",
+    "org/forgerock/commons/ui/common/main/EventManager",
+    "org/forgerock/commons/ui/common/main/Configuration"
+], function($, _, AbstractView, UIUtils, Constants, EventManager, Configuration) {
     /**
-     * Creates new dialog in #dialogs div. Fills it with dialog template.
-     * Then creates actions buttons and bind events. If actions map is empty, default
-     * close action is added.
+     * @exports org/forgerock/commons/ui/common/components/Dialog
      */
-    show: function(callback) {
+    return AbstractView.extend({
+        template: "templates/common/DialogTemplate.html",
+        element: "#dialogs",
 
-        this.data.actions = _.map(this.actions, function (a) {
-            if (a.type === "submit") {
-                a.buttonClass = "btn-primary";
-            } else {
-                a.buttonClass = "btn-default";
+        data: { },
+
+        mode: "append",
+
+        events: {
+            "click .dialogCloseCross": "close",
+            "click input[name='close']": "close",
+            "click .dialogContainer": "stop"
+        },
+
+        actions: [
+            {
+                "type": "button",
+                "name": "close"
             }
-            return a;
-        });
+        ],
 
-        this.setElement($("#dialogs"));
-        this.parentRender(_.bind(function() {
+        stop: function(event) {
+            event.stopPropagation();
+        },
 
-            this.$el.addClass('show');
-            this.setElement(this.$el.find(".dialogContainer:last"));
+        /**
+         * Creates new dialog in #dialogs div. Fills it with dialog template.
+         * Then creates actions buttons and bind events. If actions map is empty, default
+         * close action is added.
+         */
+        show: function(callback) {
 
-            $("#dialog-background").addClass('show');
-            this.$el.off('click').on('click', _.bind(this.close, this));
+            this.data.actions = _.map(this.actions, function (a) {
+                if (a.type === "submit") {
+                    a.buttonClass = "btn-primary";
+                } else {
+                    a.buttonClass = "btn-default";
+                }
+                return a;
+            });
 
-            this.loadContent(callback);
-            this.delegateEvents();
-        }, this));
-    },
+            this.setElement($("#dialogs"));
+            this.parentRender(_.bind(function() {
 
-    /**
-     * Loads template from 'contentTemplate'
-     */
-    loadContent: function(callback) {
-        UIUtils.renderTemplate(
-            this.contentTemplate,
-            this.$el.find(".dialogContent"),
-            _.extend({}, Configuration.globalData, this.data),
-            callback ? _.bind(callback, this) : _.noop(),
-            "append");
-    },
+                this.$el.addClass('show');
+                this.setElement(this.$el.find(".dialogContainer:last"));
 
-    render: function() {
-        this.show();
-    },
+                $("#dialog-background").addClass('show');
+                this.$el.off('click').on('click', _.bind(this.close, this));
 
-    close: function(e) {
-        if (e) {
-            e.preventDefault();
-        }
+                this.loadContent(callback);
+                this.delegateEvents();
+            }, this));
+        },
 
-        if ($(".dialogContainer").length < 2) {
-            $("#dialog-background").removeClass('show');
-            $("#dialogs").removeClass('show');
-            $("#dialogs").hide();
-        }
+        /**
+         * Loads template from 'contentTemplate'
+         */
+        loadContent: function(callback) {
+            UIUtils.renderTemplate(
+                this.contentTemplate,
+                this.$el.find(".dialogContent"),
+                _.extend({}, Configuration.globalData, this.data),
+                callback ? _.bind(callback, this) : _.noop(),
+                "append");
+        },
 
-        EventManager.sendEvent(Constants.EVENT_DIALOG_CLOSE);
+        render: function() {
+            this.show();
+        },
 
-        this.$el.remove();
-    },
+        close: function(e) {
+            if (e) {
+                e.preventDefault();
+            }
 
-    addAction: function(name, type) {
-        if (!this.getAction(name)) {
-            this.actions.push({
-                "name" : name,
-                "type" : type
+            if ($(".dialogContainer").length < 2) {
+                $("#dialog-background").removeClass('show');
+                $("#dialogs").removeClass('show');
+                $("#dialogs").hide();
+            }
+
+            EventManager.sendEvent(Constants.EVENT_DIALOG_CLOSE);
+
+            this.$el.remove();
+        },
+
+        addAction: function(name, type) {
+            if (!this.getAction(name)) {
+                this.actions.push({
+                    "name" : name,
+                    "type" : type
+                });
+            }
+        },
+
+        addTitle: function(title) {
+            this.data.dialogTitle = title;
+        },
+
+        getAction: function(name) {
+            return _.find(this.actions, function(a) {
+                return a.name === name;
             });
         }
-    },
-
-    addTitle: function(title) {
-        this.data.dialogTitle = title;
-    },
-
-    getAction: function(name) {
-        return _.find(this.actions, function(a) {
-            return a.name === name;
-        });
-    }
+    });
 });

@@ -32,20 +32,20 @@
  *   headerCell: "select-all"
  * }
  */
-// TODO this was probably added for the side-effects
-// eslint-disable-next-line
-import BackgridSelectAll from "backgrid-selectall";
-import Backgrid from "org/forgerock/commons/ui/common/backgrid/Backgrid";
+define([
+    "backgrid-selectall",
+    "org/forgerock/commons/ui/common/backgrid/Backgrid"
+], function (BackgridSelectAll, Backgrid) {
+    Backgrid.Extension.ThemeableSelectAllCell = Backgrid.Extension.SelectRowCell.extend({
+        /**
+         * @inheritdoc
+         */
+        onChange: function () {
+            var checked = this.$el.find("input[type=checkbox]").prop("checked");
+            this.$el.parent().toggleClass("info", checked);
+            this.model.trigger("backgrid:selected", this.model, checked);
+        }
+    });
 
-Backgrid.Extension.ThemeableSelectAllCell = Backgrid.Extension.SelectRowCell.extend({
-    /**
-     * @inheritdoc
-     */
-    onChange: function () {
-        var checked = this.$el.find("input[type=checkbox]").prop("checked");
-        this.$el.parent().toggleClass("info", checked);
-        this.model.trigger("backgrid:selected", this.model, checked);
-    }
+    return Backgrid.Extension.ThemeableSelectAllCell;
 });
-
-export default Backgrid.Extension.ThemeableSelectAllCell;

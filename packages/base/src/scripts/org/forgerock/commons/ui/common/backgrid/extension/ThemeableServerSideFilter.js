@@ -27,52 +27,52 @@
  * // ...or the reference on Backgrid.Extension
  * new Backgrid.Extension.ThemeableServerSideFilter({ ... });
  */
-import $ from "jquery";
-import _ from "lodash";
-// TODO this was probably added for the side-effects
-// eslint-disable-next-line
-import BackgridFilter from "backgrid-filter";
-import Backgrid from "org/forgerock/commons/ui/common/backgrid/Backgrid";
+define([
+    "jquery",
+    "lodash",
+    "backgrid-filter",
+    "org/forgerock/commons/ui/common/backgrid/Backgrid"
+], function ($, _, BackgridFilter, Backgrid) {
+    Backgrid.Extension.ThemeableServerSideFilter = Backgrid.Extension.ServerSideFilter.extend({
+        /**
+         * Overriding the "keyup input[type=search]" event on ServerSideFilter here
+         * to accommodate the ability to filter as input is typed into the filter field
+         */
+        events: _.extend(Backgrid.Extension.ServerSideFilter.prototype.events, {
+            "keyup input[type=search]": "keyupSearch"
+        }),
+        keyupSearch: function (e) {
+            e.preventDefault();
 
-Backgrid.Extension.ThemeableServerSideFilter = Backgrid.Extension.ServerSideFilter.extend({
-    /**
-     * Overriding the "keyup input[type=search]" event on ServerSideFilter here
-     * to accommodate the ability to filter as input is typed into the filter field
-     */
-    events: _.extend(Backgrid.Extension.ServerSideFilter.prototype.events, {
-        "keyup input[type=search]": "keyupSearch"
-    }),
-    keyupSearch: function (e) {
-        e.preventDefault();
+            /**
+             * showClearButtonMaybe is the default action of
+             * "keyup input[type=search]" in ServerSideFilter
+             */
+            this.showClearButtonMaybe(e);
+            /*
+             * if there is no minimumSearchChars setting stick with the default behavior
+             * of searching only on submit (a.k.a. clicking the enter button)
+             */
+            if (this.minimumSearchChars && $(e.target).val().length >= this.minimumSearchChars) {
+                this.search(e);
+            }
+        },
 
         /**
-         * showClearButtonMaybe is the default action of
-         * "keyup input[type=search]" in ServerSideFilter
+         * @default
          */
-        this.showClearButtonMaybe(e);
-        /*
-         * if there is no minimumSearchChars setting stick with the default behavior
-         * of searching only on submit (a.k.a. clicking the enter button)
+        className: "form-group has-feedback",
+
+        /**
+         * @inheritdoc
          */
-        if (this.minimumSearchChars && $(e.target).val().length >= this.minimumSearchChars) {
-            this.search(e);
+        template: function (data) {
+            return '<input class="form-control input-sm" type="search" '
+                + (data.placeholder ? 'placeholder="' + data.placeholder + '"' : '')
+                + ' name="' + data.name + '" ' + (data.value ? 'value="' + data.value + '"' : '') + '/>' +
+                '<a class="fa fa-times form-control-feedback" data-backgrid-action="clear" role="button" href="#"></a>';
         }
-    },
+    });
 
-    /**
-     * @default
-     */
-    className: "form-group has-feedback",
-
-    /**
-     * @inheritdoc
-     */
-    template: function (data) {
-        return '<input class="form-control input-sm" type="search" '
-            + (data.placeholder ? 'placeholder="' + data.placeholder + '"' : '')
-            + ' name="' + data.name + '" ' + (data.value ? 'value="' + data.value + '"' : '') + '/>' +
-            '<a class="fa fa-times form-control-feedback" data-backgrid-action="clear" role="button" href="#"></a>';
-    }
+    return Backgrid.Extension.ThemeableServerSideFilter;
 });
-
-export default Backgrid.Extension.ThemeableServerSideFilter;

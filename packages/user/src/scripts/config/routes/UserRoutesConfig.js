@@ -14,39 +14,42 @@
  * Copyright 2011-2016 ForgeRock AS.
  */
 
-//definitions for views here are generic
-//the actual path to each view is defined in config/AppConfiguration.js
-//view files are mapped aliases registered within requirejs
-var obj = {
-    "profile": {
-        view: "UserProfileView",
-        role: "ui-self-service-user",
-        url: /^profile\/(.*)/,
-        pattern: "profile/?",
-        defaults: ["details"],
-        navGroup: "user"
-    },
-    "forgotUsername": {
-        view: "ForgotUsernameView",
-        url: /^forgotUsername(\/[^\&]*)(\&.+)?/,
-        pattern: "forgotUsername??",
-        argumentNames: ["realm", "additionalParameters"],
-        defaults: ["/", ""]
-    },
-    "passwordReset": {
-        view: "PasswordResetView",
-        url: /^passwordReset(\/[^\&]*)(\&.+)?/,
-        pattern: "passwordReset??",
-        argumentNames: ["realm", "additionalParameters"],
-        defaults: ["/", ""]
-    },
-    "selfRegistration": {
-        view: "RegisterView",
-        url: /^register(\/[^\&]*)(\&.+)?/,
-        pattern: "register??",
-        argumentNames: ["realm", "additionalParameters"],
-        defaults: ["/",""]
-    }
-};
+define([
+], function() {
+    //definitions for views here are generic
+    //the actual path to each view is defined in config/AppConfiguration.js
+    //view files are mapped aliases registered within requirejs
+    var obj = {
+        "profile": {
+            view: "UserProfileView",
+            role: "ui-self-service-user",
+            url: /^profile\/(.*)/,
+            pattern: "profile/?",
+            defaults: ["details"],
+            navGroup: "user"
+        },
+        "forgotUsername": {
+            view: "ForgotUsernameView",
+            url: /^forgotUsername(\/[^\&]*)(\&.+)?/,
+            pattern: "forgotUsername??",
+            argumentNames: ["realm", "additionalParameters"],
+            defaults: ["/", ""]
+        },
+        "passwordReset": {
+            view: "PasswordResetView",
+            url: /^passwordReset(\/[^\&]*)(\&.+)?/,
+            pattern: "passwordReset??",
+            argumentNames: ["realm", "additionalParameters"],
+            defaults: ["/", ""]
+        },
+        "selfRegistration": {
+            view: "RegisterView",
+            url: /^register(\/[^\&]*)(\&.+)?/,
+            pattern: "register??",
+            argumentNames: ["realm", "additionalParameters"],
+            defaults: ["/",""]
+        }
+    };
 
-export default obj;
+    return obj;
+});

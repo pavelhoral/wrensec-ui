@@ -14,13 +14,15 @@
  * Copyright 2011-2016 ForgeRock AS.
  */
 
-import AbstractView from "org/forgerock/commons/ui/common/main/AbstractView";
+define([
+    "org/forgerock/commons/ui/common/main/AbstractView"
+], function(AbstractView) {
+    var NotFoundView = AbstractView.extend({
+        template: "templates/common/404.html",
+        baseTemplate: "templates/common/LoginBaseTemplate.html"
+    });
 
-var NotFoundView = AbstractView.extend({
-    template: "templates/common/404.html",
-    baseTemplate: "templates/common/LoginBaseTemplate.html"
+    return new NotFoundView();
 });
-
-export default new NotFoundView();
 
 

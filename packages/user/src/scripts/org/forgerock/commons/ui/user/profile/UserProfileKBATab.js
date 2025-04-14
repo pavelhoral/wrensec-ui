@@ -14,263 +14,269 @@
  * Copyright 2015-2017 ForgeRock AS.
  */
 
-import $ from "jquery";
-import _ from "lodash";
-import form2js from "form2js";
-import js2form from "js2form";
-import Handlebars from "handlebars";
-import AbstractUserProfileTab from "org/forgerock/commons/ui/user/profile/AbstractUserProfileTab";
-import Configuration from "org/forgerock/commons/ui/common/main/Configuration";
-import KBADelegate from "KBADelegate";
-// TODO this was probably added for the side-effect
-// eslint-disable-next-line
-import UIUtils from "org/forgerock/commons/ui/common/util/UIUtils";
-import ValidatorsManager from "org/forgerock/commons/ui/common/main/ValidatorsManager";
-
-/**
- * An instance of AbstractUserProfileTab, to be used with the UserProfileView when
- * KBA management is available for the end-user.
- * @exports org/forgerock/commons/ui/user/profile/AbstractUserProfileTab
- */
-var UserProfileKBATab = AbstractUserProfileTab.extend({
-    template : "templates/user/UserProfileKBATab.html",
-    events: _.extend({
-        "change .kba-pair :input": "checkChanges",
-        "keyup .kba-pair :input": "checkChanges",
-        "mouseup .kba-pair select": "checkChanges",
-        "click #provideAnother": "addKBAQuestion",
-        "click .delete-KBA-question": "deleteKBAQuestion"
-    }, AbstractUserProfileTab.prototype.events),
-    partials: [
-        "partials/profile/_kbaItem.html"
-    ],
+define([
+    "jquery",
+    "lodash",
+    "form2js",
+    "js2form",
+    "handlebars",
+    "org/forgerock/commons/ui/user/profile/AbstractUserProfileTab",
+    "org/forgerock/commons/ui/common/main/Configuration",
+    "KBADelegate",
+    "org/forgerock/commons/ui/common/util/UIUtils",
+    "org/forgerock/commons/ui/common/main/ValidatorsManager"
+], function($, _, form2js, js2form, Handlebars,
+        AbstractUserProfileTab,
+        Configuration,
+        KBADelegate,
+        UIUtils,
+        ValidatorsManager) {
 
     /**
-     Expected by all dynamic user profile tabs - returns a map of details necessary to render the nav tab
+     * An instance of AbstractUserProfileTab, to be used with the UserProfileView when
+     * KBA management is available for the end-user.
+     * @exports org/forgerock/commons/ui/user/profile/AbstractUserProfileTab
      */
-    getTabDetail : function () {
-        return {
-            "panelId": "userKBATab",
-            "label": $.t("common.user.kba.securityQuestions")
-        };
-    },
+    var UserProfileKBATab = AbstractUserProfileTab.extend({
+        template : "templates/user/UserProfileKBATab.html",
+        events: _.extend({
+            "change .kba-pair :input": "checkChanges",
+            "keyup .kba-pair :input": "checkChanges",
+            "mouseup .kba-pair select": "checkChanges",
+            "click #provideAnother": "addKBAQuestion",
+            "click .delete-KBA-question": "deleteKBAQuestion"
+        }, AbstractUserProfileTab.prototype.events),
+        partials: [
+            "partials/profile/_kbaItem.html"
+        ],
 
-    addKBAQuestion: function (e) {
-        e.preventDefault();
-        var kbaItems = this.$el.find("#kbaItems"),
-            form = $(e.target).closest("form"),
-            newIndex = kbaItems.find(">li").length;
-        kbaItems.append(
-            $("<li>").html(Handlebars.compile("{{> profile/_kbaItem}}")({
-                questions: this.data.predefinedQuestions,
-                index: newIndex,
-                isNew: true
-            }))
-        );
+        /**
+         Expected by all dynamic user profile tabs - returns a map of details necessary to render the nav tab
+         */
+        getTabDetail : function () {
+            return {
+                "panelId": "userKBATab",
+                "label": $.t("common.user.kba.securityQuestions")
+            };
+        },
 
-        ValidatorsManager.bindValidators(this.$el.find("form"),
-            Configuration.loggedUser.baseEntity,
-            _.bind(function() {
-                ValidatorsManager.validateAllFields(this.$el.find("form"));
-            }, this)
-        );
+        addKBAQuestion: function (e) {
+            e.preventDefault();
+            var kbaItems = this.$el.find("#kbaItems"),
+                form = $(e.target).closest("form"),
+                newIndex = kbaItems.find(">li").length;
+            kbaItems.append(
+                $("<li>").html(Handlebars.compile("{{> profile/_kbaItem}}")({
+                    questions: this.data.predefinedQuestions,
+                    index: newIndex,
+                    isNew: true
+                }))
+            );
 
-        $(form).find("input[type='reset']").prop("disabled", false);
-    },
+            ValidatorsManager.bindValidators(this.$el.find("form"),
+                Configuration.loggedUser.baseEntity,
+                _.bind(function() {
+                    ValidatorsManager.validateAllFields(this.$el.find("form"));
+                }, this)
+            );
 
-    deleteKBAQuestion: function (e) {
-        var target = $(e.target),
-            form = target.closest("form"),
-            kbaPair = target.closest(".kba-pair");
+            $(form).find("input[type='reset']").prop("disabled", false);
+        },
 
-        e.preventDefault();
+        deleteKBAQuestion: function (e) {
+            var target = $(e.target),
+                form = target.closest("form"),
+                kbaPair = target.closest(".kba-pair");
 
-        if (kbaPair.attr("isNew") === "true") {
-            kbaPair.parent("li").remove();
-        } else {
-            kbaPair.hide();
-        }
-        this.changesPendingWidget.makeChanges({ subform: this.getFormContent() });
+            e.preventDefault();
 
-        ValidatorsManager.bindValidators(form, Configuration.loggedUser.baseEntity, function () {
-            ValidatorsManager.validateAllFields(form);
-        });
-
-        $(form).find("input[type='reset']").prop("disabled", false);
-    },
-
-    checkChanges: function (e) {
-        var target = $(e.target),
-            form = target.closest("form"),
-            attributeName, kbaPair, currentKbaInfo, predefinedQuestion, customQuestionContainer, answer,
-            answerRequired, isKbaQuestion;
-
-        attributeName = _.keys(form2js(e.target))[0];
-        kbaPair = target.closest(".kba-pair");
-        currentKbaInfo = this.changesPendingWidget.data.watchedObj.subform[attributeName];
-        predefinedQuestion = kbaPair.find(".kba-questions");
-        customQuestionContainer = kbaPair.find(".custom-question");
-        answer = kbaPair.find(".answer :input");
-        answerRequired = false;
-        isKbaQuestion = target.hasClass("kba-questions");
-        customQuestionContainer.toggleClass("hidden", predefinedQuestion.val() !== "custom");
-
-        // below conditions check to see if a new KBA answer needs to be provided, or whether
-        // it can stay unchanged
-        if (currentKbaInfo && currentKbaInfo[kbaPair.attr('index')]) {
-            if (predefinedQuestion.val() === "custom") {
-                answerRequired = currentKbaInfo[kbaPair.attr('index')].customQuestion
-                    !== customQuestionContainer.find(":input").val();
+            if (kbaPair.attr("isNew") === "true") {
+                kbaPair.parent("li").remove();
             } else {
-                answerRequired = currentKbaInfo[kbaPair.attr('index')].questionId !== predefinedQuestion.val();
+                kbaPair.hide();
             }
-        } else {
-            answerRequired = true;
-        }
+            this.changesPendingWidget.makeChanges({ subform: this.getFormContent() });
 
-        if (answerRequired) {
-            answer.attr("data-validator", "required");
-            answer.attr("placeholder", "");
-        }
-
-        // validate form only in case security question was selected
-        if (!isKbaQuestion || (isKbaQuestion && (target.val() !== ""))) {
             ValidatorsManager.bindValidators(form, Configuration.loggedUser.baseEntity, function () {
                 ValidatorsManager.validateAllFields(form);
             });
-        }
 
-        if (!isKbaQuestion) {
-            this.changesPendingWidget.makeChanges({subform: this.getFormContent()});
-        }
+            $(form).find("input[type='reset']").prop("disabled", false);
+        },
 
-        $(form).find("input[type='reset']").prop("disabled", false);
+        checkChanges: function (e) {
+            var target = $(e.target),
+                form = target.closest("form"),
+                attributeName, kbaPair, currentKbaInfo, predefinedQuestion, customQuestionContainer, answer,
+                answerRequired, isKbaQuestion;
 
-    },
-    /**
-     * Overrides AbstractUserProfileTab implementation because saving KBA details
-     * for the user is tricky, owing to the fact that patching multi-valued properties
-     * is done differently in various contexts. The implementation in KBADelegate replaces
-     * the whole kba property rather than the inner parts which might have changed.
-     */
-    submit: function (formData) {
-        KBADelegate.saveInfo(formData).then(
-            _.bind(function () {
-                this.submitSuccess();
-            }, this)
-        );
-    },
+            attributeName = _.keys(form2js(e.target))[0];
+            kbaPair = target.closest(".kba-pair");
+            currentKbaInfo = this.changesPendingWidget.data.watchedObj.subform[attributeName];
+            predefinedQuestion = kbaPair.find(".kba-questions");
+            customQuestionContainer = kbaPair.find(".custom-question");
+            answer = kbaPair.find(".answer :input");
+            answerRequired = false;
+            isKbaQuestion = target.hasClass("kba-questions");
+            customQuestionContainer.toggleClass("hidden", predefinedQuestion.val() !== "custom");
 
-    /**
-     * Overrides AbstractUserProfileTab implementation. Needs more complex logic
-     * to handle the various conditions - particularly around the answers which may have
-     * been previously available as hashed values, and must remain as they were if a new
-     * answer was not provided.
-     */
-    getFormContent: function () {
-        var form = this.$el.find("form")[0],
-            formContent = form2js(form, ".", false);
-        // cannot rely upon a particular named field in the form content,
-        // so apply the logic to all fields found in the form
-        return _(formContent)
-            .map(_.bind(function (value, key) {
-                if (_.isArray(value)) {
-                    return [
-                        key,
-                        _(value)
-                            .map(_.bind(function (kbaPair, index) {
-                                var newPair = {};
-
-                                // deleted pairs will be hidden
-                                if ($(form).is(":visible")
-                                    && !$(form).find(".kba-pair[index="+index+"]:visible").length) {
-                                    // express their removal via an explicit undefined value in that position
-                                    return undefined;
-                                }
-
-                                if (kbaPair.answer && kbaPair.answer.length) {
-                                    newPair.answer = kbaPair.answer;
-                                } else if (this.data.user[key] && _.isObject(this.data.user[key][index])) {
-                                    newPair.answer = this.data.user[key][index].answer;
-                                }
-
-                                if (kbaPair.questionId === "custom") {
-                                    newPair.customQuestion = kbaPair.customQuestion;
-                                } else {
-                                    newPair.questionId = kbaPair.questionId;
-                                }
-                                return newPair;
-                            }, this))
-                            .compact()
-                            .value()
-                    ];
+            // below conditions check to see if a new KBA answer needs to be provided, or whether
+            // it can stay unchanged
+            if (currentKbaInfo && currentKbaInfo[kbaPair.attr('index')]) {
+                if (predefinedQuestion.val() === "custom") {
+                    answerRequired = currentKbaInfo[kbaPair.attr('index')].customQuestion
+                        !== customQuestionContainer.find(":input").val();
                 } else {
-                    return [key, value];
+                    answerRequired = currentKbaInfo[kbaPair.attr('index')].questionId !== predefinedQuestion.val();
                 }
-            }, this))
-            .fromPairs()
-            .value();
-    },
+            } else {
+                answerRequired = true;
+            }
 
-    render: function (data, callback) {
-        this.data = data;
-        KBADelegate.getInfo().then(_.bind(function (response) {
-            this.data.predefinedQuestions = _.map(response.questions, function (value, key) {
-                return { "id" : key, "question" : value };
-            });
-            this.data.numberOfQuestions = response.minimumAnswersToDefine;
+            if (answerRequired) {
+                answer.attr("data-validator", "required");
+                answer.attr("placeholder", "");
+            }
 
-            this.parentRender(callback);
-        }, this));
-    },
+            // validate form only in case security question was selected
+            if (!isKbaQuestion || (isKbaQuestion && (target.val() !== ""))) {
+                ValidatorsManager.bindValidators(form, Configuration.loggedUser.baseEntity, function () {
+                    ValidatorsManager.validateAllFields(form);
+                });
+            }
 
-    /**
-     * Rerender the template and populate the form using the latest details from the user's
-     * kba property. Relies upon the DOM structure in the template to determine which field
-     * contains the kba list; by default, it's called "kbaInfo".
-     */
-    reloadFormData: function () {
-        var form;
+            if (!isKbaQuestion) {
+                this.changesPendingWidget.makeChanges({subform: this.getFormContent()});
+            }
 
-        this.parentRender();
+            $(form).find("input[type='reset']").prop("disabled", false);
 
-        form = this.$el.find("form")[0];
-        js2form(form,
-            // use the form structure to find out which fields are defined for the kba form...
-            _(form2js(form, ".", false))
+        },
+        /**
+         * Overrides AbstractUserProfileTab implementation because saving KBA details
+         * for the user is tricky, owing to the fact that patching multi-valued properties
+         * is done differently in various contexts. The implementation in KBADelegate replaces
+         * the whole kba property rather than the inner parts which might have changed.
+         */
+        submit: function (formData) {
+            KBADelegate.saveInfo(formData).then(
+                _.bind(function () {
+                    this.submitSuccess();
+                }, this)
+            );
+        },
+
+        /**
+         * Overrides AbstractUserProfileTab implementation. Needs more complex logic
+         * to handle the various conditions - particularly around the answers which may have
+         * been previously available as hashed values, and must remain as they were if a new
+         * answer was not provided.
+         */
+        getFormContent: function () {
+            var form = this.$el.find("form")[0],
+                formContent = form2js(form, ".", false);
+            // cannot rely upon a particular named field in the form content,
+            // so apply the logic to all fields found in the form
+            return _(formContent)
                 .map(_.bind(function (value, key) {
-                    // omit the "answer" property from any array found there...
-                    if (_.isArray(this.data.user[key])) {
+                    if (_.isArray(value)) {
                         return [
                             key,
-                            _.map(this.data.user[key], function (kbaPair) {
-                                return _.omit(kbaPair, "answer");
-                            })
+                            _(value)
+                                .map(_.bind(function (kbaPair, index) {
+                                    var newPair = {};
+
+                                    // deleted pairs will be hidden
+                                    if ($(form).is(":visible")
+                                        && !$(form).find(".kba-pair[index="+index+"]:visible").length) {
+                                        // express their removal via an explicit undefined value in that position
+                                        return undefined;
+                                    }
+
+                                    if (kbaPair.answer && kbaPair.answer.length) {
+                                        newPair.answer = kbaPair.answer;
+                                    } else if (this.data.user[key] && _.isObject(this.data.user[key][index])) {
+                                        newPair.answer = this.data.user[key][index].answer;
+                                    }
+
+                                    if (kbaPair.questionId === "custom") {
+                                        newPair.customQuestion = kbaPair.customQuestion;
+                                    } else {
+                                        newPair.questionId = kbaPair.questionId;
+                                    }
+                                    return newPair;
+                                }, this))
+                                .compact()
+                                .value()
                         ];
                     } else {
-                        return [key, this.data.user[key]];
+                        return [key, value];
                     }
                 }, this))
                 .fromPairs()
-                .value()
-        );
+                .value();
+        },
 
-        _.each($(".kba-questions", form), function (kbaSelect) {
-            var customQuestionContainer = $(kbaSelect).closest(".kba-pair").find(".custom-question"),
-                customQuestionValue = customQuestionContainer.find(":input").val();
-            if (customQuestionValue !== "") {
-                $(kbaSelect).val("custom");
-                customQuestionContainer.toggleClass("hidden", false);
-            } else {
-                customQuestionContainer.toggleClass("hidden", true);
-            }
-        });
+        render: function (data, callback) {
+            this.data = data;
+            KBADelegate.getInfo().then(_.bind(function (response) {
+                this.data.predefinedQuestions = _.map(response.questions, function (value, key) {
+                    return { "id" : key, "question" : value };
+                });
+                this.data.numberOfQuestions = response.minimumAnswersToDefine;
 
-        this.initializeChangesPending();
-        $(form).find("input[type='reset']").prop("disabled", true);
-        $(form).find("input[type='submit']").prop("disabled", true);
+                this.parentRender(callback);
+            }, this));
+        },
 
-    }
+        /**
+         * Rerender the template and populate the form using the latest details from the user's
+         * kba property. Relies upon the DOM structure in the template to determine which field
+         * contains the kba list; by default, it's called "kbaInfo".
+         */
+        reloadFormData: function () {
+            var form;
+
+            this.parentRender();
+
+            form = this.$el.find("form")[0];
+            js2form(form,
+                // use the form structure to find out which fields are defined for the kba form...
+                _(form2js(form, ".", false))
+                    .map(_.bind(function (value, key) {
+                        // omit the "answer" property from any array found there...
+                        if (_.isArray(this.data.user[key])) {
+                            return [
+                                key,
+                                _.map(this.data.user[key], function (kbaPair) {
+                                    return _.omit(kbaPair, "answer");
+                                })
+                            ];
+                        } else {
+                            return [key, this.data.user[key]];
+                        }
+                    }, this))
+                    .fromPairs()
+                    .value()
+            );
+
+            _.each($(".kba-questions", form), function (kbaSelect) {
+                var customQuestionContainer = $(kbaSelect).closest(".kba-pair").find(".custom-question"),
+                    customQuestionValue = customQuestionContainer.find(":input").val();
+                if (customQuestionValue !== "") {
+                    $(kbaSelect).val("custom");
+                    customQuestionContainer.toggleClass("hidden", false);
+                } else {
+                    customQuestionContainer.toggleClass("hidden", true);
+                }
+            });
+
+            this.initializeChangesPending();
+            $(form).find("input[type='reset']").prop("disabled", true);
+            $(form).find("input[type='submit']").prop("disabled", true);
+
+        }
+    });
+
+    return new UserProfileKBATab();
 });
-
-export default new UserProfileKBATab();

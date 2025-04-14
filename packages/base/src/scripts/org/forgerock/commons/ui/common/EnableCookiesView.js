@@ -14,19 +14,21 @@
  * Copyright 2011-2016 ForgeRock AS.
  */
 
-import AbstractView from "org/forgerock/commons/ui/common/main/AbstractView";
-import cookieHelper from "org/forgerock/commons/ui/common/util/CookieHelper";
-
-var EnableCookiesView = AbstractView.extend({
-    template: "templates/common/EnableCookiesTemplate.html",
-    baseTemplate: "templates/common/LoginBaseTemplate.html",
-    render: function() {
-        if (!cookieHelper.cookiesEnabled()) {
-            this.parentRender();
-        } else {
-            location.href = "#login/";
+define([
+    "org/forgerock/commons/ui/common/main/AbstractView",
+    "org/forgerock/commons/ui/common/util/CookieHelper"
+], function(AbstractView, cookieHelper) {
+    var EnableCookiesView = AbstractView.extend({
+        template: "templates/common/EnableCookiesTemplate.html",
+        baseTemplate: "templates/common/LoginBaseTemplate.html",
+        render: function() {
+            if (!cookieHelper.cookiesEnabled()) {
+                this.parentRender();
+            } else {
+                location.href = "#login/";
+            }
         }
-    }
-});
+    });
 
-export default new EnableCookiesView();
+    return new EnableCookiesView();
+});

@@ -14,36 +14,40 @@
  * Copyright 2015-2016 ForgeRock AS.
  */
 
-import _ from "lodash";
-import AbstractDelegate from "org/forgerock/commons/ui/common/main/AbstractDelegate";
-import Configuration from "org/forgerock/commons/ui/common/main/Configuration";
-import Constants from "org/forgerock/commons/ui/common/util/Constants";
+define([
+    "jquery",
+    "lodash",
+    "org/forgerock/commons/ui/common/main/AbstractDelegate",
+    "org/forgerock/commons/ui/common/main/Configuration",
+    "org/forgerock/commons/ui/common/util/Constants"
+], function ($, _, AbstractDelegate, Configuration, Constants) {
 
-var KBADelegate = new AbstractDelegate("/" + Constants.context + "/" + Constants.SELF_SERVICE_CONTEXT);
+    var KBADelegate = new AbstractDelegate("/" + Constants.context + "/" + Constants.SELF_SERVICE_CONTEXT);
 
-KBADelegate.getInfo = function () {
-    return this.serviceCall({ "url" : "kba" });
-};
+    KBADelegate.getInfo = function () {
+        return this.serviceCall({ "url" : "kba" });
+    };
 
-KBADelegate.saveInfo = function (user) {
-    return this.serviceCall({
-        "type": "PATCH",
-        "url": "user/" + Configuration.loggedUser.id,
-        "data": JSON.stringify(
-            _(user)
-                .map(function (value, key) {
-                    return {
-                        "operation": "replace",
-                        "field": "/" + key,
-                        // replace the whole value, rather than just the parts that have changed,
-                        // since there is no consistent way to target items in a set across the stack
-                        "value": value
-                    };
-                })
-        )
-    }).then(function (updatedUser) {
-        return Configuration.loggedUser.save(updatedUser, {"silent": true});
-    });
-};
+    KBADelegate.saveInfo = function (user) {
+        return this.serviceCall({
+            "type": "PATCH",
+            "url": "user/" + Configuration.loggedUser.id,
+            "data": JSON.stringify(
+                _(user)
+                    .map(function (value, key) {
+                        return {
+                            "operation": "replace",
+                            "field": "/" + key,
+                            // replace the whole value, rather than just the parts that have changed,
+                            // since there is no consistent way to target items in a set across the stack
+                            "value": value
+                        };
+                    })
+            )
+        }).then(function (updatedUser) {
+            return Configuration.loggedUser.save(updatedUser, {"silent": true});
+        });
+    };
 
-export default KBADelegate;
+    return KBADelegate;
+});

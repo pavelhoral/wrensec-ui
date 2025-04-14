@@ -14,132 +14,134 @@
  * Copyright 2014-2016 ForgeRock AS.
  */
 
-import $ from "jquery";
-import _ from "lodash";
-import Handlebars from "handlebars";
-import i18next from "i18next";
-import CookieHelper from "org/forgerock/commons/ui/common/util/CookieHelper";
+define( "org/forgerock/commons/ui/common/main/i18nManager", [
+    "jquery",
+    "lodash",
+    "require",
+    "handlebars",
+    "i18next",
+    "module",
+    "org/forgerock/commons/ui/common/util/CookieHelper"
+], function($, _, require, Handlebars, i18next, Module, CookieHelper) {
 
-var obj = {};
+    var obj = {};
 
-/**
- * Initialises the i18next module.
- *
- * Takes the following options: serverLang, paramLang, defaultLang, and nameSpace.
- * i18nManger with i18next will try to detect the user language and load the corresponding translation in the
- * following order:
- * 1) paramLang which is a query string parameter (&locale=fr).
- * 2) serverLang, a 2-5 character long language or locale code passed in from server. The value can be "en" or
- * "en-US" for example.
- * 3) defaultLang will be the default language set inside the Constants.DEFAULT_LANGUAGE.
- *
- * Note that the "load" field controls how the localization files are resolved:
- * 1) current: always use the value that was passed in as "lang" (may be just "en", or "en-US")
- * 2) unspecific: always use the non country-specific locale (so "en" in case lang was "en-US")
- * 3) not set/other value: country-specific first, then non-country specific
- *
- * @param {object} options
- * @param {string} options.paramLang which is a query string parameter, optionally space separated, (&locale=zh fr).
- * @param {string} options.serverLang, a 2 digit language code passed in from server.
- * @param {string} options.defaultLang will be the default language set inside the Constants.DEFAULT_LANGUAGE.
- * @param {string} [options.nameSpace] The nameSpace is optional and will default to "translation"
- */
-obj.init = function(options) {
+    /**
+     * Initialises the i18next module.
+     *
+     * Takes the following options: serverLang, paramLang, defaultLang, and nameSpace.
+     * i18nManger with i18next will try to detect the user language and load the corresponding translation in the
+     * following order:
+     * 1) paramLang which is a query string parameter (&locale=fr).
+     * 2) serverLang, a 2-5 character long language or locale code passed in from server. The value can be "en" or
+     * "en-US" for example.
+     * 3) defaultLang will be the default language set inside the Constants.DEFAULT_LANGUAGE.
+     *
+     * Note that the "load" field controls how the localization files are resolved:
+     * 1) current: always use the value that was passed in as "lang" (may be just "en", or "en-US")
+     * 2) unspecific: always use the non country-specific locale (so "en" in case lang was "en-US")
+     * 3) not set/other value: country-specific first, then non-country specific
+     *
+     * @param {object} options
+     * @param {string} options.paramLang which is a query string parameter, optionally space separated, (&locale=zh fr).
+     * @param {string} options.serverLang, a 2 digit language code passed in from server.
+     * @param {string} options.defaultLang will be the default language set inside the Constants.DEFAULT_LANGUAGE.
+     * @param {string} [options.nameSpace] The nameSpace is optional and will default to "translation"
+     */
+    obj.init = function(options) {
 
-    var locales = [],
-        opts = {},
-        overrideLang = {},
-        nameSpace = options.nameSpace ? options.nameSpace : "translation";
+        var locales = [],
+            opts = {},
+            overrideLang = {},
+            nameSpace = options.nameSpace ? options.nameSpace : "translation";
 
-    overrideLang.locale = options.paramLang.locale || CookieHelper.getCookie("i18next");
+        overrideLang.locale = options.paramLang.locale || CookieHelper.getCookie("i18next");
 
-    if (overrideLang.locale) {
-        locales = overrideLang.locale.split(" ");
-        options.serverLang = locales.shift();
-    }
-    if (options.defaultLang) {
-        locales.push(options.defaultLang);
-    }
-
-    // return if the stored lang matches the new one.
-    if (obj.lang && obj.lang === options.serverLang) {
-        return $.Deferred().resolve();
-    }
-    obj.lang = options.serverLang;
-
-    opts = {
-        fallbackLng: locales,
-        lng: options.serverLang,
-        partialBundledLanguages: true,
-        load: "currentOnly",
-        // FIXME commented out during ESM migration
-        // load: Module.config().i18nLoad || "currentOnly",
-        ns: nameSpace,
-        nsSeparator: ":::",
-        detection: {
-            caches: ['cookie']
-        },
-        backend: {
-            // FIXME loadPath: require.toUrl("locales/__lng__/__ns__.json")
-            loadPath: "/locales/__lng__/__ns__.json"
-        },
-        interpolation: {
-            prefix: "__",
-            suffix: "__"
+        if (overrideLang.locale) {
+            locales = overrideLang.locale.split(" ");
+            options.serverLang = locales.shift();
         }
+        if (options.defaultLang) {
+            locales.push(options.defaultLang);
+        }
+
+        // return if the stored lang matches the new one.
+        if (obj.lang && obj.lang === options.serverLang) {
+            return $.Deferred().resolve();
+        }
+        obj.lang = options.serverLang;
+
+        opts = {
+            fallbackLng: locales,
+            lng: options.serverLang,
+            partialBundledLanguages: true,
+            load: Module.config().i18nLoad || "currentOnly",
+            ns: nameSpace,
+            nsSeparator: ":::",
+            detection: {
+                caches: ['cookie']
+            },
+            backend: {
+                loadPath: require.toUrl("locales/__lng__/__ns__.json")
+            },
+            interpolation: {
+                prefix: "__",
+                suffix: "__"
+            }
+        };
+
+        /**
+         * Handlebars parameterized translation helper
+         * @param {Object|String} [options] Object or String to pass to this function.
+         * @param {Boolean} [options.hash.safeString] If set to false the returned string will be html character encoded
+         * @returns {Object|String} returns a translation object or string if safeString was set to false.
+         * @example
+         * 1) In translation file define a value under "key.to.my.translation.string" key,
+         *    e.g. "Display __foo__ and __bar__"
+         * 2) call helper function with key value pairs: {{t "key.to.my.translation.string" foo="test1" bar="test2"}}
+         * 3) Resulting string will be "Display test1 and test2"
+         */
+        Handlebars.registerHelper("t", function (key, options) {
+            options = options || {};
+            if (_.get(options.hash, "safeString") !== false) {
+                return new Handlebars.SafeString(i18next.t(key, options.hash));
+            } else {
+                // TODO: OPENAM-9618 The safeString check must remain until we use
+                // triple handlebars syntax for safe strings.
+                return i18next.t(key, options.hash);
+            }
+        });
+
+        /**
+         * @param {object} map Each key in the map is a locale, each value is a string in that locale
+         * @example
+            {{mapTranslate map}} where map is an object like so:
+            {
+                "en_GB": "What's your favorite colour?",
+                "fr": "Quelle est votre couleur préférée?",
+                "en": "What's your favorite color?"
+            }
+        */
+        Handlebars.registerHelper("mapTranslate", function(map) {
+            var fallback;
+            if (_.has(map, i18next.language)) {
+                return new Handlebars.SafeString(map[i18next.language]);
+            } else {
+                fallback = _.find(i18next.languages, function (lng) {
+                    return _.has(map, lng);
+                });
+                return new Handlebars.SafeString(map[fallback]);
+            }
+        });
+
+        // Bind to jQuery for backwards compatibility
+        $.t = i18next.t.bind(i18next);
+
+        return i18next
+            .use(i18next.HttpBackend)
+            .use(i18next.LanguageDetector)
+            .init(opts);
     };
 
-    /**
-     * Handlebars parameterized translation helper
-     * @param {Object|String} [options] Object or String to pass to this function.
-     * @param {Boolean} [options.hash.safeString] If set to false the returned string will be html character encoded
-     * @returns {Object|String} returns a translation object or string if safeString was set to false.
-     * @example
-     * 1) In translation file define a value under "key.to.my.translation.string" key,
-     *    e.g. "Display __foo__ and __bar__"
-     * 2) call helper function with key value pairs: {{t "key.to.my.translation.string" foo="test1" bar="test2"}}
-     * 3) Resulting string will be "Display test1 and test2"
-     */
-    Handlebars.registerHelper("t", function (key, options) {
-        options = options || {};
-        if (_.get(options.hash, "safeString") !== false) {
-            return new Handlebars.SafeString(i18next.t(key, options.hash));
-        } else {
-            // TODO: OPENAM-9618 The safeString check must remain until we use
-            // triple handlebars syntax for safe strings.
-            return i18next.t(key, options.hash);
-        }
-    });
-
-    /**
-     * @param {object} map Each key in the map is a locale, each value is a string in that locale
-     * @example
-        {{mapTranslate map}} where map is an object like so:
-        {
-            "en_GB": "What's your favorite colour?",
-            "fr": "Quelle est votre couleur préférée?",
-            "en": "What's your favorite color?"
-        }
-    */
-    Handlebars.registerHelper("mapTranslate", function(map) {
-        var fallback;
-        if (_.has(map, i18next.language)) {
-            return new Handlebars.SafeString(map[i18next.language]);
-        } else {
-            fallback = _.find(i18next.languages, function (lng) {
-                return _.has(map, lng);
-            });
-            return new Handlebars.SafeString(map[fallback]);
-        }
-    });
-
-    // Bind to jQuery for backwards compatibility
-    $.t = i18next.t.bind(i18next);
-
-    return i18next
-        .use(i18next.HttpBackend)
-        .use(i18next.LanguageDetector)
-        .init(opts);
-};
-
-export default obj;
+    return obj;
+});

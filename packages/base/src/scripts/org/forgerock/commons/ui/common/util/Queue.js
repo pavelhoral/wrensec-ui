@@ -14,49 +14,51 @@
  * Copyright 2016 ForgeRock AS.
  */
 
-import _ from "lodash";
+define([
+    "lodash"
+], function (_) {
+    /**
+     * Provides a generic, sharable queue (FIFO) mechanism.
+     * @exports org/forgerock/commons/ui/common/util/Queue
+     */
 
-/**
- * Provides a generic, sharable queue (FIFO) mechanism.
- * @exports org/forgerock/commons/ui/common/util/Queue
- */
+    /**
+     * Constructor. Takes an optional array for initializing the queue with values
+     *
+     * @param {array} initialValues - optional array of values to start queuing.
+     */
+    var obj = function (initialValues) {
+        this._values = _.isArray(initialValues) ? initialValues : [];
+        return this;
+    };
 
-/**
- * Constructor. Takes an optional array for initializing the queue with values
- *
- * @param {array} initialValues - optional array of values to start queuing.
- */
-var obj = function (initialValues) {
-    this._values = _.isArray(initialValues) ? initialValues : [];
-    return this;
-};
+    /**
+     * Put a new item in the queue
+     *
+     * @param {Object} value - any arbitrary value to insert into the queue
+     */
+    obj.prototype.add = function (value) {
+        this._values.push(value);
+    };
 
-/**
- * Put a new item in the queue
- *
- * @param {Object} value - any arbitrary value to insert into the queue
- */
-obj.prototype.add = function (value) {
-    this._values.push(value);
-};
+    /**
+     * Remove and return the head of the queue
+     *
+     * @returns {Object} whatever is on the head of the queue, or undefined if nothing is available
+     */
+    obj.prototype.remove = function () {
+        return this._values.shift(1);
+    };
 
-/**
- * Remove and return the head of the queue
- *
- * @returns {Object} whatever is on the head of the queue, or undefined if nothing is available
- */
-obj.prototype.remove = function () {
-    return this._values.shift(1);
-};
+    /**
+     * Return the head of the queue without removing it
+     *
+     * @param {string} queueName - name of queue to remove from
+     * @returns {Object} whatever is on the head of the queue, or undefined if nothing is available
+     */
+    obj.prototype.peek = function () {
+        return this._values[0];
+    };
 
-/**
- * Return the head of the queue without removing it
- *
- * @param {string} queueName - name of queue to remove from
- * @returns {Object} whatever is on the head of the queue, or undefined if nothing is available
- */
-obj.prototype.peek = function () {
-    return this._values[0];
-};
-
-export default obj;
+    return obj;
+});

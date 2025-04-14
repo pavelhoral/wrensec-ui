@@ -14,11 +14,14 @@
  * Copyright 2015-2016 ForgeRock AS.
  */
 
-import AnonymousProcessView from "org/forgerock/commons/ui/user/anonymousProcess/AnonymousProcessView";
+define([
+    "org/forgerock/commons/ui/user/anonymousProcess/AnonymousProcessView"
+], function(AnonymousProcessView) {
 
-var ForgotUsernameView = AnonymousProcessView.extend({
-    processType: "username",
-    i18nBase: "common.user.forgotUsername"
+    var ForgotUsernameView = AnonymousProcessView.extend({
+        processType: "username",
+        i18nBase: "common.user.forgotUsername"
+    });
+
+    return new ForgotUsernameView();
 });
-
-export default new ForgotUsernameView();

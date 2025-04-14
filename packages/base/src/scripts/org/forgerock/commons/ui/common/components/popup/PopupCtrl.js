@@ -14,24 +14,26 @@
  * Copyright 2011-2016 ForgeRock AS.
  */
 
-import view from "org/forgerock/commons/ui/common/components/popup/PopupView";
+define([
+    "org/forgerock/commons/ui/common/components/popup/PopupView"
+], function(view) {
+    var obj = {};
 
-var obj = {};
+    obj.view = view;
 
-obj.view = view;
+    obj.init = function() {
+        view.init();
+    };
 
-obj.init = function() {
-    view.init();
-};
+    obj.showBy = function(content, element) {
+        view.setContent(content);
+        view.show();
+        view.setPositionBy(element);
+    };
 
-obj.showBy = function(content, element) {
-    view.setContent(content);
-    view.show();
-    view.setPositionBy(element);
-};
+    obj.hide = function() {
+        view.hide();
+    };
 
-obj.hide = function() {
-    view.hide();
-};
-
-export default obj;
+    return obj;
+});

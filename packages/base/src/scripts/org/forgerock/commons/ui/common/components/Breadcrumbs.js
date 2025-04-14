@@ -14,101 +14,103 @@
  * Copyright 2011-2016 ForgeRock AS.
  */
 
-import $ from "jquery";
-import _ from "lodash";
-import Backbone from "backbone";
-
-/**
- * @exports org/forgerock/commons/ui/common/components/Breadcrumbs
- */
-var Breadcrumbs= Backbone.View.extend({
-
-    size: 0,
-    element: "#nav-content",
-
+define([
+    "jquery",
+    "lodash",
+    "backbone"
+], function($, _, Backbone) {
     /**
-     * Registers listeners and creates links using URL
+     * @exports org/forgerock/commons/ui/common/components/Breadcrumbs
      */
-    init: function() {
-        $(window).on('hashchange', _.bind(this.buildByUrl, this));
-        this.baseTitle = document.title;
-        this.buildByUrl();
-    },
+    var Breadcrumbs= Backbone.View.extend({
 
-    /**
-     * Creates links using URL
-     */
-    buildByUrl: function() {
-        var path, parts, url, i, humanized;
+        size: 0,
+        element: "#nav-content",
 
-        path = window.location.href.match(/#([a-zA-Z\/_.@]+)/);
+        /**
+         * Registers listeners and creates links using URL
+         */
+        init: function() {
+            $(window).on('hashchange', _.bind(this.buildByUrl, this));
+            this.baseTitle = document.title;
+            this.buildByUrl();
+        },
 
-        if (path === null) {
-            document.title = this.baseTitle;
-        } else {
-            path = path[1];
+        /**
+         * Creates links using URL
+         */
+        buildByUrl: function() {
+            var path, parts, url, i, humanized;
 
-            parts = _.compact(path.split('/'));
-            humanized = this.getHumanizedUrls(parts);
+            path = window.location.href.match(/#([a-zA-Z\/_.@]+)/);
 
-            url = "#";
+            if (path === null) {
+                document.title = this.baseTitle;
+            } else {
+                path = path[1];
 
-            this.clear();
-            for (i = 0; i < parts.length - 1; i++) {
-                url += parts[i] + "/";
-                this.push(humanized[i], url);
+                parts = _.compact(path.split('/'));
+                humanized = this.getHumanizedUrls(parts);
+
+                url = "#";
+
+                this.clear();
+                for (i = 0; i < parts.length - 1; i++) {
+                    url += parts[i] + "/";
+                    this.push(humanized[i], url);
+                }
+                this.set(humanized[humanized.length-1]);
+
+                document.title = this.baseTitle + " - " + humanized.join(" - ");
+
             }
-            this.set(humanized[humanized.length-1]);
+        },
 
-            document.title = this.baseTitle + " - " + humanized.join(" - ");
-
-        }
-    },
-
-    /**
-     * Replaces '_' to ' ' and capitalize first letter in array of strings
-     */
-    getHumanizedUrls: function(urls) {
-        return _.map(urls, function (url) {
-            return url.split("_").join(" ").replace(new RegExp("^(.)(.*)"), function (all, first, rest) {
-                return first.toUpperCase() + rest;
+        /**
+         * Replaces '_' to ' ' and capitalize first letter in array of strings
+         */
+        getHumanizedUrls: function(urls) {
+            return _.map(urls, function (url) {
+                return url.split("_").join(" ").replace(new RegExp("^(.)(.*)"), function (all, first, rest) {
+                    return first.toUpperCase() + rest;
+                });
             });
-        });
-    },
+        },
 
-    clear: function() {
-        while (this.size > 0) {
-            this.pop();
+        clear: function() {
+            while (this.size > 0) {
+                this.pop();
+            }
+        },
+
+        /**
+         * Sets the name of last breadcrumb item
+         */
+        set: function(name) {
+            $(this.element).find("span:last").html(name);
+        },
+
+        /**
+         * Appends link to the breadcrumbs list and an arrow after it.
+         */
+        push: function(name, url) {
+            $(this.element).find("a:last").after(' <a href="'+url+'" class="active">' + name + '</a>');
+            $(this.element).find("a:last").before('<img src="images/navi-next.png" width="3" height="5"'
+                + ' alt="" align="absmiddle" class="navi-next" /><span></span>');
+
+            this.size++;
+        },
+
+        pop: function() {
+            if ($("#nav-content").find("a").length > 1) {
+                $(this.element).find("a:last").remove();
+                $(this.element).find("img:last").remove();
+                $(this.element).find("span:last").remove();
+            }
+
+            this.size--;
         }
-    },
+    });
 
-    /**
-     * Sets the name of last breadcrumb item
-     */
-    set: function(name) {
-        $(this.element).find("span:last").html(name);
-    },
-
-    /**
-     * Appends link to the breadcrumbs list and an arrow after it.
-     */
-    push: function(name, url) {
-        $(this.element).find("a:last").after(' <a href="'+url+'" class="active">' + name + '</a>');
-        $(this.element).find("a:last").before('<img src="images/navi-next.png" width="3" height="5"'
-            + ' alt="" align="absmiddle" class="navi-next" /><span></span>');
-
-        this.size++;
-    },
-
-    pop: function() {
-        if ($("#nav-content").find("a").length > 1) {
-            $(this.element).find("a:last").remove();
-            $(this.element).find("img:last").remove();
-            $(this.element).find("span:last").remove();
-        }
-
-        this.size--;
-    }
+    return new Breadcrumbs();
 });
-
-export default new Breadcrumbs();

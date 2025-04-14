@@ -14,79 +14,81 @@
  * Copyright 2011-2016 ForgeRock AS.
  */
 
-import $ from "jquery";
+define([
+    "jquery"
+], function ($) {
+    var obj = {
+        "required": {
+            "name": "Required field",
+            "dependencies": [],
+            "validator": function(el, input, callback) {
+                var v = input.val();
+                if (!v || v === "") {
+                    callback([$.t("common.form.validation.required")]);
+                } else {
+                    callback();
+                }
 
-var obj = {
-    "required": {
-        "name": "Required field",
-        "dependencies": [],
-        "validator": function(el, input, callback) {
-            var v = input.val();
-            if (!v || v === "") {
-                callback([$.t("common.form.validation.required")]);
-            } else {
-                callback();
             }
+        },
+        "passwordConfirm": {
+            "name": "Password confirmation",
+            "dependencies": [],
+            "validator": function(el, input, callback) {
+                var confirmValue = input.val(),
+                    mainInput = el.find(":input#" + input.attr("passwordField"));
 
-        }
-    },
-    "passwordConfirm": {
-        "name": "Password confirmation",
-        "dependencies": [],
-        "validator": function(el, input, callback) {
-            var confirmValue = input.val(),
-                mainInput = el.find(":input#" + input.attr("passwordField"));
+                if (mainInput.val() !== confirmValue || mainInput.attr("data-validation-status") === "error") {
+                    callback([$.t("common.form.validation.confirmationMatchesPassword")]);
+                } else {
+                    callback();
+                }
+            }
+        },
+        "minLength": {
+            "name": "Minimum number of characters",
+            "dependencies": [],
+            "validator": function(el, input, callback) {
+                var v = input.val(),
+                    len = input.attr('minLength');
 
-            if (mainInput.val() !== confirmValue || mainInput.attr("data-validation-status") === "error") {
-                callback([$.t("common.form.validation.confirmationMatchesPassword")]);
-            } else {
-                callback();
+                if (v.length < len) {
+                    callback([$.t("common.form.validation.MIN_LENGTH", {minLength: len})]);
+                } else {
+                    callback();
+                }
+            }
+        },
+        "atLeastXNumbers": {
+            "name": "Minimum occurrence of numeric characters in string",
+            "dependencies": [],
+            "validator": function(el, input, callback) {
+                var v = input.val(),
+                    minNumbers = input.attr('atLeastXNumbers'),
+                    foundNumbers = v.match(/\d/g);
+
+                if (!foundNumbers || foundNumbers.length < minNumbers) {
+                    callback([$.t("common.form.validation.AT_LEAST_X_NUMBERS", {numNums: minNumbers})]);
+                } else {
+                    callback();
+                }
+            }
+        },
+        "atLeastXCapitalLetters": {
+            "name": "Minimum occurrence of capital letter characters in string",
+            "dependencies": [],
+            "validator": function(el, input, callback) {
+                var v = input.val(),
+                    minCapitals = input.attr('atLeastXCapitalLetters'),
+                    foundCapitals = v.match(/[(A-Z)]/g);
+
+                if (!foundCapitals || foundCapitals.length < minCapitals) {
+                    callback([$.t("common.form.validation.AT_LEAST_X_CAPITAL_LETTERS", {numCaps: minCapitals})]);
+                } else {
+                    callback();
+                }
             }
         }
-    },
-    "minLength": {
-        "name": "Minimum number of characters",
-        "dependencies": [],
-        "validator": function(el, input, callback) {
-            var v = input.val(),
-                len = input.attr('minLength');
-
-            if (v.length < len) {
-                callback([$.t("common.form.validation.MIN_LENGTH", {minLength: len})]);
-            } else {
-                callback();
-            }
-        }
-    },
-    "atLeastXNumbers": {
-        "name": "Minimum occurrence of numeric characters in string",
-        "dependencies": [],
-        "validator": function(el, input, callback) {
-            var v = input.val(),
-                minNumbers = input.attr('atLeastXNumbers'),
-                foundNumbers = v.match(/\d/g);
-
-            if (!foundNumbers || foundNumbers.length < minNumbers) {
-                callback([$.t("common.form.validation.AT_LEAST_X_NUMBERS", {numNums: minNumbers})]);
-            } else {
-                callback();
-            }
-        }
-    },
-    "atLeastXCapitalLetters": {
-        "name": "Minimum occurrence of capital letter characters in string",
-        "dependencies": [],
-        "validator": function(el, input, callback) {
-            var v = input.val(),
-                minCapitals = input.attr('atLeastXCapitalLetters'),
-                foundCapitals = v.match(/[(A-Z)]/g);
-
-            if (!foundCapitals || foundCapitals.length < minCapitals) {
-                callback([$.t("common.form.validation.AT_LEAST_X_CAPITAL_LETTERS", {numCaps: minCapitals})]);
-            } else {
-                callback();
-            }
-        }
-    }
-};
-export default obj;
+    };
+    return obj;
+});

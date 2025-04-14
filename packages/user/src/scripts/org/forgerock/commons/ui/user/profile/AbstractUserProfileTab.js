@@ -14,161 +14,172 @@
  * Copyright 2015-2016 ForgeRock AS.
  */
 
-import $ from "jquery";
-import _ from "lodash";
-import form2js from "form2js";
-import js2form from "js2form";
-import AbstractView from "org/forgerock/commons/ui/common/main/AbstractView";
-import ChangesPending from "org/forgerock/commons/ui/common/components/ChangesPending";
-import Configuration from "org/forgerock/commons/ui/common/main/Configuration";
-import ConfirmPasswordDialog from "org/forgerock/commons/ui/user/profile/ConfirmPasswordDialog";
-import Constants from "org/forgerock/commons/ui/common/util/Constants";
-import EventManager from "org/forgerock/commons/ui/common/main/EventManager";
-import ValidatorsManager from "org/forgerock/commons/ui/common/main/ValidatorsManager";
-
-/**
- * Provides base functionality for all tabs within UserProfileView
- * @exports org/forgerock/commons/ui/user/profile/AbstractUserProfileTab
- */
-var AbstractUserProfileTab = AbstractView.extend({
-    noBaseTempate: true,
-    events: {
-        "click input[type=submit]": "formSubmit",
-        "click input[type=reset]": "resetForm",
-        "reload form": "reloadFormData",
-        "change :input": "checkChanges"
-    },
+define([
+    "jquery",
+    "lodash",
+    "form2js",
+    "js2form",
+    "handlebars",
+    "org/forgerock/commons/ui/common/main/AbstractView",
+    "org/forgerock/commons/ui/common/components/ChangesPending",
+    "org/forgerock/commons/ui/common/main/Configuration",
+    "org/forgerock/commons/ui/user/profile/ConfirmPasswordDialog",
+    "org/forgerock/commons/ui/common/util/Constants",
+    "org/forgerock/commons/ui/common/main/EventManager",
+    "org/forgerock/commons/ui/common/main/ValidatorsManager"
+], function($, _, form2js, js2form, Handlebars,
+        AbstractView,
+        ChangesPending,
+        Configuration,
+        ConfirmPasswordDialog,
+        Constants,
+        EventManager,
+        ValidatorsManager) {
 
     /**
-     * Attaches a ChangesPending instance within the view
-     * Requires the presence of an element with the "changes-pending" class
-     * Initializes with the current value from this.getFormContent()
+     * Provides base functionality for all tabs within UserProfileView
+     * @exports org/forgerock/commons/ui/user/profile/AbstractUserProfileTab
      */
-    initializeChangesPending: function () {
-        this.changesPendingWidget = ChangesPending.watchChanges({
-            element: this.$el.find(".changes-pending"),
-            watchedObj: { subform: this.getFormContent() },
-            watchedProperties: ["subform"],
-            alertClass: "alert-warning alert-sm"
-        });
-    },
+    var AbstractUserProfileTab = AbstractView.extend({
+        noBaseTempate: true,
+        events: {
+            "click input[type=submit]": "formSubmit",
+            "click input[type=reset]": "resetForm",
+            "reload form": "reloadFormData",
+            "change :input": "checkChanges"
+        },
 
-    /**
-     * Works with form validators and changes pending widget to reflect the state of the
-     * form as the user makes their edits.
-     */
-    checkChanges: function (event) {
-        var target = $(event.target),
-            form = $(target.closest("form"));
+        /**
+         * Attaches a ChangesPending instance within the view
+         * Requires the presence of an element with the "changes-pending" class
+         * Initializes with the current value from this.getFormContent()
+         */
+        initializeChangesPending: function () {
+            this.changesPendingWidget = ChangesPending.watchChanges({
+                element: this.$el.find(".changes-pending"),
+                watchedObj: { subform: this.getFormContent() },
+                watchedProperties: ["subform"],
+                alertClass: "alert-warning alert-sm"
+            });
+        },
 
-        ValidatorsManager.bindValidators(form, Configuration.loggedUser.baseEntity, function () {
-            ValidatorsManager.validateAllFields(form);
-        });
+        /**
+         * Works with form validators and changes pending widget to reflect the state of the
+         * form as the user makes their edits.
+         */
+        checkChanges: function (event) {
+            var target = $(event.target),
+                form = $(target.closest("form"));
 
-        target.trigger("validate");
-        if (!target.attr("data-validation-dependents")) {
-            this.changesPendingWidget.makeChanges({subform: this.getFormContent()});
-        }
+            ValidatorsManager.bindValidators(form, Configuration.loggedUser.baseEntity, function () {
+                ValidatorsManager.validateAllFields(form);
+            });
 
-        form.find("input[type='reset']").prop("disabled", false);
-    },
-
-    /**
-     * Generic method for reading content from the view's form. Extend if necessary for more
-     * complex form parsing needs.
-     */
-    getFormContent: function () {
-        return form2js(this.$el.find("form")[0], ".", false);
-    },
-
-    /**
-     * Used for populating the form with a "clean" set of data, either when first rendered
-     * or when the form is reset.
-     */
-    reloadFormData: function (userData) {
-        var form = this.$el.find("form");
-        this.data.user = userData || this.data.user;
-        js2form(form[0], this.data.user);
-        $("input[type=password]", form).val("").attr("placeholder", $.t("common.form.passwordPlaceholder"));
-
-        ValidatorsManager.clearValidators(form);
-        ValidatorsManager.bindValidators(form, Configuration.loggedUser.baseEntity, function () {
-            form.find("input[type='reset']").prop("disabled", true);
-            form.find("input[type='submit']").prop("disabled", true);
-        });
-        this.initializeChangesPending();
-    },
-
-    resetForm: function (event) {
-        event.preventDefault();
-        this.reloadFormData();
-    },
-
-    /**
-     * Generic save method  - patch the user model with the local data and persist it
-     */
-    submit: function (formData) {
-        Configuration.loggedUser.save(formData, {patch: true}).then(
-            _.bind(function () {
-                this.submitSuccess();
-            }, this)
-        );
-    },
-
-    /**
-     * After a form is saved, reset the content with the most recent data for the user
-     */
-    submitSuccess: function () {
-        this.data.user = Configuration.loggedUser.toJSON();
-        this.reloadFormData();
-        EventManager.sendEvent(Constants.EVENT_DISPLAY_MESSAGE_REQUEST, "profileUpdateSuccessful");
-    },
-
-    /**
-     * Attempt to submit the form. If the form is invalid, it will fail. If the user
-     * is changing a protected attribute, prompt them to first enter their old password.
-     * Finally, attempt to actually submit the form data.
-     */
-    formSubmit: function (event) {
-
-        event.preventDefault();
-        event.stopPropagation();
-
-        var changedProtected = [],
-            form = $(event.target).closest("form"),
-            formData = this.getFormContent(form[0]);
-
-        if (ValidatorsManager.formValidated(form)) {
-
-            changedProtected = _.chain(Configuration.loggedUser.getProtectedAttributes())
-                .filter(_.bind(function(attr) {
-                    if (_.has(formData, attr)) {
-                        if (_.isEmpty(Configuration.loggedUser.get(attr)) && _.isEmpty(formData[attr])) {
-                            return false;
-                        } else {
-                            return !_.isEqual(Configuration.loggedUser.get(attr),formData[attr]);
-                        }
-                    } else {
-                        return false;
-                    }
-                }, this))
-                .map(_.bind(function (attr) {
-                    return this.$el.find("label[for=input-"+attr+"]").text();
-                }, this))
-                .value();
-
-            if (changedProtected.length === 0) {
-                this.submit(formData);
-            } else {
-                ConfirmPasswordDialog.render(changedProtected, _.bind(function (currentPassword) {
-                    Configuration.loggedUser.setCurrentPassword(currentPassword);
-                    this.submit(formData);
-                }, this));
+            target.trigger("validate");
+            if (!target.attr("data-validation-dependents")) {
+                this.changesPendingWidget.makeChanges({subform: this.getFormContent()});
             }
 
+            form.find("input[type='reset']").prop("disabled", false);
+        },
+
+        /**
+         * Generic method for reading content from the view's form. Extend if necessary for more
+         * complex form parsing needs.
+         */
+        getFormContent: function () {
+            return form2js(this.$el.find("form")[0], ".", false);
+        },
+
+        /**
+         * Used for populating the form with a "clean" set of data, either when first rendered
+         * or when the form is reset.
+         */
+        reloadFormData: function (userData) {
+            var form = this.$el.find("form");
+            this.data.user = userData || this.data.user;
+            js2form(form[0], this.data.user);
+            $("input[type=password]", form).val("").attr("placeholder", $.t("common.form.passwordPlaceholder"));
+
+            ValidatorsManager.clearValidators(form);
+            ValidatorsManager.bindValidators(form, Configuration.loggedUser.baseEntity, function () {
+                form.find("input[type='reset']").prop("disabled", true);
+                form.find("input[type='submit']").prop("disabled", true);
+            });
+            this.initializeChangesPending();
+        },
+
+        resetForm: function (event) {
+            event.preventDefault();
+            this.reloadFormData();
+        },
+
+        /**
+         * Generic save method  - patch the user model with the local data and persist it
+         */
+        submit: function (formData) {
+            Configuration.loggedUser.save(formData, {patch: true}).then(
+                _.bind(function () {
+                    this.submitSuccess();
+                }, this)
+            );
+        },
+
+        /**
+         * After a form is saved, reset the content with the most recent data for the user
+         */
+        submitSuccess: function () {
+            this.data.user = Configuration.loggedUser.toJSON();
+            this.reloadFormData();
+            EventManager.sendEvent(Constants.EVENT_DISPLAY_MESSAGE_REQUEST, "profileUpdateSuccessful");
+        },
+
+        /**
+         * Attempt to submit the form. If the form is invalid, it will fail. If the user
+         * is changing a protected attribute, prompt them to first enter their old password.
+         * Finally, attempt to actually submit the form data.
+         */
+        formSubmit: function (event) {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            var changedProtected = [],
+                form = $(event.target).closest("form"),
+                formData = this.getFormContent(form[0]);
+
+            if (ValidatorsManager.formValidated(form)) {
+
+                changedProtected = _.chain(Configuration.loggedUser.getProtectedAttributes())
+                    .filter(_.bind(function(attr) {
+                        if (_.has(formData, attr)) {
+                            if (_.isEmpty(Configuration.loggedUser.get(attr)) && _.isEmpty(formData[attr])) {
+                                return false;
+                            } else {
+                                return !_.isEqual(Configuration.loggedUser.get(attr),formData[attr]);
+                            }
+                        } else {
+                            return false;
+                        }
+                    }, this))
+                    .map(_.bind(function (attr) {
+                        return this.$el.find("label[for=input-"+attr+"]").text();
+                    }, this))
+                    .value();
+
+                if (changedProtected.length === 0) {
+                    this.submit(formData);
+                } else {
+                    ConfirmPasswordDialog.render(changedProtected, _.bind(function (currentPassword) {
+                        Configuration.loggedUser.setCurrentPassword(currentPassword);
+                        this.submit(formData);
+                    }, this));
+                }
+
+            }
         }
-    }
 
+    });
+
+    return AbstractUserProfileTab;
 });
-
-export default AbstractUserProfileTab;

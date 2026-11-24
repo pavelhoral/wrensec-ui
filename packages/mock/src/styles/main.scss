@@ -17,8 +17,9 @@
 /* Bootstrap with the Wren Security theme */
 @use "common/bootstrap";
 
-/* Commons styles */
+/* Commons styles (including the optional backgrid styles shown in the style guide) */
 @use "common/structure";
+@use "common/structure/backgrid";
 
 /* Mock styles */
 @use "structure/example";

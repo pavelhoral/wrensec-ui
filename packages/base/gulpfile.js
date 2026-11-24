@@ -30,7 +30,7 @@ const MODULE_RESOURCES = {
         `@fortawesome/fontawesome-free/webfonts/${font}.woff2`,
         `css/fontawesome/webfonts/${font}.woff2`
     ])),
-    "@selectize/selectize/dist/css/selectize.bootstrap3.css": "css/selectize.css",
+    "@selectize/selectize/dist/css/selectize.bootstrap5.css": "css/selectize.css",
     "@selectize/selectize/dist/js/selectize.min.js": "libs/selectize.js",
     "backbone-relational/backbone-relational.js": "libs/backbone-relational.js",
     "backbone.paginator/lib/backbone.paginator.min.js": "libs/backbone.paginator.js",

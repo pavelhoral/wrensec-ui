@@ -58,6 +58,8 @@
   `checkbox` → `form-check`, `data-toggle` / `data-target` / `data-dismiss` → `data-bs-*` and dropdown carets
   are added by Bootstrap (remove `<span class="caret"></span>` from dropdown toggles, and the `dropdown-toggle` class
   from icon only toggles that should have no caret).
+* `css/selectize.css` is the Selectize Bootstrap 5 theme (commons structure adapts it to the Bootstrap theme colors)
+  and the backgrid paginator (`ThemeablePaginator`) renders Bootstrap 5 pagination (`page-item` / `page-link`).
 * titatoggle has been removed (remove `@import "titatoggle.css";`), use Bootstrap 5 switches instead:
   `<div class="checkbox checkbox-slider-primary checkbox-slider checkbox-slider--b"><label><input type="checkbox">
   <span>Label</span></label></div>` → `<div class="form-check form-switch"><input class="form-check-input"

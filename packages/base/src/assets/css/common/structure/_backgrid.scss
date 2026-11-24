@@ -26,14 +26,15 @@
 .backgrid {
     thead th {
         text-align: left;
-        border-width: 2px;
+        border-bottom-width: 2px;
         background-color: transparent;
         font-size: 12px;
         line-height: 12px;
         letter-spacing: 1px;
         text-transform: uppercase;
 
-        > a {
+        /* Sort links have no href, which Bootstrap 5 reboot would show in the text color */
+        &.sortable > a {
             color: var(--wrensec-base-theme-color);
 
             &:focus, &:hover {

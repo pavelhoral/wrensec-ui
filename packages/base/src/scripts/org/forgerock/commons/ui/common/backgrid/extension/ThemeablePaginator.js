@@ -12,6 +12,7 @@
  * information: "Portions copyright [year] [name of copyright owner]".
  *
  * Copyright 2015-2016 ForgeRock AS.
+ * Portions Copyright 2026 Wren Security.
  */
 
 /**
@@ -64,7 +65,7 @@ define([
          * @property CSS class name to add to <code>ul</code> element
          * @default
          */
-        ulClassName: "pagination",
+        ulClassName: "pagination justify-content-center",
 
         /**
          * @inheritdoc
@@ -75,6 +76,9 @@ define([
             if (this.ulClassName) {
                 this.$el.find("ul").addClass(this.ulClassName);
             }
+            // Bootstrap 5 pagination items and links
+            this.$el.find("li").addClass("page-item");
+            this.$el.find("li > a").addClass("page-link");
 
             return this;
         }

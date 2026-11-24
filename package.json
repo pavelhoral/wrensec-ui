@@ -12,7 +12,8 @@
   ],
   "overrides": {
     "node-fetch": "2.7.0",
-    "puppeteer": "25.18.1"
+    "puppeteer": "25.18.1",
+    "jquery": "^4.1.0"
   },
   "allowScripts": {
     "puppeteer@25.18.1": true,

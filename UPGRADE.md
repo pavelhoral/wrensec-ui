@@ -62,6 +62,13 @@
   `<div class="checkbox checkbox-slider-primary checkbox-slider checkbox-slider--b"><label><input type="checkbox">
   <span>Label</span></label></div>` → `<div class="form-check form-switch"><input class="form-check-input"
   type="checkbox" role="switch" id="active"><label class="form-check-label" for="active">Label</label></div>`.
+* jQuery has been upgraded from 3 to 4 (see https://jquery.com/upgrade-guide/4.0/):
+  * removed APIs have native replacements: `$.trim(s)` → `s.trim()`, `$.isArray(a)` → `Array.isArray(a)`,
+    `$.parseJSON(s)` → `JSON.parse(s)`, `$.isFunction(f)` → `typeof f === "function"`, `$.now()` → `Date.now()`,
+    `.size()` → `.length`, … (also `$.type`, `$.isNumeric`, `$.isWindow`, `$.camelCase`, `$.nodeName`,
+    `$.unique` and `.toggleClass(boolean)` have been removed),
+  * Selectize declares jQuery 3 as its peer dependency, so applications have to override the jQuery version in their
+    `package.json` to install a single jQuery: `"overrides": { "jquery": "^4.1.0" }`.
 * `bootstrap-dialog` library has been replaced by the commons module
   `org/forgerock/commons/ui/common/components/ModalDialog`, which renders the same markup (Bootstrap modal with
   `bootstrap-dialog*` CSS classes, the close button is Bootstrap 5 `.btn-close`) and supports the subset of bootstrap-dialog API used by Wren Security applications

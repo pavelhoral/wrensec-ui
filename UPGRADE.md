@@ -44,7 +44,9 @@
     as the `linkClass` parameter,
   * panels are cards, profile tabs are `nav-item` / `nav-link` elements, horizontal form groups are rows with
     `col-form-label` labels and selects are `form-select`,
-  * the default button class (including `ModalDialog` buttons) is `btn-outline-primary` instead of `btn-default`.
+  * the default button class is `btn-outline-primary` instead of `btn-default`, dialog buttons without a class
+    (dismissing the dialog in `ModalDialog`, `BootstrapDialog`, `BootstrapDialogView` and `Dialog`) are
+    `btn-outline-secondary`.
 * Commons styles keep providing classes that Bootstrap 5 removed and that commons validation and templates rely on:
   `form-group` (with validation states `has-feedback`, `has-error`, `has-warning`, `has-success` and
   `form-control-feedback` icons), `page-header` and `caret`. Labels are bold (except `form-check-label`).
@@ -86,22 +88,32 @@
     `$.unique` and `.toggleClass(boolean)` have been removed),
   * Selectize declares jQuery 3 as its peer dependency, so applications have to override the jQuery version in their
     `package.json` to install a single jQuery: `"overrides": { "jquery": "^4.1.0" }`.
-* `bootstrap-dialog` library has been replaced by the commons module
-  `org/forgerock/commons/ui/common/components/ModalDialog`, which renders the same markup (Bootstrap modal with
-  `bootstrap-dialog*` CSS classes, the close button is Bootstrap 5 `.btn-close`) and supports the subset of bootstrap-dialog API used by Wren Security applications
-  (`ModalDialog.show(options)`, `new ModalDialog(options).open()`, `close()`, `getButton(id)` with `enable()` /
-  `disable()`, `getData()` / `setData()`, `getModal*()` accessors and `onshow` / `onshown` / `onhide` /
-  `onhidden` callbacks):
+* New commons module `org/forgerock/commons/ui/common/components/ModalDialog` shows modal dialogs using the
+  Bootstrap 5 modal component with its standard markup and events (`show.bs.modal`, `shown.bs.modal`,
+  `hide.bs.modal`, `hidden.bs.modal`):
+  * `ModalDialog.show({ title, body, variant, size, closable, buttons: [{ id, label, className, action }] })`
+    creates and shows a dialog, `show()` and `hide()` return promises and hidden dialogs are removed from the page,
+  * buttons without `className` are `btn-outline-secondary` (buttons dismissing the dialog),
+  * `ModalDialog.confirm({ title, body, variant, confirmLabel })` returns a promise resolved with the choice,
+  * `UIUtils.confirmDialog()` uses it (the dialog and button identifiers are kept).
+* `bootstrap-dialog` library has been replaced by the deprecated commons module
+  `org/forgerock/commons/ui/common/components/BootstrapDialog` (to be removed in 25.0, migrate to `ModalDialog`),
+  which renders the same markup (Bootstrap modal with `bootstrap-dialog*` CSS classes, the close button is
+  Bootstrap 5 `.btn-close`) and supports the subset of bootstrap-dialog API used by Wren Security applications
+  (`BootstrapDialog.show(options)`, `new BootstrapDialog(options).open()`, `close()`, `getButton(id)` with
+  `enable()` / `disable()`, `getData()` / `setData()`, `getModal*()` accessors and `onshow` / `onshown` /
+  `onhide` / `onhidden` callbacks):
   * remove `libs/bootstrap-dialog` from RequireJS paths and shims; code that requires `bootstrap-dialog` directly
     can keep working with a RequireJS map entry
-    `map: { "*": { "bootstrap-dialog": "org/forgerock/commons/ui/common/components/ModalDialog" } }`,
+    `map: { "*": { "bootstrap-dialog": "org/forgerock/commons/ui/common/components/BootstrapDialog" } }`,
   * remove `@import "bootstrap-dialog.css";` from application styles (the necessary styles are part of the commons
     structure),
-  * not supported: `BootstrapDialog.alert()` / `confirm()` / `warning()` / `danger()` / `success()` /
-    `closeAll()`, the `dialogs` registry, setters (`setTitle()`, `setMessage()`, …), `draggable`, `spinicon`,
-    `btnsOrder`, `closeByBackdrop` / `closeByKeyboard` (use `closable`) and button `autospin`,
-  * the commons wrapper `components/BootstrapDialog` keeps `show()` and `confirm()`, while `warning()`, `danger()`
-    and `success()` have been removed.
+  * `BootstrapDialog.show()` adds the commons enhancements (header text color by dialog type, `autofocus` and
+    initially disabled buttons) and `BootstrapDialog.confirm()` is kept, while `warning()`, `danger()` and
+    `success()` have been removed,
+  * not supported: `BootstrapDialog.alert()` / `warning()` / `danger()` / `success()` / `closeAll()`, the
+    `dialogs` registry, setters (`setTitle()`, `setMessage()`, …), `draggable`, `spinicon`, `btnsOrder`,
+    `closeByBackdrop` / `closeByKeyboard` (use `closable`) and button `autospin`.
 
 ## 23.4.x -> 23.5.x
 

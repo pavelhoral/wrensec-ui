@@ -91,6 +91,8 @@
             "update" : "Update",
             "save" : "Save",
             "create" : "Create",
+            "ok" : "OK",
+            "confirm" : "Confirm",
             "cancel" : "Cancel",
             "close" : "Close",
             "logout" : "Log out",

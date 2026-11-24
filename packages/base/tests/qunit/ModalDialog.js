@@ -16,218 +16,195 @@
 
 define([
     "jquery",
-    "org/forgerock/commons/ui/common/components/ModalDialog",
-    "org/forgerock/commons/ui/common/components/BootstrapDialog"
-], function ($, ModalDialog, BootstrapDialog) {
-    var opened;
+    "org/forgerock/commons/ui/common/components/ModalDialog"
+], function ($, ModalDialog) {
+    var created;
 
-    /** Open a dialog without animation, so that it is shown and hidden synchronously. */
-    function show (options) {
-        var dialog = ModalDialog.show($.extend({ animate: false }, options));
-        opened.push(dialog);
+    /** Create a dialog without animation, so that it is shown and hidden synchronously. */
+    function create (options) {
+        var dialog = new ModalDialog($.extend({ animate: false }, options));
+        created.push(dialog);
         return dialog;
     }
 
-    function keyup (dialog, which) {
-        dialog.$modal.trigger($.Event("keyup", { which: which }));
+    function show (options) {
+        var dialog = create(options);
+        dialog.show();
+        return dialog;
+    }
+
+    function isShown (dialog) {
+        return dialog.$el.hasClass("show") && $.contains(document.body, dialog.element);
     }
 
     /** Bootstrap uses native event listeners, so native events are dispatched. */
     function pressEscape (dialog) {
-        dialog.$modal[0].dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+        dialog.element.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
     }
 
     function clickBackdrop (dialog) {
-        dialog.$modal[0].dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
-        dialog.$modal[0].click();
+        dialog.element.dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
+        dialog.element.click();
     }
 
     QUnit.module("ModalDialog", {
         beforeEach: function () {
-            opened = [];
+            created = [];
         },
         afterEach: function () {
-            opened.reverse().forEach(function (dialog) {
-                dialog.close();
+            created.reverse().forEach(function (dialog) {
+                dialog.hide();
             });
             $(".modal-backdrop").remove();
-            $(document.body).removeClass("modal-open");
+            $(document.body).removeClass("modal-open").css({ "overflow": "", "padding-right": "" });
         }
     });
 
-    QUnit.test("renders bootstrap-dialog markup", function (assert) {
+    QUnit.test("renders Bootstrap modal markup", function (assert) {
         var dialog = show({
-            id: "testDialog",
-            title: "Title",
-            message: "Line 1\nLine 2",
-            type: ModalDialog.TYPE_DANGER,
-            size: ModalDialog.SIZE_WIDE,
-            cssClass: "custom-class",
-            description: "testDescription"
-        });
+                id: "testDialog",
+                className: "custom-class",
+                title: "<b>Title</b>",
+                body: "<p class='message'>Message</p>",
+                variant: "danger",
+                size: "lg",
+                scrollable: true,
+                centered: true
+            }),
+            $title = dialog.$el.find(".modal-header > .modal-title");
 
-        assert.ok(dialog.isRealized(), "dialog is realized");
-        assert.ok(dialog.isOpened(), "dialog is opened");
-        assert.equal($("#testDialog").length, 1, "dialog is attached to the page");
-        assert.ok(dialog.$modal.is(".modal.bootstrap-dialog.type-danger.size-wide.custom-class"), "dialog classes");
-        assert.notOk(dialog.$modal.hasClass("fade"), "no fade class without animation");
-        assert.equal(dialog.$modal.attr("aria-labelledby"), "testDialog_title", "labelled by title");
-        assert.equal(dialog.$modal.attr("aria-describedby"), "testDescription", "described by description");
-        assert.equal(dialog.$modal.attr("tabindex"), "-1", "default tabindex");
-        assert.ok(dialog.getModalDialog().hasClass("modal-lg"), "wide dialog is large modal");
-        assert.equal(dialog.$modal.find("#testDialog_title.bootstrap-dialog-title").text(), "Title", "title");
-        assert.equal(dialog.$modal.find(".bootstrap-dialog-message").html(), "Line 1<br>Line 2",
-            "new lines converted to line breaks");
-        assert.ok(dialog.$modal.find(".bootstrap-dialog-close-button").is(":visible"), "close button is visible");
-        assert.notOk(dialog.getModalFooter().is(":visible"), "footer without buttons is hidden");
-        assert.equal(dialog.getModalFooter().find(".bootstrap-dialog-footer-buttons").length, 0,
-            "no buttons container without buttons");
+        assert.ok(isShown(dialog), "dialog is shown");
+        assert.ok(dialog.$el.is("#testDialog.modal.custom-class"), "dialog element");
+        assert.notOk(dialog.$el.hasClass("fade"), "no fade class without animation");
+        assert.ok(dialog.$el.find(".modal-dialog").is(".modal-lg.modal-dialog-scrollable.modal-dialog-centered"),
+            "dialog size and position");
+        assert.equal($title.text(), "<b>Title</b>", "title string is text");
+        assert.ok($title.hasClass("text-danger"), "title color by variant");
+        assert.equal(dialog.$el.attr("aria-labelledby"), $title.attr("id"), "dialog labelled by its title");
+        assert.equal(dialog.$body.find(".message").text(), "Message", "body string is HTML");
+        assert.equal(dialog.$el.find(".modal-header > .btn-close[data-bs-dismiss=modal]").length, 1, "close button");
+        assert.equal(dialog.$el.find(".modal-footer").length, 0, "no footer without buttons");
         assert.ok($(document.body).hasClass("modal-open"), "page is in modal mode");
     });
 
-    QUnit.test("renders default title, function and jQuery content", function (assert) {
-        var dialog = show({
-                type: ModalDialog.TYPE_WARNING,
-                message: function (dialog) {
-                    return $("<p class='fn-message'></p>").text(dialog.getData("text"));
-                },
-                data: { text: "From data" },
-                nl2br: false
-            }),
-            plain = show({ title: "a\nb", nl2br: false });
+    QUnit.test("renders title and body elements", function (assert) {
+        var dialog = show({ title: $("<span class='title'>Title</span>"), body: $("<p class='body'>Body</p>") });
 
-        assert.equal(dialog.$modal.find(".bootstrap-dialog-title").text(), "Warning", "default title by type");
-        assert.equal(dialog.$modal.find(".bootstrap-dialog-message .fn-message").text(), "From data",
-            "message function called with the dialog");
-        assert.equal(plain.$modal.find(".bootstrap-dialog-title").html(), "a\nb", "new lines kept without nl2br");
-        assert.ok(/^wrensec-dialog-\d+$/.test(plain.getId()), "generated identifier");
-    });
-
-    QUnit.test("copies options and provides data", function (assert) {
-        var options = { data: { key: "value" } },
-            dialog = new ModalDialog(options);
-
-        dialog.setData("key", "changed");
-        assert.equal(dialog.getData("key"), "changed", "data changed");
-        assert.equal(options.data.key, "value", "original options are not modified");
-        assert.notOk(dialog.isRealized(), "dialog is not realized before opening");
+        assert.equal(dialog.$el.find(".modal-title > .title").length, 1, "title element");
+        assert.equal(dialog.$body.children(".body").length, 1, "body element");
+        assert.ok(/^wrensec-modal-\d+$/.test(dialog.element.id), "generated identifier");
+        assert.notOk(dialog.$el.find(".modal-title").is("[class*=text-]"), "no title color without variant");
+        assert.notOk(dialog.$el.find(".modal-dialog").is("[class*=modal-sm], [class*=modal-lg]"), "default size");
     });
 
     QUnit.test("renders and handles buttons", function (assert) {
         var clicked = [],
             dialog = show({
-                size: ModalDialog.SIZE_LARGE,
                 buttons: [{
-                    id: "btnIcon",
-                    label: "With icon",
-                    icon: "fa fa-check",
-                    cssClass: "btn-primary",
-                    hotkey: 13,
+                    id: "btnAction",
+                    label: "<i>Action</i>",
+                    className: "btn-primary",
                     action: function (dialogRef, event) {
-                        clicked.push([this.attr("id"), dialogRef === dialog, event.type]);
+                        clicked.push([this.id, dialogRef === dialog, event.type]);
                     }
                 }, {
-                    label: "Small",
-                    cssClass: "btn-outline-primary btn-sm"
+                    id: "btnDisabled",
+                    label: "Disabled",
+                    disabled: true
+                }, {
+                    id: "btnClose",
+                    label: "Close",
+                    autofocus: true
                 }]
             }),
-            $button = dialog.getButton("btnIcon"),
-            $small = dialog.$modalFooter.find("button").eq(1);
+            $action = dialog.getButton("btnAction");
 
-        assert.ok(dialog.getModalFooter().is(":visible"), "footer with buttons is visible");
-        assert.ok($button.is("button.btn.btn-primary.btn-lg"), "button classes with size class of large dialog");
-        assert.equal($button.find(".bootstrap-dialog-button-icon.fa.fa-check").length, 1, "button icon");
-        assert.equal($button.text(), "With icon", "button label");
-        assert.ok($small.is(".btn-sm") && !$small.hasClass("btn-lg"), "explicit button size is kept");
-        assert.ok(/^wrensec-dialog-button-\d+$/.test($small.attr("id")), "generated button identifier");
-        assert.strictEqual(dialog.getButton("missing"), null, "unknown button");
+        assert.ok($action.is(".modal-footer > button.btn.btn-primary[type=button]"), "button with class");
+        assert.equal($action.text(), "<i>Action</i>", "button label is text");
+        assert.ok(dialog.getButton("btnDisabled").is(".btn-outline-secondary:disabled"), "default class, disabled");
+        assert.ok(dialog.getButton("btnClose").is(document.activeElement), "autofocus button focused");
+        assert.equal(dialog.getButton("missing").length, 0, "unknown button");
 
-        $button.trigger("click");
-        assert.deepEqual(clicked, [["btnIcon", true, "click"]], "action called with the button and the dialog");
+        $action.trigger("click");
+        assert.deepEqual(clicked, [["btnAction", true, "click"]], "action called with the button and the dialog");
+        assert.ok(isShown(dialog), "action does not hide the dialog");
 
-        keyup(dialog, 13);
-        assert.equal(clicked.length, 2, "hotkey clicks the button");
-
-        $button.disable();
-        assert.ok($button.prop("disabled") && $button.hasClass("disabled"), "button disabled");
-        keyup(dialog, 13);
-        assert.equal(clicked.length, 2, "hotkey ignores disabled button");
-
-        $button.enable();
-        assert.notOk($button.prop("disabled") || $button.hasClass("disabled"), "button enabled");
-
-        dialog.enableButtons(false);
-        assert.equal(dialog.$modalFooter.find("button:disabled").length, 2, "all buttons disabled");
+        dialog.getButton("btnClose").trigger("click");
+        assert.notOk(isShown(dialog), "button without action hides the dialog");
     });
 
-    QUnit.test("calls lifecycle callbacks", function (assert) {
-        var calls = [],
-            track = function (name) {
-                return function (dialog) {
-                    calls.push(name + ":" + dialog.isOpened() + ":" + (this.id === "lifecycle"));
-                };
-            },
-            dialog = show({
-                id: "lifecycle",
-                onshow: track("onshow"),
-                onshown: track("onshown"),
-                onhide: track("onhide"),
-                onhidden: track("onhidden")
+    QUnit.test("shows and hides with promises and events", function (assert) {
+        var events = [],
+            dialog = create({ id: "lifecycle" });
+
+        dialog.$el.on("show.bs.modal shown.bs.modal hide.bs.modal hidden.bs.modal", function (event) {
+            events.push(event.type);
+        });
+        return dialog.show().then(function (shown) {
+            assert.strictEqual(shown, true, "show resolved");
+            assert.ok(isShown(dialog), "dialog is shown");
+            return dialog.hide();
+        }).then(function () {
+            assert.deepEqual(events, ["show", "shown", "hide", "hidden"], "Bootstrap events triggered");
+            assert.equal($("#lifecycle").length, 0, "hidden dialog is removed from the page");
+            assert.notOk($(document.body).hasClass("modal-open"), "page is not in modal mode");
+            return dialog.show().then(function () {
+                assert.ok(false, "hidden dialog cannot be shown again");
+            }, function () {
+                assert.ok(true, "hidden dialog cannot be shown again");
             });
-
-        dialog.close();
-        assert.deepEqual(calls, [
-            "onshow:true:true",
-            "onshown:true:true",
-            "onhide:false:true",
-            "onhidden:false:true"
-        ], "callbacks called in order with the dialog and options as context");
-        assert.equal($("#lifecycle").length, 0, "closed dialog is removed");
-        assert.notOk($(document.body).hasClass("modal-open"), "page is not in modal mode");
+        });
     });
 
-    QUnit.test("allows callbacks to cancel showing and hiding", function (assert) {
-        var allowHide = false,
-            cancelled = show({ id: "cancelled", onshow: function () { return false; } }),
-            dialog = show({ id: "guarded", onhide: function () { return allowHide; } });
+    QUnit.test("allows event handlers to prevent showing and hiding", function (assert) {
+        var prevented = create({ id: "prevented" }),
+            guarded = show({ id: "guarded" }),
+            allowHide = false;
 
-        assert.notOk(cancelled.isOpened(), "showing cancelled");
-        assert.notOk(cancelled.$modal.is(":visible"), "cancelled dialog is not visible");
+        prevented.$el.on("show.bs.modal", function (event) {
+            event.preventDefault();
+        });
+        guarded.$el.on("hide.bs.modal", function (event) {
+            if (!allowHide) {
+                event.preventDefault();
+            }
+        });
 
-        dialog.close();
-        assert.ok(dialog.isOpened(), "hiding cancelled");
-        assert.equal($("#guarded").length, 1, "dialog is kept");
-
+        guarded.hide();
+        assert.ok(isShown(guarded), "hiding prevented");
         allowHide = true;
-        dialog.close();
-        assert.notOk(dialog.isOpened(), "dialog closed");
-        assert.equal($("#guarded").length, 0, "dialog removed");
+        guarded.hide();
+        assert.notOk(isShown(guarded), "dialog hidden");
+
+        return prevented.show().then(function (shown) {
+            assert.strictEqual(shown, false, "show resolved as prevented");
+            assert.notOk(isShown(prevented), "dialog is not shown");
+        });
     });
 
-    QUnit.test("closes by keyboard and backdrop when closable", function (assert) {
-        var closable = show({ id: "closable" }),
+    QUnit.test("is dismissed by keyboard and backdrop when closable", function (assert) {
+        var closable = show({ id: "closable", body: "<p class='message'>Message</p>" }),
             fixed = show({ id: "fixed", closable: false });
 
-        assert.notOk(fixed.$modal.find(".bootstrap-dialog-close-button").is(":visible"), "close button hidden");
+        assert.equal(fixed.$el.find(".btn-close").length, 0, "no close button when not closable");
         pressEscape(fixed);
         clickBackdrop(fixed);
-        assert.ok(fixed.isOpened(), "not closable dialog stays opened");
-        assert.notOk(fixed.$modal.hasClass("modal-static"), "not closable dialog is not animated");
-        fixed.close();
-        assert.notOk(fixed.isOpened(), "not closable dialog closed programmatically");
+        assert.ok(isShown(fixed), "not closable dialog stays shown");
+        fixed.hide();
+        assert.notOk(isShown(fixed), "not closable dialog hidden programmatically");
 
-        closable.$modal.find(".bootstrap-dialog-message").trigger("click");
-        assert.ok(closable.isOpened(), "click inside the dialog does not close it");
+        closable.$body.find(".message").trigger("click");
+        assert.ok(isShown(closable), "click inside the dialog does not hide it");
         pressEscape(closable);
-        assert.notOk(closable.isOpened(), "escape closes the dialog");
+        assert.notOk(isShown(closable), "escape hides the dialog");
 
-        closable = show({ id: "closable" });
+        closable = show();
         clickBackdrop(closable);
-        assert.notOk(closable.isOpened(), "backdrop click closes the dialog");
+        assert.notOk(isShown(closable), "backdrop click hides the dialog");
 
-        closable = show({ id: "closable" });
-        closable.$modal.find(".bootstrap-dialog-close-button").trigger("click");
-        assert.notOk(closable.isOpened(), "close button closes the dialog");
+        closable = show();
+        closable.$el.find(".btn-close").trigger("click");
+        assert.notOk(isShown(closable), "close button hides the dialog");
     });
 
     QUnit.test("stacks dialogs", function (assert) {
@@ -235,91 +212,66 @@ define([
             second = show({ id: "second" }),
             $backdrops = $(".modal-backdrop");
 
-        assert.equal(first.$modal.css("z-index"), "1055", "first dialog z-index");
-        assert.equal(second.$modal.css("z-index"), "1075", "second dialog z-index");
+        assert.equal(first.$el.css("z-index"), "1055", "first dialog z-index");
+        assert.equal(second.$el.css("z-index"), "1075", "second dialog z-index");
         assert.equal($backdrops.length, 2, "backdrop for each dialog");
         assert.equal($backdrops.last().css("z-index"), "1070", "second backdrop between the dialogs");
 
-        assert.ok(second.$modal.is(document.activeElement), "top dialog is focused");
+        assert.ok(second.$el.is(document.activeElement), "top dialog is focused");
         pressEscape(second);
-        assert.notOk(second.isOpened(), "escape closes the top dialog");
-        assert.ok(first.isOpened(), "previous dialog stays opened");
+        assert.notOk(isShown(second), "escape hides the top dialog");
+        assert.ok(isShown(first), "previous dialog stays shown");
         assert.ok($(document.body).hasClass("modal-open"), "page stays in modal mode with remaining dialog");
-        assert.ok(first.$modal.is(document.activeElement), "remaining dialog is focused");
+        assert.ok(first.$el.is(document.activeElement), "remaining dialog is focused");
 
-        first.close();
+        first.hide();
         assert.notOk($(document.body).hasClass("modal-open"), "page leaves modal mode");
     });
 
-    QUnit.test("closes dialog closed while it is being shown", function (assert) {
-        var done = assert.async(),
-            dialog = ModalDialog.show({
-                id: "fastClose",
-                onhidden: function (dialog) {
-                    assert.notOk(dialog.isOpened(), "dialog closed once it is shown");
-                    done();
-                }
+    QUnit.test("hides dialog hidden while it is being shown", function (assert) {
+        var order = [],
+            dialog = new ModalDialog({ id: "fastHide" }),
+            shown = dialog.show().then(function () {
+                order.push("shown");
+            }),
+            hidden = dialog.hide().then(function () {
+                order.push("hidden");
             });
 
-        dialog.close();
-        assert.ok(dialog.isOpened(), "dialog is still being shown");
-    });
-
-    QUnit.module("BootstrapDialog", {
-        afterEach: function () {
-            $(".modal").remove();
-            $(".modal-backdrop").remove();
-            $(document.body).removeClass("modal-open");
-        }
-    });
-
-    QUnit.test("adds header text color and disables buttons", function (assert) {
-        var dialog = BootstrapDialog.show({
-            animate: false,
-            type: BootstrapDialog.TYPE_SUCCESS,
-            message: $("<input type='text' autofocus>"),
-            buttons: [{ id: "initiallyDisabled", label: "Disabled", disabled: true }]
+        return Promise.all([shown, hidden]).then(function () {
+            assert.deepEqual(order, ["shown", "hidden"], "dialog hidden once it is shown");
+            assert.notOk(isShown(dialog), "dialog is hidden");
         });
-
-        assert.ok(dialog instanceof ModalDialog, "dialog created");
-        assert.ok(dialog.getModalHeader().hasClass("text-success"), "header text color by type");
-        assert.ok(dialog.getButton("initiallyDisabled").prop("disabled"), "button initially disabled");
-        assert.ok(dialog.$modalBody.find("input").is(document.activeElement), "autofocus element focused");
-        dialog.close();
     });
 
     QUnit.test("confirms", function (assert) {
-        var done = assert.async(),
-            results = [];
-
         // Confirmation dialogs are animated, the choice is made once each is shown
-        function confirm (choice, callback) {
-            var dialog = BootstrapDialog.confirm({
-                type: BootstrapDialog.TYPE_DANGER,
-                title: "Confirm",
-                message: "Sure?",
-                btnOKLabel: "Delete",
-                callback: function (result) {
-                    results.push(result);
-                }
+        function confirm (choose) {
+            $(document).one("shown.bs.modal", function (event) {
+                choose($(event.target));
             });
-            dialog.$modal.one("shown.bs.modal", function () {
-                dialog.$modalFooter.find("button").eq(choice).trigger("click");
-            });
-            dialog.$modal.one("hidden.bs.modal", callback);
-            return dialog;
+            return ModalDialog.confirm({ title: "Delete", body: "Sure?", variant: "danger" });
         }
 
-        var dialog = confirm(1, function () {
-                confirm(0, function () {
-                    assert.deepEqual(results, [true, false], "callback called with the choice");
-                    done();
-                });
-            }),
-            $buttons = dialog.$modalFooter.find("button");
-
-        assert.notOk(dialog.options.closable, "confirmation is not closable");
-        assert.equal($buttons.eq(1).text(), "Delete", "confirm button label");
-        assert.ok($buttons.eq(1).hasClass("btn-danger"), "confirm button class by type");
+        return confirm(function ($dialog) {
+            var $buttons = $dialog.find(".modal-footer > .btn");
+            assert.equal($buttons.length, 2, "cancel and confirm buttons");
+            assert.ok($buttons.eq(0).hasClass("btn-outline-secondary"), "cancel button");
+            assert.ok($buttons.eq(1).hasClass("btn-danger"), "confirm button by variant");
+            assert.ok($dialog.find(".modal-title").hasClass("text-danger"), "title color by variant");
+            $buttons.eq(1).trigger("click");
+        }).then(function (result) {
+            assert.strictEqual(result, true, "confirmed");
+            return confirm(function ($dialog) {
+                $dialog.find(".modal-footer > .btn").eq(0).trigger("click");
+            });
+        }).then(function (result) {
+            assert.strictEqual(result, false, "cancelled");
+            return confirm(function ($dialog) {
+                $dialog.find(".btn-close").trigger("click");
+            });
+        }).then(function (result) {
+            assert.strictEqual(result, false, "dismissed");
+        });
     });
 });

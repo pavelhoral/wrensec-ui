@@ -11,34 +11,34 @@
         <h1>Dialogs</h1>
         <div class="card">
             <div class="card-body">
-                <h4 class="sub-header">Types and sizes</h4>
+                <h4 class="sub-header">Variants and sizes</h4>
                 <p>
-                    Modal dialogs are created by <code>BootstrapDialog</code> (or its base <code>ModalDialog</code>),
-                    which keeps the bootstrap-dialog API used by Wren Security applications.
+                    Modal dialogs are created by <code>ModalDialog</code>, which shows the Bootstrap modal
+                    component with its standard markup and events.
                 </p>
                 <div class="d-flex flex-wrap gap-2 mb-2">
-                    <button type="button" class="btn btn-primary" data-dialog-type="type-default">Default</button>
-                    <button type="button" class="btn btn-danger" data-dialog-type="type-danger">Danger</button>
+                    <button type="button" class="btn btn-primary" data-dialog-variant="">Default</button>
+                    <button type="button" class="btn btn-danger" data-dialog-variant="danger">Danger</button>
                 </div>
                 <div class="d-flex flex-wrap gap-2">
-                    <button type="button" class="btn btn-outline-primary" data-dialog-size="size-small">Small</button>
-                    <button type="button" class="btn btn-outline-primary" data-dialog-size="size-wide">Wide</button>
-                    <button type="button" class="btn btn-outline-primary" data-dialog-size="size-large">Large</button>
+                    <button type="button" class="btn btn-outline-primary" data-dialog-size="sm">Small</button>
+                    <button type="button" class="btn btn-outline-primary" data-dialog-size="lg">Large</button>
+                    <button type="button" class="btn btn-outline-primary" data-dialog-size="xl">Extra large</button>
                     <button type="button" class="btn btn-outline-primary" id="dialogStackedExample">Stacked</button>
                 </div>
             </div>
         </div>
         <div class="example">
 <div class="code">
-    BootstrapDialog.show({
-        type: BootstrapDialog.TYPE_DANGER,
-        size: BootstrapDialog.SIZE_WIDE,
+    ModalDialog.show({
         title: "Dialog title",
-        message: $("&lt;p&gt;").text("Dialog message"),
-        buttons: [{
-            label: $.t("common.form.close"),
-            action: (dialog) => dialog.close()
-        }]
+        body: $("&lt;p&gt;").text("Dialog message"),
+        variant: "danger",
+        size: "lg",
+        buttons: [
+            { label: $.t("common.form.cancel") },
+            { label: $.t("common.form.delete"), className: "btn-danger", action: (dialog) => remove(dialog) }
+        ]
     });
 </div>
         </div>
@@ -46,8 +46,8 @@
             <div class="card-body">
                 <h4 class="sub-header">Confirmation</h4>
                 <p>
-                    <code>BootstrapDialog.confirm</code> asks the user to confirm an action,
-                    <code>UIUtils.confirmDialog</code> does the same with the commons confirmation dialog.
+                    <code>ModalDialog.confirm</code> asks the user to confirm an action and returns a promise
+                    resolved with the choice, <code>UIUtils.confirmDialog</code> shows the commons confirmation dialog.
                 </p>
                 <div class="d-flex flex-wrap gap-2">
                     <button type="button" class="btn btn-danger" id="dialogConfirmExample">Delete something</button>
@@ -57,15 +57,14 @@
         </div>
         <div class="example">
 <div class="code">
-    BootstrapDialog.confirm({
-        type: BootstrapDialog.TYPE_DANGER,
+    ModalDialog.confirm({
         title: "Delete",
-        message: "Do you really want to delete it?",
-        btnOKLabel: $.t("common.form.delete"),
-        callback: (confirmed) => { ... }
-    });
+        body: "Do you really want to delete it?",
+        variant: "danger",
+        confirmLabel: $.t("common.form.delete")
+    }).then((confirmed) => { ... });
 
-    UIUtils.confirmDialog("Do you really want to do it?", "danger", () => { ... });
+    UIUtils.confirmDialog("Do you really want to do it?", "default", () => { ... });
 </div>
         </div>
     </section>

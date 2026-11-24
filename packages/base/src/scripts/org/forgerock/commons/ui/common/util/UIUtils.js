@@ -540,37 +540,32 @@ define([
         overrides = overrides || {};
 
         ModuleLoader.load("org/forgerock/commons/ui/common/components/ModalDialog").then(function (ModalDialog) {
-            var btnType = "btn-" +type;
-
-            if (type === "default") {
-                btnType = "btn-primary";
-            }
-
             ModalDialog.show({
-                title: overrides.title || $.t('common.form.confirm'),
-                type: "type-" +type,
-                message: message,
                 id: "frConfirmationDialog",
+                title: overrides.title || $.t("common.form.confirm"),
+                variant: type === "default" ? "primary" : type,
+                // Message string is HTML with new lines converted to line breaks
+                body: _.isString(message) ? message.replace(/\r\n|[\r\n]/g, "<br>") : message,
                 buttons: [
                     {
-                        label: overrides.cancelText || $.t('common.form.cancel'),
+                        label: overrides.cancelText || $.t("common.form.cancel"),
                         id: "frConfirmationDialogBtnClose",
-                        action: function(dialog){
+                        action: function (dialog) {
                             if (overrides.cancelCallback) {
                                 overrides.cancelCallback();
                             }
-                            dialog.close();
+                            dialog.hide();
                         }
                     },
                     {
-                        label: overrides.okText || $.t('common.form.ok'),
-                        cssClass: btnType,
+                        label: overrides.okText || $.t("common.form.ok"),
+                        className: type === "default" ? "btn-primary" : "btn-" + type,
                         id: "frConfirmationDialogBtnOk",
-                        action: function(dialog) {
+                        action: function (dialog) {
                             if (confirmCallback) {
                                 confirmCallback();
                             }
-                            dialog.close();
+                            dialog.hide();
                         }
                     }
                 ]

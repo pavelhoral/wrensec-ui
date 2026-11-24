@@ -22,19 +22,17 @@ import AbstractView from "org/forgerock/commons/ui/common/main/AbstractView";
 import Backgrid from "org/forgerock/commons/ui/common/backgrid/Backgrid";
 import "org/forgerock/commons/ui/common/backgrid/extension/ThemeablePaginator";
 import "org/forgerock/commons/ui/common/backgrid/extension/ThemeableServerSideFilter";
-import BootstrapDialog from "org/forgerock/commons/ui/common/components/BootstrapDialog";
 import Messages from "org/forgerock/commons/ui/common/components/Messages";
+import ModalDialog from "org/forgerock/commons/ui/common/components/ModalDialog";
 import SpinnerManager from "org/forgerock/commons/ui/common/main/SpinnerManager";
 import ValidatorsManager from "org/forgerock/commons/ui/common/main/ValidatorsManager";
 import UIUtils from "org/forgerock/commons/ui/common/util/UIUtils";
 import CodeMirror from "org/forgerock/mock/ui/examples/CodeMirror";
 
-const DIALOG_TITLES = {
-    "type-default": "Default dialog",
-    "type-danger": "Danger",
-    "size-small": "Small dialog",
-    "size-wide": "Wide dialog",
-    "size-large": "Large dialog"
+const DIALOG_SIZES = {
+    sm: "Small dialog",
+    lg: "Large dialog",
+    xl: "Extra large dialog"
 };
 
 const MESSAGES = {
@@ -54,10 +52,7 @@ const formatCode = (code) => {
     return lines.map((line) => line.slice(indent)).join("\n");
 };
 
-const closeButton = () => ({
-    label: $.t("common.form.close"),
-    action: (dialog) => dialog.close()
-});
+const closeButton = () => ({ label: $.t("common.form.close") });
 
 /**
  * Live examples of commons components (dialogs, notifications, validation, Selectize, backgrid and spinner).
@@ -65,7 +60,7 @@ const closeButton = () => ({
 const ComponentsView = AbstractView.extend({
     template: "templates/mock/ComponentsTemplate.html",
     events: {
-        "click [data-dialog-type]": "showTypeDialog",
+        "click [data-dialog-variant]": "showVariantDialog",
         "click [data-dialog-size]": "showSizeDialog",
         "click #dialogStackedExample": "showStackedDialog",
         "click #dialogConfirmExample": "showConfirmation",
@@ -119,36 +114,36 @@ const ComponentsView = AbstractView.extend({
         this.$el.find("#backgridExample").append(filter.render().el, grid.render().el, paginator.render().el);
     },
 
-    showTypeDialog (event) {
-        const type = $(event.currentTarget).data("dialogType");
-        BootstrapDialog.show({
-            type,
-            title: DIALOG_TITLES[type],
-            message: $("<p>").text(`Dialog of ${type} type.`),
+    showVariantDialog (event) {
+        const variant = $(event.currentTarget).data("dialogVariant") || null;
+        ModalDialog.show({
+            variant,
+            title: variant ? "Danger dialog" : "Default dialog",
+            body: $("<p>").text(variant ? "Dialog of danger variant." : "Dialog without variant."),
             buttons: [closeButton()]
         });
     },
 
     showSizeDialog (event) {
         const size = $(event.currentTarget).data("dialogSize");
-        BootstrapDialog.show({
+        ModalDialog.show({
             size,
-            title: DIALOG_TITLES[size],
-            message: $("<p>").text(`Dialog of ${size} size.`),
+            title: DIALOG_SIZES[size],
+            body: $("<p>").text(`Dialog of ${size} size.`),
             buttons: [closeButton()]
         });
     },
 
     showStackedDialog () {
-        BootstrapDialog.show({
+        ModalDialog.show({
             title: "First dialog",
-            message: $("<p>").text("Dialogs can be opened on top of each other."),
+            body: $("<p>").text("Dialogs can be shown on top of each other."),
             buttons: [{
-                label: "Open another dialog",
-                cssClass: "btn-primary",
-                action: () => BootstrapDialog.show({
+                label: "Show another dialog",
+                className: "btn-primary",
+                action: () => ModalDialog.show({
                     title: "Second dialog",
-                    message: $("<p>").text("Closing this dialog returns to the first one."),
+                    body: $("<p>").text("Hiding this dialog returns to the first one."),
                     buttons: [closeButton()]
                 })
             }, closeButton()]
@@ -156,20 +151,19 @@ const ComponentsView = AbstractView.extend({
     },
 
     showConfirmation () {
-        BootstrapDialog.confirm({
-            type: BootstrapDialog.TYPE_DANGER,
+        ModalDialog.confirm({
             title: "Delete",
-            message: "Do you really want to delete it?",
-            btnOKLabel: $.t("common.form.delete"),
-            callback: (confirmed) => Messages.addMessage({
-                type: confirmed ? Messages.TYPE_SUCCESS : Messages.TYPE_INFO,
-                message: confirmed ? "Confirmed." : "Cancelled."
-            })
-        });
+            body: "Do you really want to delete it?",
+            variant: "danger",
+            confirmLabel: $.t("common.form.delete")
+        }).then((confirmed) => Messages.addMessage({
+            type: confirmed ? Messages.TYPE_SUCCESS : Messages.TYPE_INFO,
+            message: confirmed ? "Confirmed." : "Cancelled."
+        }));
     },
 
     showConfirmDialog () {
-        UIUtils.confirmDialog("Do you really want to do it?", "danger", () => Messages.addMessage({
+        UIUtils.confirmDialog("Do you really want to do it?", "default", () => Messages.addMessage({
             type: Messages.TYPE_SUCCESS,
             message: "Confirmed."
         }));

@@ -33,7 +33,7 @@ define([
         closable : true,
         actions: [{
             label: function (){return $.t('common.form.close');},
-            cssClass: "btn-outline-primary",
+            cssClass: "btn-outline-secondary",
             type: "close"
         }],
 
@@ -89,7 +89,7 @@ define([
                 $.each (this.actions, function(i, action){
                     if (action.type === "close") {
                         action.label = $.t('common.form.close');
-                        action.cssClass = (action.cssClass ? action.cssClass : "btn-outline-primary");
+                        action.cssClass = (action.cssClass ? action.cssClass : "btn-outline-secondary");
                         action.action = function(dialog) {
                             dialog.close();
                         };

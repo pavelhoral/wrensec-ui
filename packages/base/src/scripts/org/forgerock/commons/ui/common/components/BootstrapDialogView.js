@@ -24,7 +24,8 @@ define([
 ], function($, _, AbstractView, ModuleLoader, UIUtils) {
     /**
      * @exports org/forgerock/commons/ui/common/components/BootstrapDialogView
-     * @deprecated
+     * @deprecated since 24.0 and will be removed in 25.0, use
+     *             {@link module:org/forgerock/commons/ui/common/components/ModalDialog} instead
      */
     var BootstrapDialogView = AbstractView.extend({
         contentTemplate: "templates/common/DefaultBaseTemplate.html",

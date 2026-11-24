@@ -12,73 +12,88 @@
  * information: "Portions copyright [year] [name of copyright owner]".
  *
  * Copyright 2011-2016 ForgeRock AS.
+ * Portions Copyright 2026 Wren Security.
  */
 
 define([
     "jquery",
     "lodash",
-    "org/forgerock/commons/ui/common/components/BootstrapDialog",
+    "org/forgerock/commons/ui/common/components/ModalDialog",
     "org/forgerock/commons/ui/common/util/UIUtils",
     "org/forgerock/commons/ui/common/main/Configuration",
     "org/forgerock/commons/ui/common/util/Constants",
     "org/forgerock/commons/ui/common/main/EventManager",
     "org/forgerock/commons/ui/common/main/SessionManager",
-    "org/forgerock/commons/ui/common/main/ViewManager",
     "org/forgerock/commons/ui/common/main/AbstractView"
-], function( $, _, BootstrapDialog, UIUtils, Configuration, Constants, EventManager, SessionManager, ViewManager,
-        AbstractView) {
+], function($, _, ModalDialog, UIUtils, Configuration, Constants, EventManager, SessionManager, AbstractView) {
     var LoginDialog = AbstractView.extend({
         template: "templates/common/LoginDialog.html",
-        element: "#dialogs",
+        events: {
+            "submit form": "login",
+            "keydown input": "loginOnEnter"
+        },
 
+        /**
+         * Show the login dialog (it can be closed only by logging in).
+         * @param {Object} [options] dialog options
+         * @param {function} [options.authenticatedCallback] called when the user is logged in
+         */
         render: function (options) {
-            var dialogBody = $('<div id="loginDialog"></div>'),
-                authenticatedCallback = options.authenticatedCallback;
-
-            this.$el.find('#dialogs').append(dialogBody);
-            // attaching BootstrapDialog via '#dialogs' so that it is encapsulated withing the qunit-fixture for testing
-            this.setElement(dialogBody);
-            BootstrapDialog.show({
+            this.authenticatedCallback = options && options.authenticatedCallback;
+            this.dialog = new ModalDialog({
                 closable: false,
-                title:  $.t("common.form.sessionExpired"),
-                type: BootstrapDialog.TYPE_DEFAULT,
-                message: dialogBody,
-                onshown: _.bind(function () {
-                    UIUtils.renderTemplate(
-                        this.template,
-                        this.$el,
-                        _.extend({}, Configuration.globalData, this.data),
-                        _.noop,
-                        "replace");
-                }, this),
+                title: $.t("common.form.sessionExpired"),
                 buttons: [{
                     id: "loginDialogSubmitButton",
                     label: $.t("common.user.login"),
-                    cssClass: "btn-primary",
-                    hotkey: 13,
-                    action: function(dialog) {
-                        var userName,
-                            password;
-
-                        userName = dialog.$modalBody.find("input[name=login]").val();
-                        password = dialog.$modalBody.find("input[name=password]").val();
-
-                        SessionManager.login({"userName":userName, "password":password}, function(user) {
-                            Configuration.setProperty('loggedUser', user);
-                            EventManager.sendEvent(Constants.EVENT_AUTHENTICATION_DATA_CHANGED, {
-                                anonymousMode: false
-                            });
-                            EventManager.sendEvent(Constants.EVENT_DISPLAY_MESSAGE_REQUEST, "loggedIn");
-                            dialog.close();
-
-                            if (authenticatedCallback) {
-                                authenticatedCallback();
-                            }
-                        }, function() {
-                            EventManager.sendEvent(Constants.EVENT_DISPLAY_MESSAGE_REQUEST, "authenticationFailed");
-                        });
-                    }
+                    className: "btn-primary",
+                    action: _.bind(function (dialog, event) {
+                        this.login(event);
+                    }, this)
                 }]
+            });
+            this.setElement(this.dialog.$body);
+            UIUtils.renderTemplate(this.template, this.$el, _.extend({}, Configuration.globalData, this.data),
+                _.bind(function () {
+                    this.dialog.show();
+                }, this));
+        },
+
+        close: function () {
+            if (this.dialog) {
+                this.dialog.hide();
+            }
+        },
+
+        loginOnEnter: function (event) {
+            if (event.key === "Enter") {
+                this.login(event);
+            }
+        },
+
+        login: function (event) {
+            var dialog = this.dialog,
+                authenticatedCallback = this.authenticatedCallback;
+
+            if (event) {
+                event.preventDefault();
+            }
+            SessionManager.login({
+                "userName": this.$el.find("input[name=login]").val(),
+                "password": this.$el.find("input[name=password]").val()
+            }, function (user) {
+                Configuration.setProperty("loggedUser", user);
+                EventManager.sendEvent(Constants.EVENT_AUTHENTICATION_DATA_CHANGED, {
+                    anonymousMode: false
+                });
+                EventManager.sendEvent(Constants.EVENT_DISPLAY_MESSAGE_REQUEST, "loggedIn");
+                dialog.hide();
+
+                if (authenticatedCallback) {
+                    authenticatedCallback();
+                }
+            }, function () {
+                EventManager.sendEvent(Constants.EVENT_DISPLAY_MESSAGE_REQUEST, "authenticationFailed");
             });
         }
     });

@@ -95,7 +95,10 @@
     creates and shows a dialog, `show()` and `hide()` return promises and hidden dialogs are removed from the page,
   * buttons without `className` are `btn-outline-secondary` (buttons dismissing the dialog),
   * `ModalDialog.confirm({ title, body, variant, confirmLabel })` returns a promise resolved with the choice,
-  * `UIUtils.confirmDialog()` uses it (the dialog and button identifiers are kept).
+  * commons dialogs use it: `UIUtils.confirmDialog()` (the dialog and button identifiers are kept), `LoginDialog`
+    and `ConfirmPasswordDialog`,
+  * `components/BootstrapDialogView` is deprecated and will be removed in 25.0 (migrate to `ModalDialog`),
+  * `components/ConfirmationDialog` has been removed (use `ModalDialog.confirm()` or `UIUtils.confirmDialog()`).
 * `bootstrap-dialog` library has been replaced by the deprecated commons module
   `org/forgerock/commons/ui/common/components/BootstrapDialog` (to be removed in 25.0, migrate to `ModalDialog`),
   which renders the same markup (Bootstrap modal with `bootstrap-dialog*` CSS classes, the close button is

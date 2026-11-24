@@ -12,6 +12,7 @@
  * information: "Portions copyright [year] [name of copyright owner]".
  *
  * Copyright 2011-2016 ForgeRock AS.
+ * Portions Copyright 2026 Wren Security.
  */
 
 // this module is merely a useful construct for identifying
@@ -20,11 +21,11 @@
 // always needed (even for the simplest of forgerock-ui apps)
 define("org/forgerock/commons/ui/common/main", [
     "./main/AbstractView",
-    "./components/BootstrapDialogView",
     "./main/ErrorsHandler",
     "./components/Footer",
     "./main/i18nManager",
     "./components/Messages",
+    "./components/ModalDialog",
     "./components/Navigation",
     "./main/ProcessConfiguration",
     "./main/Router",

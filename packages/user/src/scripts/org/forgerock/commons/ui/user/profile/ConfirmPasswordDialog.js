@@ -17,60 +17,62 @@
 
 define([
     "jquery",
-    "org/forgerock/commons/ui/common/components/BootstrapDialogView",
+    "lodash",
+    "org/forgerock/commons/ui/common/main/AbstractView",
+    "org/forgerock/commons/ui/common/components/ModalDialog",
+    "org/forgerock/commons/ui/common/util/UIUtils",
     "org/forgerock/commons/ui/common/main/ValidatorsManager"
-], function($, BootstrapDialogView, ValidatorsManager) {
-    var ConfirmPasswordDialog = BootstrapDialogView.extend({
-        contentTemplate: "templates/user/ConfirmPasswordDialogTemplate.html",
+], function($, _, AbstractView, ModalDialog, UIUtils, ValidatorsManager) {
+    var ConfirmPasswordDialog = AbstractView.extend({
+        template: "templates/user/ConfirmPasswordDialogTemplate.html",
         events: {
-            "onValidate": "onValidate",
             "submit #confirmPasswordForm": "submitForm",
             "change #currentPassword": "validateForm",
             "keyup #currentPassword": "validateForm"
         },
-        submitForm: function (e) {
-            if (e) {
-                e.preventDefault();
-            }
-
-            if (this.completedCallback) {
-                this.completedCallback(this.$el.find("#currentPassword").val());
-            }
-            this.dialog.close();
-        },
         errorsHandlers: {
             "Bad Request": { status: "400" }
         },
-        title: function(){ return $.t("common.user.confirmPassword"); },
-        actions: [{
-            id: "btnUpdate",
-            label: function(){ return $.t("common.form.update"); },
-            cssClass: "btn-primary",
-            disabled: true,
-            action: function(dialog) {
-                dialog.options.submitForm();
-            }
-        }],
-        onshown: function(dialog){
-            this.dialog = dialog;
-            this.element = dialog.$modal;
-            // Do not use rebind() as it unbinds all handlers including BootstrapDialog's own
-            // (dialog would never be marked as closed and "modal-open" would stay on body).
-            this.setElement(this.element);
-            dialog.$modal.find(".modal-body :input:first").val("");
-            ValidatorsManager.bindValidators(dialog.$modal);
-        },
-        render: function(changedProtected, completedCallback) {
-            this.data.changedProtected = changedProtected;
+
+        /**
+         * Ask the user for the current password.
+         * @param {string[]} changedProtected names of the changed protected attributes
+         * @param {function} completedCallback called with the entered password
+         */
+        render: function (changedProtected, completedCallback) {
+            this.data = { changedProtected: changedProtected };
             this.completedCallback = completedCallback;
-            this.show();
+            this.dialog = new ModalDialog({
+                title: $.t("common.user.confirmPassword"),
+                buttons: [{
+                    id: "btnUpdate",
+                    label: $.t("common.form.update"),
+                    className: "btn-primary",
+                    disabled: true,
+                    action: _.bind(function () {
+                        this.submitForm();
+                    }, this)
+                }]
+            });
+            this.setElement(this.dialog.$el);
+            UIUtils.renderTemplate(this.template, this.dialog.$body, this.data, _.bind(function () {
+                ValidatorsManager.bindValidators(this.$el);
+                this.dialog.show();
+            }, this));
         },
-        validateForm: function(){
-            if (this.$el.find("#currentPassword").val().length === 0) {
-                this.$el.find("#btnUpdate").prop("disabled", true).addClass("disabled");
-            } else {
-                this.$el.find("#btnUpdate").prop("disabled", false).removeClass("disabled");
+
+        submitForm: function (event) {
+            if (event) {
+                event.preventDefault();
             }
+            if (this.completedCallback) {
+                this.completedCallback(this.$el.find("#currentPassword").val());
+            }
+            this.dialog.hide();
+        },
+
+        validateForm: function () {
+            this.dialog.getButton("btnUpdate").prop("disabled", this.$el.find("#currentPassword").val().length === 0);
         }
     });
 

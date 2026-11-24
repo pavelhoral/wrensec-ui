@@ -20,10 +20,8 @@
  */
 .popover-error {
     min-width: 140px;
-}
-.popover>.arrow {
-    overflow: visible;
-}
-.popover.top>.arrow:after {
-    top: auto;
+
+    .popover-body {
+        color: var(--wrensec-failure-color);
+    }
 }

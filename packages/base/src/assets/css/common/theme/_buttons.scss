@@ -28,6 +28,13 @@
     border-bottom: 1px solid #ddd;
 }
 
+/* Outline buttons stay outlined when focused (Bootstrap fills them with the hover color) */
+.btn[class*="btn-outline-"]:focus-visible:not(:hover):not(:active) {
+    color: var(--bs-btn-color);
+    background-color: transparent;
+    border-color: var(--bs-btn-border-color);
+}
+
 /*
  * Dark secondary button style
  */

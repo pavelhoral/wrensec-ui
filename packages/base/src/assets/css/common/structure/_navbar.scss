@@ -15,22 +15,27 @@
  * Portions Copyright 2026 Wren Security.
  */
 
-@use "../mixins";
+/*
+ * Main navigation bar
+ */
+#mainNavHolder {
+    .navbar-brand {
+        padding: 0;
 
-.navbar {
-    &.navbar-inverse {
-        .dropdown-menu {
-            .dropdown-header  {
-                line-height: 20px;
-                padding-top: 6px;
-                padding-bottom: 6px;
-            }
+        img {
+            vertical-align: middle;
         }
+    }
 
-        .navbar-nav>li>a i {
-            min-width: 24px;
-            text-align: center;
-        }
+    .navbar-nav .nav-link i {
+        min-width: 24px;
+        text-align: center;
+    }
+
+    .dropdown-menu .dropdown-header {
+        line-height: 20px;
+        padding-top: 6px;
+        padding-bottom: 6px;
     }
 
     .user-avatar.fa {
@@ -38,38 +43,10 @@
         height: 28px;
         border-radius: 14px;
         padding: 7px 0 0 0;
-    }
-
-    .nav>li#navbarBrand {
-        display: inline-block;
-        a {
-            display: inline-block;
-            vertical-align: middle;
-        }
-    }
-
-}
-
-#loginContent {
-    .caret {
-        margin-left: 5px;
-    }
-
-    .fa {
-        margin: 0 5px 0 -1px;
+        text-align: center;
     }
 }
 
-@include mixins.media-up(md) {
-    #loginContent > li {
-        margin-bottom: -10px;
-    }
-
-    .navbar-inverse {
-        .dropdown-menu {
-            .dropdown-header  {
-                line-height: 20px;
-            }
-        }
-    }
+#loginContent .fa {
+    margin: 0 5px 0 -1px;
 }

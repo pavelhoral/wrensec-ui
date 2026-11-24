@@ -43,9 +43,11 @@
     $danger-bg-subtle: #f2dede !default,
     $danger-border-subtle: #ebccd1 !default,
 
-    // Page
-    $body-bg: #f7f7f7 !default,
+    // Text color (the page background is --wrensec-background-color of commons, components stay white)
     $body-color: #2a2f32 !default,
+
+    // White text on the primary color (Bootstrap would choose dark text for colors with contrast below 4.5)
+    $min-contrast-ratio: 3 !default,
 
     // Links (underlined on hover only)
     $link-decoration: none !default,
@@ -57,10 +59,33 @@
     $font-size-base: .875rem !default,
     $line-height-base: 1.428571429 !default,
 
+    // Grid (Bootstrap 3 gutter and container widths, containers take the full width below the md breakpoint)
+    $grid-gutter-width: 30px !default,
+    $container-max-widths: (md: 750px, lg: 970px, xl: 1170px) !default,
+
+    // Borders of tabs, tables and cards (Bootstrap 3 color, cards use the same color as tabs attached to them)
+    $border-color: #ddd !default,
+    $card-border-color: var(--bs-border-color) !default,
+
+    // Horizontal rules
+    $hr-border-color: #eee !default,
+    $hr-opacity: 1 !default,
+
+    // Forms (validation states are shown by commons feedback icons)
+    $enable-validation-icons: false !default,
+    $input-border-color: #ccc !default,
+    $input-placeholder-color: #999 !default,
+
     // Border radius
     $border-radius: .25rem !default,
     $border-radius-sm: .1875rem !default,
     $border-radius-lg: .375rem !default,
+
+    // Dialogs (Bootstrap 3 widths and shadows; commons styles show the shadow, see theme/dialogs)
+    $modal-md: 600px !default,
+    $modal-lg: 900px !default,
+    $modal-content-box-shadow-xs: 0 3px 9px rgba(0, 0, 0, .5) !default,
+    $modal-content-box-shadow-sm-up: 0 5px 15px rgba(0, 0, 0, .5) !default,
 
     // Dropdowns (hovered items are highlighted by the primary color)
     $dropdown-link-hover-color: #fff !default,

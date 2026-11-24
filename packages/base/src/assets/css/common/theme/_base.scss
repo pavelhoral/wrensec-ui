@@ -15,6 +15,19 @@
  * Portions Copyright 2026 Wren Security.
  */
 
+body {
+    background-color: var(--wrensec-background-color);
+}
+
+/* Labels are bold (as in Bootstrap 3), labels of check boxes and radio buttons are not */
+label {
+    font-weight: bold;
+}
+
+.form-check-label {
+    font-weight: normal;
+}
+
 h2, h3 {
     color: var(--wrensec-base-theme-color);
 }

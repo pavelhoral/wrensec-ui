@@ -12,6 +12,7 @@
  * information: "Portions copyright [year] [name of copyright owner]".
  *
  * Copyright 2015-2016 ForgeRock AS.
+ * Portions Copyright 2026 Wren Security.
  */
 
 define([
@@ -32,7 +33,7 @@ define([
         closable : true,
         actions: [{
             label: function (){return $.t('common.form.close');},
-            cssClass: "btn-default",
+            cssClass: "btn-outline-primary",
             type: "close"
         }],
 
@@ -88,7 +89,7 @@ define([
                 $.each (this.actions, function(i, action){
                     if (action.type === "close") {
                         action.label = $.t('common.form.close');
-                        action.cssClass = (action.cssClass ? action.cssClass : "btn-default");
+                        action.cssClass = (action.cssClass ? action.cssClass : "btn-outline-primary");
                         action.action = function(dialog) {
                             dialog.close();
                         };

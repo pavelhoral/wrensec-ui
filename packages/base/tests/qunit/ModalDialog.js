@@ -128,7 +128,7 @@ define([
                     }
                 }, {
                     label: "Small",
-                    cssClass: "btn-default btn-sm"
+                    cssClass: "btn-outline-primary btn-sm"
                 }]
             }),
             $button = dialog.getButton("btnIcon"),

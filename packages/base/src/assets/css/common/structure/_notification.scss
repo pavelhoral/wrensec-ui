@@ -17,11 +17,11 @@
         min-width: 320px;
         margin-left: -220px;
 
-        .arrow {
+        .popover-arrow {
             margin-left: 21px;
         }
 
-        .popover-content {
+        .popover-body {
             padding: 0;
 
             .list-group-item {
@@ -48,7 +48,7 @@
             }
         }
 
-        .popover-title {
+        .popover-header {
             padding-bottom: 15px;
             padding-top: 15px;
             background-color: white;

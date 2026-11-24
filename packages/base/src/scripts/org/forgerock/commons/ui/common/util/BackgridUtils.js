@@ -12,6 +12,7 @@
  * information: "Portions copyright [year] [name of copyright owner]".
  *
  * Copyright 2011-2016 ForgeRock AS.
+ * Portions Copyright 2026 Wren Security.
  */
 
 define([
@@ -259,7 +260,7 @@ define([
                             cellView.render();
 
                             if (!_.isEmpty(_.omit(cellView.events, "click"))) {
-                                cellWrapper = $("<p class='pull-right show'></p>");
+                                cellWrapper = $("<p class='float-end show'></p>");
 
                                 if (cellView.$el.html().length && !hideColumnLabels && col.label) {
                                     cellWrapper.append(label);

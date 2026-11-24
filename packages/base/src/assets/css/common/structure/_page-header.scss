@@ -18,6 +18,11 @@
 @use "../mixins";
 
 .page-header {
+    /* Bootstrap 3 page header (Bootstrap 5 does not provide it) */
+    padding-bottom: 9px;
+    margin: 40px 0 20px;
+    border-bottom: 1px solid #eee;
+
     h1 {
         margin: 0;
         word-wrap: break-word;

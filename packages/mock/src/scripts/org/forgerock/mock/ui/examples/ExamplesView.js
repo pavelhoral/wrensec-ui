@@ -36,9 +36,6 @@ define([
             "click #sidebar a": "slideNavigation",
             "click #spinnerExample": "showSpinnerExample"
         },
-        model: {
-            leftNavOffset: 360
-        },
         render: function(args, callback) {
             this.parentRender(_.bind(function() {
                 /*
@@ -85,14 +82,13 @@ define([
                     maxItems: 3
                 });
 
-                this.$el.find('#sidebar').affix({
-                    offset: {
-                        top: this.model.leftNavOffset
-                    }
-                });
-
+                // Highlight the section in view in the (sticky) side navigation, the scroll spy of the previously
+                // rendered style guide observes removed elements
+                if ($.fn.scrollspy.Constructor.getInstance(document.body)) {
+                    $(document.body).scrollspy("dispose");
+                }
                 $(document.body).scrollspy({
-                    target: '#rightCol'
+                    target: "#sidebar"
                 });
 
                 if (callback){

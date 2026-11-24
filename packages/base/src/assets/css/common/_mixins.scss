@@ -43,6 +43,15 @@
     }
 }
 
+// Media query for screens narrower than the breakpoint (like Bootstrap 5 media-breakpoint-down(), e.g. where Bootstrap
+// collapses a navigation bar expanded from the breakpoint).
+// Example: @include mixins.media-down(md) { ... }
+@mixin media-down($name) {
+    @media (max-width: -breakpoint($name) - .02px) {
+        @content;
+    }
+}
+
 // Font Awesome icon font on an element that is not an icon (the glyph is set by the content property).
 @mixin fa-icon {
     display: inline-block;

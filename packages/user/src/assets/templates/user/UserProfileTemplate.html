@@ -1,19 +1,20 @@
 <!-- Copyright 2015 ForgeRock AS.
-	License terms: https://forgerock.org/cddlv1-0/ -->
+	License terms: https://forgerock.org/cddlv1-0/
+	Portions Copyright 2026 Wren Security. -->
 <div class="container">
     <div class="page-header">
         <h1>{{t "common.user.userProfile"}}</h1>
     </div>
     <div class="tab-menu">
         <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active"><a href="#userDetailsTab" role="tab" data-toggle="tab">{{t "common.user.basicInfo"}}</a></li>
-            <li role="presentation"><a href="#userPasswordTab" role="tab" data-toggle="tab">{{t "common.user.password"}}</a></li>
+            <li class="nav-item" role="presentation"><a href="#userDetailsTab" class="nav-link active" role="tab" data-bs-toggle="tab">{{t "common.user.basicInfo"}}</a></li>
+            <li class="nav-item" role="presentation"><a href="#userPasswordTab" class="nav-link" role="tab" data-bs-toggle="tab">{{t "common.user.password"}}</a></li>
         </ul>
     </div>
     <div class="tab-content">
-        <div role="tabpanel" class="tab-pane active panel panel-default fr-panel-tab" id="userDetailsTab">
+        <div role="tabpanel" class="tab-pane active card fr-panel-tab" id="userDetailsTab">
             <form class="form-horizontal" id="details" data-form-validate="true">
-                <div class="panel-body">
+                <div class="card-body">
 
                     {{!-- Edit the below template to align with your actual user model. --}}
                     {{#user}}
@@ -57,27 +58,27 @@
                     {{/user}}
 
                 </div>
-                <div class="panel-footer clearfix">
+                <div class="card-footer clearfix">
                     {{> form/_basicSaveReset}}
                 </div>
             </form>
         </div>
 
-        <div role="tabpanel" class="tab-pane panel panel-default fr-panel-tab" id="userPasswordTab">
+        <div role="tabpanel" class="tab-pane card fr-panel-tab" id="userPasswordTab">
             <form class="form-horizontal" id="password">
-                <div class="panel-body">
-                    <div class="form-group" data-form-group>
-                        <label class="col-sm-3 control-label" for="input-password">{{t "common.user.newPassword"}}</label>
-                        <div class="col-sm-6">
+                <div class="card-body">
+                    <div class="form-group row" data-form-group>
+                        <label class="col-md-3 col-form-label text-md-end" for="input-password">{{t "common.user.newPassword"}}</label>
+                        <div class="col-md-6">
                             <input class="form-control" type="password" id="input-password" name="password" value=""
                                 data-validation-dependents="input-confirmPassword" data-validator-event="keyup" data-validator="required" />
                             <div class="validation-message"></div>
                             <span class="form-control-feedback"><i class='fa validation-icon'></i></span>
                         </div>
                     </div>
-                    <div class="form-group" data-form-group>
-                        <label class="col-sm-3 control-label" for="input-confirmPassword">{{t 'common.user.confirmNewPassword'}}</label>
-                        <div class="col-sm-6">
+                    <div class="form-group row" data-form-group>
+                        <label class="col-md-3 col-form-label text-md-end" for="input-confirmPassword">{{t 'common.user.confirmNewPassword'}}</label>
+                        <div class="col-md-6">
                             <input class="form-control" type="password" id="input-confirmPassword" value=""
                                 data-validator="passwordConfirm" data-validator-event="keyup" passwordField="input-password" />
                             <div class="validation-message"></div>
@@ -85,7 +86,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="panel-footer clearfix">
+                <div class="card-footer clearfix">
                     {{> form/_basicSaveReset}}
                 </div>
             </form>

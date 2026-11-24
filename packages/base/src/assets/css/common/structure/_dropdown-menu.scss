@@ -20,7 +20,7 @@
 /* Medium devices (desktops, 768px and up)*/
 @include mixins.media-up(md) {
 
-    nav:not(.navbar-inverse){
+    nav:not(#mainNavHolder){
 
         .dropdown-menu>li>span {
             display: block;

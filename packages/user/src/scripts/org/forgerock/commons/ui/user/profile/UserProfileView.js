@@ -12,6 +12,7 @@
  * information: "Portions copyright [year] [name of copyright owner]".
  *
  * Copyright 2011-2016 ForgeRock AS.
+ * Portions Copyright 2026 Wren Security.
  */
 
 define([
@@ -106,15 +107,15 @@ define([
                 $.when.apply($, _.map(this.dynamicTabs, _.bind(function (tab) {
                     var promise = $.Deferred(),
                         tabDetail = tab.getTabDetail(),
-                        tabPanel = $('<div role="tabpanel" class="tab-pane panel panel-default fr-panel-tab">');
+                        tabPanel = $('<div role="tabpanel" class="tab-pane card fr-panel-tab">');
                     tabPanel.attr('id', tabDetail.panelId);
                     this.$el.find(".tab-content").append(tabPanel);
                     tab.element = tabPanel[0];
 
                     tab.render(_.cloneDeep(this.data), _.bind(function () {
                         this.$el.find(".nav-tabs").append(
-                            $('<li role="presentation">').append(
-                                $('<a href="#'+tabDetail.panelId+'" role="tab" data-toggle="tab">')
+                            $('<li class="nav-item" role="presentation">').append(
+                                $('<a href="#'+tabDetail.panelId+'" class="nav-link" role="tab" data-bs-toggle="tab">')
                                     .text(tabDetail.label)
                             )
                         );

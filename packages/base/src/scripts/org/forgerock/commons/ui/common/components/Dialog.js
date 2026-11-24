@@ -12,6 +12,7 @@
  * information: "Portions copyright [year] [name of copyright owner]".
  *
  * Copyright 2011-2016 ForgeRock AS.
+ * Portions Copyright 2026 Wren Security.
  */
 
 define([
@@ -62,7 +63,7 @@ define([
                 if (a.type === "submit") {
                     a.buttonClass = "btn-primary";
                 } else {
-                    a.buttonClass = "btn-default";
+                    a.buttonClass = "btn-outline-primary";
                 }
                 return a;
             });

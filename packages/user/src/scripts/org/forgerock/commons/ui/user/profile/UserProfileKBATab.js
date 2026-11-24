@@ -12,6 +12,7 @@
  * information: "Portions copyright [year] [name of copyright owner]".
  *
  * Copyright 2015-2017 ForgeRock AS.
+ * Portions Copyright 2026 Wren Security.
  */
 
 define([
@@ -118,7 +119,7 @@ define([
             answer = kbaPair.find(".answer :input");
             answerRequired = false;
             isKbaQuestion = target.hasClass("kba-questions");
-            customQuestionContainer.toggleClass("hidden", predefinedQuestion.val() !== "custom");
+            customQuestionContainer.toggleClass("d-none", predefinedQuestion.val() !== "custom");
 
             // below conditions check to see if a new KBA answer needs to be provided, or whether
             // it can stay unchanged
@@ -265,9 +266,9 @@ define([
                     customQuestionValue = customQuestionContainer.find(":input").val();
                 if (customQuestionValue !== "") {
                     $(kbaSelect).val("custom");
-                    customQuestionContainer.toggleClass("hidden", false);
+                    customQuestionContainer.toggleClass("d-none", false);
                 } else {
-                    customQuestionContainer.toggleClass("hidden", true);
+                    customQuestionContainer.toggleClass("d-none", true);
                 }
             });
 

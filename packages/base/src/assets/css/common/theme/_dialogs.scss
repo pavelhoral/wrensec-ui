@@ -15,6 +15,11 @@
  * Portions Copyright 2026 Wren Security.
  */
 
+/* Dialog shadow (Bootstrap shows it only when built with $enable-shadows) */
+.modal-content {
+    box-shadow: var(--bs-modal-box-shadow);
+}
+
 .bootstrap-dialog {
 
     .bootstrap-dialog-title {
@@ -31,11 +36,6 @@
 
     &.type-danger .modal-header {
         color: var(--wrensec-failure-color);
-    }
-
-    &.type-danger .btn-default{
-        color: var(--wrensec-failure-color);
-        border-color: var(--wrensec-failure-color);
     }
 
     /* IDM only - AM is using the inherited color which in this case is text-default */

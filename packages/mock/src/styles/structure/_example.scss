@@ -15,6 +15,8 @@
  * Portions Copyright 2026 Wren Security.
  */
 
+@use "common/mixins";
+
 /*
  * Styles for style guide header
  */
@@ -22,67 +24,72 @@
     background-color: #519387;
     color:#fff;
     font-weight:100;
+    padding: 48px 0;
+    margin-bottom: 30px;
 }
 
 .styleguide-jumbotron h1 {
     font-weight:100;
+    font-size: 63px;
+}
+
+.styleguide-jumbotron .lead {
+    font-size: 21px;
 }
 
 /*
  * Styles for style guide navigation
  */
-#sidebar li a {
-    color:black;
-}
-
-#sidebar>li>a {
+#sidebar .nav-link {
+    position: relative;
+    /* No Bootstrap transition (the scroll spy re-activates the active item, which would make it blink) */
+    transition: none;
+    color: black;
     padding: 10px 15px;
     font-size: 14px;
     margin-left: 30px;
     text-transform: uppercase;
     font-weight: 600;
     letter-spacing: 1px;
-}
 
-#sidebar>li.active>a {
-    text-decoration: none;
-    background-color: #eeea07;
-}
-
-#sidebar>li.active>a:before {
-    content: '';
-    width: 0;
-    height: 0;
-    border-top: 20px solid transparent;
-    border-right: 18px solid #eeea07;
-    border-bottom: 20px solid transparent;
-    position: absolute;
-    top: 0;
-    left: -18px;
-}
-
-#sidebar>li>a:hover, .nav>li>a:focus {
-    text-decoration: none;
-    background-color: transparent;
-    color: #519387;
-}
-
-#sidebar>li.active>a:hover,
-#sidebar>li.active>a:focus {
-    background-color: #eeea07;
-}
-
-@media (min-width: 979px) {
-    #sidebar.affix-top {
-        position: static;
-        margin-top:0;
-        width:228px;
+    &:hover, &:focus {
+        text-decoration: none;
+        background-color: transparent;
+        color: #519387;
     }
-    #sidebar.affix {
-        position: fixed;
-        top:0;
-        width:228px;
+
+    &.active, &.active:hover, &.active:focus {
+        text-decoration: none;
+        color: black;
+        background-color: #eeea07;
     }
+
+    &.active:before {
+        content: '';
+        width: 0;
+        height: 0;
+        border-top: 20px solid transparent;
+        border-right: 18px solid #eeea07;
+        border-bottom: 20px solid transparent;
+        position: absolute;
+        top: 0;
+        left: -18px;
+    }
+}
+
+/* Side navigation stays visible while scrolling next to the sections */
+@include mixins.media-up(lg) {
+    #sidebar {
+        position: sticky;
+        top: 0;
+    }
+}
+
+/*
+ * Page section
+ */
+.resource-section {
+    margin-bottom: 20px;
 }
 
 /*
@@ -132,10 +139,6 @@
 }
 
 .example {
-  margin-top: -16px;
-  margin-left: 0px;
-  margin-right: 0px;
-  margin-bottom: 15px;
   border-width: 1px;
   border-bottom-right-radius: 4px;
   border-bottom-left-radius: 4px;
@@ -143,12 +146,8 @@
   border: 1px solid #e1e1e8;
 }
 
-.panel {
-    margin-bottom: 0px;
-}
-
-.panel-body {
-    margin-bottom: 15px;
+.example + .card {
+    margin-top: 16px;
 }
 
 /* pre { */

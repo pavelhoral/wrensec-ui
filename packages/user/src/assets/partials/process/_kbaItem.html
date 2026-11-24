@@ -1,11 +1,12 @@
 <!-- Copyright 2015 ForgeRock AS.
-	License terms: https://forgerock.org/cddlv1-0/ -->
-<div class="panel panel-default">
-    <div class="panel-body kbaSet">
+	License terms: https://forgerock.org/cddlv1-0/
+	Portions Copyright 2026 Wren Security. -->
+<div class="card">
+    <div class="card-body kbaSet">
         <div class="form-group">
-            <label class="sr-only" for="kba[{{index}}].questionId">{{t 'common.user.kba.selectQuestion'}}</label>
+            <label class="visually-hidden" for="kba[{{index}}].questionId">{{t 'common.user.kba.selectQuestion'}}</label>
             <select name="kba[{{index}}].questionId" id="kba[{{index}}].questionId"
-                class="form-control input-lg kba-questions" data-validator="required">
+                class="form-select form-select-lg kba-questions" data-validator="required">
                 <option value="">{{t 'common.user.kba.selectQuestion'}}...</option>
 
                 {{#each questions}}
@@ -16,21 +17,21 @@
             </select>
         </div>
 
-        <div class="form-group custom-question hidden">
-            <label class="sr-only" for="input-customQuestion_{{index}}">{{t 'common.user.kba.customQuestion'}}</label>
+        <div class="form-group custom-question d-none">
+            <label class="visually-hidden" for="input-customQuestion_{{index}}">{{t 'common.user.kba.customQuestion'}}</label>
             <input type="text" placeholder="{{t 'common.user.kba.customQuestion'}}" id="input-customQuestion_{{index}}"
-                name="kba[{{index}}].customQuestion" class="form-control input-lg" data-validator="required"
+                name="kba[{{index}}].customQuestion" class="form-control form-control-lg" data-validator="required"
                 data-validator-event="keyup" />
         </div>
 
         <div class="form-group">
-            <label class="sr-only" for="input-answer_{{index}}">{{t 'common.user.kba.answer'}}</label>
+            <label class="visually-hidden" for="input-answer_{{index}}">{{t 'common.user.kba.answer'}}</label>
             <input type="text" placeholder="{{t 'common.user.kba.answer'}}" id="input-answer_{{index}}"
-                name="kba[{{index}}].answer" class="form-control input-lg" data-validator="required"
+                name="kba[{{index}}].answer" class="form-control form-control-lg" data-validator="required"
                 data-validator-event="keyup" />
         </div>
 
-        <p class="text-left">
+        <p class="text-start">
             <a href="#" role="button" class="delete-KBA-question" data-delete><i class="fa fa-times"></i> {{t "common.form.delete"}}</a>
         </p>
     </div>

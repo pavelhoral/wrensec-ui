@@ -63,6 +63,11 @@
     .modal-header {
         border-top-left-radius: 4px;
         border-top-right-radius: 4px;
+
+        /* Header content takes the whole width (Bootstrap 5 modal header is a flex container) */
+        > .bootstrap-dialog-header {
+            flex: 1 1 auto;
+        }
     }
 
     .bootstrap-dialog-title {
@@ -78,8 +83,14 @@
         margin-right: 3px;
     }
 
+    /* Space between footer buttons (Bootstrap 5 spaces only direct children of the modal footer) */
+    .bootstrap-dialog-footer-buttons .btn + .btn {
+        margin-left: 5px;
+    }
+
+    /* Font size sets the size of the close button icon */
     .bootstrap-dialog-close-button {
-        font-size: 20px;
+        font-size: 12px;
         float: right;
         opacity: .9;
 
@@ -96,7 +107,7 @@
         }
 
         .bootstrap-dialog-close-button {
-            font-size: 30px;
+            font-size: 18px;
         }
 
         .bootstrap-dialog-message {

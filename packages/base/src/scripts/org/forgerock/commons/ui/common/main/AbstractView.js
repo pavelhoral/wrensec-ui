@@ -12,6 +12,7 @@
  * information: "Portions copyright [year] [name of copyright owner]".
  *
  * Copyright 2011-2016 ForgeRock AS.
+ * Portions Copyright 2026 Wren Security.
  */
 
 define([
@@ -36,6 +37,14 @@ define([
        Internal helper method shared by the default implementations of
        validationSuccessful and validationFailed
      */
+    /**
+     * @param {jQuery} input validated input
+     * @returns {Object|null} Bootstrap popover showing the validation failure of the input
+     */
+    function getPopover (input) {
+        return $.fn.popover ? $.fn.popover.Constructor.getInstance(input[0]) : null;
+    }
+
     function validationStarted (event) {
         if (!event || !event.target) {
             return $.Deferred().reject();
@@ -178,8 +187,8 @@ define([
         validationSuccessful: function (event) {
             validationStarted(event)
                 .then(function (input) {
-                    if (input.data()["bs.popover"]) {
-                        input.popover('destroy');
+                    if (getPopover(input)) {
+                        input.popover("dispose");
                     }
                     input.parents(".form-group").removeClass('has-feedback has-error');
                     return input.closest("form");
@@ -198,22 +207,22 @@ define([
         validationFailed: function (event, details) {
             validationStarted(event)
                 .then(function (input) {
+                    var popover = getPopover(input),
+                        content = '<i class="fa fa-exclamation-circle"></i> '
+                            + details.failures.join('<br><i class="fa fa-exclamation-circle"></i> ');
                     input.parents(".form-group").addClass('has-feedback has-error');
-                    if (input.data()["bs.popover"]) {
-                        input.data('bs.popover').options.content = '<i class="fa fa-exclamation-circle"></i> '
-                        + details.failures.join('<br><i class="fa fa-exclamation-circle"></i> ');
+                    if (popover) {
+                        popover.setContent({ ".popover-body": content });
                     } else {
                         input.popover({
-                            validationMessage: details.failures,
                             animation: false,
-                            content: '<i class="fa fa-exclamation-circle"></i> '
-                        + details.failures.join('<br><i class="fa fa-exclamation-circle"></i> '),
-                            trigger:'focus hover',
-                            placement:'top',
-                            html: 'true',
-                            template: '<div class="popover popover-error help-block" role="tooltip">' +
-                            '<div class="arrow"></div><h3 class="popover-title"></h3>' +
-                            '<div class="popover-content"></div></div>'
+                            content: content,
+                            trigger: "focus hover",
+                            placement: "top",
+                            html: true,
+                            template: '<div class="popover popover-error" role="tooltip">' +
+                                '<div class="popover-arrow"></div><h3 class="popover-header"></h3>' +
+                                '<div class="popover-body"></div></div>'
                         });
                     }
                     if (input.is(":focus")) {

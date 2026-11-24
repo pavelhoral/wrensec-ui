@@ -1,7 +1,7 @@
 <!-- Copyright 2015 ForgeRock AS.
 	Portions Copyright 2026 Wren Security.
 	License terms: https://forgerock.org/cddlv1-0/ -->
-<div class="jumbotron styleguide-jumbotron">
+<div class="styleguide-jumbotron">
     <div class="container">
         <h1>UI Styleguide</h1>
         <p class="lead">This styleguide will be a resource for designers, product managers, and developers, providing a common language around Wren Security’s UI patterns. We will use it to maintain modular front-end code and visual consistency across all apps.</p>
@@ -9,62 +9,62 @@
 </div>
 <div class="container">
     <div class="row">
-        <div class="col-md-9">
-            <section class="resource-section">
-                <h1 id="colors">Colors</h1>
-                <div class="panel panel-default">
-                    <div class="panel-body">
+        <div class="col-lg-9">
+            <section class="resource-section" id="colors">
+                <h1>Colors</h1>
+                <div class="card">
+                    <div class="card-body">
                         <div class="row">
-                            <div class="col-sm-4">
+                            <div class="col-md-4">
                                 <div class="swatch" style="background-color:#eeea07;">
                                     <div class="inner">
                                         Vivid Yellow #eeea07
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-4">
+                            <div class="col-md-4">
                                 <div class="swatch dark" style="background-color:#519387;">
                                     <div class="inner">
                                         Sea Green #519387
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-4">
+                            <div class="col-md-4">
                                 <div class="swatch bordered" style="background-color:#f7f7f7;">
                                     <div class="inner">
                                         Off-White #f7f7f7
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-4">
+                            <div class="col-md-4">
                                 <div class="swatch" style="background-color:#eee;">
                                     <div class="inner">
                                         Light Gray #eee
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-4">
+                            <div class="col-md-4">
                                 <div class="swatch" style="background-color:#ddd;">
                                     <div class="inner">
                                         Border Gray #ddd
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-4">
+                            <div class="col-md-4">
                                 <div class="swatch dark" style="background-color:#979797;">
                                     <div class="inner">
                                         Medium Gray #999
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-4">
+                            <div class="col-md-4">
                                 <div class="swatch dark" style="background-color:#777;">
                                     <div class="inner">
                                         Dark Gray #777
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-4">
+                            <div class="col-md-4">
                                 <div class="swatch dark" style="background-color:#1f2223;">
                                     <div class="inner">
                                         Charcoal #1f2223
@@ -72,21 +72,21 @@
                                 </div>
                             </div>
 
-                            <div class="col-sm-4">
+                            <div class="col-md-4">
                                 <div class="swatch dark" style="background-color:#a94442;">
                                     <div class="inner">
                                         Dashboard Red #a94442
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-4">
+                            <div class="col-md-4">
                                 <div class="swatch dark" style="background-color:#f0ad4e;">
                                     <div class="inner">
                                         Dashboard Yellow #f0ad4e
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-4">
+                            <div class="col-md-4">
                                 <div class="swatch dark" style="background-color:#337ab7;">
                                     <div class="inner">
                                         Dashboard Blue #337ab7
@@ -97,13 +97,13 @@
                     </div>
                 </div>
             </section>
-            <section class="resource-section">
-                <h1 id="typography">
+            <section class="resource-section" id="typography">
+                <h1>
                     Typography
                 </h1>
-                <div class="panel panel-default">
+                <div class="card">
 <!--HTML intentionally unindented to remove whitespace in snippets-->
-<div class="snippet panel-body">
+<div class="snippet card-body">
     <h1>H1 Header Example</h1>
     <h2>H2 Header Example</h2>
     <h3>H3 Header Example</h3>
@@ -116,19 +116,19 @@
                 <div class="example">
                 </div>
             </section>
-            <section class="resource-section">
-                <h1 id="tabs">
+            <section class="resource-section" id="tabs">
+                <h1>
                     Nav Tabs
                 </h1>
-                <div class="panel panel-default">
-                    <div class="panel-body">
+                <div class="card">
+                    <div class="card-body">
                         <h4 class="sub-header">
                             Basic Tabs
                         </h4>
 <div class="snippet">
     <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation" class="active"><a href="#tab1" aria-controls="tab1" role="tab" data-toggle="tab">Tab 1</a></li>
-        <li role="presentation"><a href="#tab2" aria-controls="tab2" role="tab" data-toggle="tab">Tab 2</a></li>
+        <li class="nav-item" role="presentation"><a class="nav-link active" href="#tab1" aria-controls="tab1" role="tab" data-bs-toggle="tab">Tab 1</a></li>
+        <li class="nav-item" role="presentation"><a class="nav-link" href="#tab2" aria-controls="tab2" role="tab" data-bs-toggle="tab">Tab 2</a></li>
     </ul>
 
     <div class="tab-content">
@@ -144,34 +144,34 @@
                 </div>
                 <div class="example">
                 </div>
-                <div class="panel panel-default">
-                    <div class="panel-body">
+                <div class="card">
+                    <div class="card-body">
                         <h4 class="sub-header">
                             Tab With Panel
                         </h4>
 <div class="snippet">
     <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation" class="active"><a href="#tabpanel1" aria-controls="tabpanel1" role="tab" data-toggle="tab">Tab Panel 1</a></li>
-        <li role="presentation"><a href="#tabpanel2" aria-controls="tabpanel2" role="tab" data-toggle="tab">Tab Panel 2</a></li>
+        <li class="nav-item" role="presentation"><a class="nav-link active" href="#tabpanel1" aria-controls="tabpanel1" role="tab" data-bs-toggle="tab">Tab Panel 1</a></li>
+        <li class="nav-item" role="presentation"><a class="nav-link" href="#tabpanel2" aria-controls="tabpanel2" role="tab" data-bs-toggle="tab">Tab Panel 2</a></li>
     </ul>
 
     <div class="tab-content">
         <div role="tabpanel" class="tab-pane active" id="tabpanel1">
-            <div class="panel panel-default fr-panel-tab">
-                <div class="panel-body">
+            <div class="card fr-panel-tab">
+                <div class="card-body">
                     Body
                 </div>
-                <div class="panel-footer">
+                <div class="card-footer">
                     Footer
                 </div>
             </div>
         </div>
         <div role="tabpanel" class="tab-pane" id="tabpanel2">
-            <div class="panel panel-default fr-panel-tab">
-                <div class="panel-body">
+            <div class="card fr-panel-tab">
+                <div class="card-body">
                     Body 2
                 </div>
-                <div class="panel-footer">
+                <div class="card-footer">
                     Footer 2
                 </div>
             </div>
@@ -183,20 +183,20 @@
                 <div class="example">
                 </div>
             </section>
-            <section class="resource-section">
-                <h1 id="panels">
+            <section class="resource-section" id="panels">
+                <h1>
                     Panels
                 </h1>
-                <div class="panel panel-default">
-                    <div class="panel-body">
+                <div class="card">
+                    <div class="card-body">
                         <h4 class="sub-header">
                             Default Panel
                         </h4>
 <div class="snippet">
-    <div class="panel panel-default">
-        <div class="panel-body">
+    <div class="card">
+        <div class="card-body">
         </div>
-        <div class="panel-footer">
+        <div class="card-footer">
         </div>
     </div>
 </div>
@@ -205,13 +205,13 @@
                 <div class="example">
                 </div>
             </section>
-            <section class="resource-section">
-                <h1 id="toggles">
+            <section class="resource-section" id="toggles">
+                <h1>
                     Toggles
                 </h1>
                 <p class="text-muted">Library: <a href="http://kleinejan.github.io/titatoggle/">http://kleinejan.github.io/titatoggle/</a></p>
-                <div class="panel panel-default">
-                    <div class="panel-body">
+                <div class="card">
+                    <div class="card-body">
                         <h4 class="sub-header">
                             Toggles <span class="admin-only">Admin Only</span>
                         </h4>
@@ -243,33 +243,33 @@
                 <div class="example">
                 </div>
             </section>
-            <section class="resource-section">
-                <h1 id="buttons">
+            <section class="resource-section" id="buttons">
+                <h1>
                     Buttons
                 </h1>
-                <div class="panel panel-default">
-                    <div class="panel-body">
+                <div class="card">
+                    <div class="card-body">
                         <h4 class="sub-header">Normal Button Group</h4>
 <div class="snippet">
     <div class="btn-group">
-        <button type="button" class="btn btn-default active">One</button>
-        <button type="button" class="btn btn-default">Two</button>
-        <button type="button" class="btn btn-default">Three</button>
+        <button type="button" class="btn btn-outline-primary active">One</button>
+        <button type="button" class="btn btn-outline-primary">Two</button>
+        <button type="button" class="btn btn-outline-primary">Three</button>
     </div>
 </div>
                     </div>
                 </div>
                 <div class="example">
                 </div>
-                <div class="panel panel-default">
-                    <div class="panel-body">
+                <div class="card">
+                    <div class="card-body">
                         <h4 class="sub-header">Dark Button Group <span class="admin-only">Admin Only</span></h4>
 <div class="snippet">
-    <div class="btn-group btn-icon" data-toggle="btns">
-        <a class="btn toggle-view-btn fr-btn-secondary active" href="#connectorCardContainer" data-toggle="tab">
+    <div class="btn-group btn-icon" data-bs-toggle="btns">
+        <a class="btn toggle-view-btn fr-btn-secondary active" href="#connectorCardContainer" data-bs-toggle="tab">
             <i class="fa fa-th"></i>
         </a>
-        <a class="btn toggle-view-btn fr-btn-secondary" href="#connectorGridContainer" data-toggle="tab">
+        <a class="btn toggle-view-btn fr-btn-secondary" href="#connectorGridContainer" data-bs-toggle="tab">
             <i class="fa fa-list"></i>
         </a>
     </div>
@@ -278,12 +278,12 @@
                 </div>
                 <div class="example">
                 </div>
-                <div class="panel panel-default">
-                    <div class="panel-body">
+                <div class="card">
+                    <div class="card-body">
                         <h4 class="sub-header">Button Types</h4>
 <div class="snippet">
-    <button type="button" class="btn btn-default">Default</button>
-    <button type="button" class="btn btn-default disabled">Default Disable</button>
+    <button type="button" class="btn btn-outline-primary">Default</button>
+    <button type="button" class="btn btn-outline-primary disabled">Default Disable</button>
     <button type="button" class="btn btn-primary">Primary</button>
     <button type="button" class="btn btn-primary disabled">Primary</button>
     <button type="button" class="btn btn-danger">Danger</button>
@@ -294,12 +294,12 @@
                 <div class="example">
                 </div>
             </section>
-            <section class="resource-section">
-                <h1 id="alerts">
+            <section class="resource-section" id="alerts">
+                <h1>
                     Alerts
                 </h1>
-                <div class="panel panel-default">
-<div class="snippet panel-body">
+                <div class="card">
+<div class="snippet card-body">
     <div class="alert alert-message alert-success" role="alert">
         <i class="alert-message-icon"></i>Sucess
     </div>
@@ -316,12 +316,12 @@
                 <div class="example">
                 </div>
             </section>
-            <section class="resource-section">
-                <h1 id="selectize">
+            <section class="resource-section" id="selectize">
+                <h1>
                     Selectize
                 </h1>
-                <div class="panel panel-default">
-                    <div class="panel-body">
+                <div class="card">
+                    <div class="card-body">
                         <h4 class="sub-header">
                             Normal Selectize
                         </h4>
@@ -341,8 +341,8 @@
     });
 </div>
                 </div>
-                <div class="panel panel-default">
-                    <div class="panel-body">
+                <div class="card">
+                    <div class="card-body">
                         <h4 class="sub-header">
                             Pill Selectize
                         </h4>
@@ -364,12 +364,12 @@
 </div>
                 </div>
             </section>
-            <section class="resource-section">
-                <h1 id="grids">
+            <section class="resource-section" id="grids">
+                <h1>
                     Grids
                 </h1>
-                <div class="panel panel-default">
-                    <div class="panel-body">
+                <div class="card">
+                    <div class="card-body">
                         <h4 class="sub-header">Backgrid</h4>
 <div class="snippet">
     <table class="backgrid table">
@@ -402,16 +402,16 @@
                 <div class="example">
                 </div>
             </section>
-            <section class="resource-section">
-                <h1 id="headers">
+            <section class="resource-section" id="headers">
+                <h1>
                     Headers
                 </h1>
-                <div class="panel panel-default">
-                    <div class="panel-body">
+                <div class="card">
+                    <div class="card-body">
                         <h4 class="sub-header">Page Information Header</h4>
 <div class="snippet">
     <div class="page-header clearfix">
-        <span class="header-icon pull-left"><i class="fa fa-rocket"></i></span>
+        <span class="header-icon float-start"><i class="fa fa-rocket"></i></span>
         <h4 class="page-type">Sub page header</h4>
         <div class="page-header-button-group">
             <a href="#mapping/add/connector/ldap">
@@ -419,12 +419,12 @@
                     Button
                 </button>
             </a>
-            <div class="btn-group">
-                <button type="button" class="btn btn-default dropdown-toggle btn-actions" data-toggle="dropdown" aria-expanded="false">
+            <div class="dropdown d-inline-block">
+                <button type="button" class="btn btn-outline-primary btn-actions" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="fa fa-ellipsis-v fa-lg"></i>
                 </button>
-                <ul class="dropdown-menu pull-rightAd" role="menu">
-                    <li class="data-link"><a href="#">Dropdown Item</a></li>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li class="data-link"><a class="dropdown-item" href="#">Dropdown Item</a></li>
                 </ul>
             </div>
         </div>
@@ -436,17 +436,17 @@
                 <div class="example">
                 </div>
             </section>
-            <section class="resource-section">
-                <h1 id="forms">
+            <section class="resource-section" id="forms">
+                <h1>
                     Forms
                 </h1>
-                <div class="panel panel-default">
-<div class="snippet panel-body">
+                <div class="card">
+<div class="snippet card-body">
     <form class="form-horizontal" id="userProfileForm">
         <h4 class="page-type">Error form field</h4>
-        <div class="form-group has-feedback has-error">
-            <label class="col-sm-3 control-label" for="error">Error</label>
-            <div class="col-sm-6">
+        <div class="form-group row has-feedback has-error">
+            <label class="col-md-3 col-form-label text-md-end" for="error">Error</label>
+            <div class="col-md-6">
                 <input class="form-control" type="text" id="error" name="error" value="" autofocus="" data-validation-status="error" required="" data-original-title="" title=""/>
                 <div class="validation-message"></div>
                 <span class="form-control-feedback"><i class="fa validation-icon"></i></span>
@@ -457,21 +457,21 @@
                 </div>
                 <div class="example">
                 </div>
-                <div class="panel panel-default">
-<div class="snippet panel-body">
+                <div class="card">
+<div class="snippet card-body">
     <form class="form-horizontal" id="userProfileForm">
         <h4 class="page-type">Normal form field</h4>
-        <div class="form-group has-feedback">
-            <label class="col-sm-3 control-label" for="normal">Normal</label>
-            <div class="col-sm-6">
+        <div class="form-group row has-feedback">
+            <label class="col-md-3 col-form-label text-md-end" for="normal">Normal</label>
+            <div class="col-md-6">
                 <input class="form-control" type="text" id="normal" name="normal" value="" autofocus=""  required="" data-original-title="" title="">
                 <div class="validation-message"></div>
                 <span class="form-control-feedback"><i class="fa validation-icon"></i></span>
             </div>
         </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label" for="checkboxSlider">Active</label>
-            <div class="col-sm-6">
+        <div class="form-group row">
+            <label class="col-md-3 col-form-label text-md-end" for="checkboxSlider">Active</label>
+            <div class="col-md-6">
                 <div class="control-group">
                     <div class="checkbox checkbox-slider-primary checkbox-slider checkbox-slider--b">
                         <label>
@@ -488,20 +488,20 @@
                 <div class="example">
                 </div>
             </section>
-            <section class="resource-section">
-                <h1 id="dialog">
+            <section class="resource-section" id="dialog">
+                <h1>
                     Dialog
                 </h1>
-                <div class="panel panel-default">
-                    <div class="panel-body">
+                <div class="card">
+                    <div class="card-body">
                         <h4 class="page-type">Normal Dialog</h4>
 <div class="snippet">
-    <div class="bootstrap-dialog type-default">
+    <div class="modal bootstrap-dialog type-default position-static d-block">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <div class="bootstrap-dialog-header">
-                        <div class="bootstrap-dialog-close-button" style="display: block;"><button class="close">×</button></div>
+                        <div class="bootstrap-dialog-close-button"><button type="button" class="btn-close" aria-label="Close"></button></div>
                         <div class="bootstrap-dialog-title">Normal Dialog</div>
                     </div>
                 </div>
@@ -510,10 +510,10 @@
                         <div class="bootstrap-dialog-message">Some text here</div>
                     </div>
                 </div>
-                <div class="modal-footer" style="display: block;">
+                <div class="modal-footer">
                     <div class="bootstrap-dialog-footer">
                         <div class="bootstrap-dialog-footer-buttons">
-                            <button class="btn btn-default">Cancel</button>
+                            <button class="btn btn-outline-primary">Cancel</button>
                             <button class="btn btn-primary">Ok</button>
                         </div>
                     </div>
@@ -526,16 +526,16 @@
                 </div>
                 <div class="example">
                 </div>
-                <div class="panel panel-default">
-                    <div class="panel-body">
+                <div class="card">
+                    <div class="card-body">
                         <h4 class="page-type">Delete Dialog</h4>
 <div class="snippet">
-    <div class="bootstrap-dialog type-danger">
+    <div class="modal bootstrap-dialog type-danger position-static d-block">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <div class="bootstrap-dialog-header">
-                        <div class="bootstrap-dialog-close-button" style="display: block;"><button class="close">×</button></div>
+                        <div class="bootstrap-dialog-close-button"><button type="button" class="btn-close" aria-label="Close"></button></div>
                         <div class="bootstrap-dialog-title">Danger Dialog</div>
                     </div>
                 </div>
@@ -544,10 +544,10 @@
                         <div class="bootstrap-dialog-message">Some text here</div>
                     </div>
                 </div>
-                <div class="modal-footer" style="display: block;">
+                <div class="modal-footer">
                     <div class="bootstrap-dialog-footer">
                         <div class="bootstrap-dialog-footer-buttons">
-                            <button class="btn btn-default">Cancel</button>
+                            <button class="btn btn-outline-primary">Cancel</button>
                             <button class="btn btn-danger">Ok</button>
                         </div>
                     </div>
@@ -561,12 +561,12 @@
                 <div class="example">
                 </div>
             </section>
-            <section class="resource-section">
-                <h1 id="spinner">
+            <section class="resource-section" id="spinner">
+                <h1>
                     Spinner
                 </h1>
-                <div class="panel panel-default">
-                    <div class="panel-body">
+                <div class="card">
+                    <div class="card-body">
                         <h4 class="sub-header">
                             Loading Spinner
                         </h4>
@@ -575,7 +575,7 @@
                             <code>suppressSpinner</code>). It can be also controlled with <code>SpinnerManager</code>.
                         </p>
 <div class="snippet">
-    <button type="button" class="btn btn-default" id="spinnerExample">Show spinner for 2 seconds</button>
+    <button type="button" class="btn btn-outline-primary" id="spinnerExample">Show spinner for 2 seconds</button>
 </div>
                     </div>
                 </div>
@@ -588,21 +588,21 @@
                 </div>
             </section>
         </div>
-        <div class="col-md-3" id="rightCol">
-            <ul class="nav nav-stacked" id="sidebar">
-                <li class="active"><a href="#colors">Colors</a></li>
-                <li><a href="#typography">Typography</a></li>
-                <li><a href="#tabs">Tabs</a></li>
-                <li><a href="#panels">Panels</a></li>
-                <li><a href="#toggles">Toggles</a></li>
-                <li><a href="#buttons">Buttons</a></li>
-                <li><a href="#alerts">Alerts</a></li>
-                <li><a href="#selectize">Selectize</a></li>
-                <li><a href="#grids">Grids</a></li>
-                <li><a href="#headers">Headers</a></li>
-                <li><a href="#forms">Forms</a></li>
-                <li><a href="#dialog">Dialog</a></li>
-                <li><a href="#spinner">Spinner</a></li>
+        <div class="col-lg-3" id="rightCol">
+            <ul class="nav flex-column" id="sidebar">
+                <li class="nav-item"><a class="nav-link active" href="#colors">Colors</a></li>
+                <li class="nav-item"><a class="nav-link" href="#typography">Typography</a></li>
+                <li class="nav-item"><a class="nav-link" href="#tabs">Tabs</a></li>
+                <li class="nav-item"><a class="nav-link" href="#panels">Panels</a></li>
+                <li class="nav-item"><a class="nav-link" href="#toggles">Toggles</a></li>
+                <li class="nav-item"><a class="nav-link" href="#buttons">Buttons</a></li>
+                <li class="nav-item"><a class="nav-link" href="#alerts">Alerts</a></li>
+                <li class="nav-item"><a class="nav-link" href="#selectize">Selectize</a></li>
+                <li class="nav-item"><a class="nav-link" href="#grids">Grids</a></li>
+                <li class="nav-item"><a class="nav-link" href="#headers">Headers</a></li>
+                <li class="nav-item"><a class="nav-link" href="#forms">Forms</a></li>
+                <li class="nav-item"><a class="nav-link" href="#dialog">Dialog</a></li>
+                <li class="nav-item"><a class="nav-link" href="#spinner">Spinner</a></li>
             </ul>
         </div>
     </div>

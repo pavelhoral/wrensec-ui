@@ -12,19 +12,21 @@
  * information: "Portions copyright [year] [name of copyright owner]".
  *
  * Copyright 2015 ForgeRock AS.
+ * Portions Copyright 2026 Wren Security.
  */
 
 .nav-tabs {
     /* Font weight 600 is between normal (400) and bold (700) */
     font-weight: 600;
 
-    &>li.active>a,
-    &>li.active>a:hover,
-    &>li.active>a:focus {
+    .nav-link.active,
+    .nav-link.active:hover,
+    .nav-link.active:focus {
         background-color: #fff;
+        color: var(--bs-nav-tabs-link-active-color);
     }
 
-    >li>a {
+    .nav-link {
         color: #777;
         padding: 10px 20px;
         font-weight: 600;

@@ -24,16 +24,12 @@
     }
 }
 
-.tab-menu {
-    margin-bottom: -1px;
-}
-
 .tab-content {
     /* Do not style the tab-content as this is used in different ways in different places. */
     /* Please use .nav-tab-content to create the classic tabbed views. */
 }
 
-.panel.fr-panel-tab {
+.card.fr-panel-tab {
     border-top: 0;
     border-radius: 0;
 }

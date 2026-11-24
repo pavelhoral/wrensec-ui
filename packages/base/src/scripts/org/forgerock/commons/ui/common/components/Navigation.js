@@ -12,6 +12,7 @@
  * information: "Portions copyright [year] [name of copyright owner]".
  *
  * Copyright 2011-2017 ForgeRock AS.
+ * Portions Copyright 2026 Wren Security.
  */
 define([
     "jquery",
@@ -164,7 +165,19 @@ define([
                 "partials/navigation/_NavigationLink.html"
             ],
             events: {
-                "click .event-link": "fireEvent"
+                "click .event-link": "fireEvent",
+                "show.bs.collapse #mainNavBar": "closeDropdowns"
+            },
+
+            /**
+             * Closes open dropdown menus when the collapsed navigation is being opened (e.g. a menu opened before the
+             * window was narrowed), so that the navigation does not open to the height including the open menu.
+             * @param {jQuery.Event} event collapse show event
+             */
+            closeDropdowns: function (event) {
+                if (event.target === event.currentTarget) {
+                    this.$el.find("#mainNavBar [data-bs-toggle=dropdown].show").dropdown("hide");
+                }
             },
 
             fireEvent: function(e){

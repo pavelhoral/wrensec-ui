@@ -51,7 +51,7 @@
             padding: 0;
         }
 
-        .checkbox {
+        .form-check {
             margin: 0;
         }
     }
@@ -86,7 +86,7 @@ label.separator span {
  * there are labels visible to the user due to "placeholder" attributes not rendering in IE9. The following rule turns
  * these more prominent labels off in non-IE9 browsers that are able to correctly render "placeholder".
  */
-body:not(.ie9) label.sr-only.separator {
+body:not(.ie9) label.visually-hidden.separator {
     height: 0;
     position: fixed;
     width: auto;

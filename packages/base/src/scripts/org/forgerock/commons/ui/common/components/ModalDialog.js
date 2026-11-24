@@ -230,7 +230,7 @@ define([
             }
             $button.addClass(_.isString(button.cssClass) && button.cssClass.trim() !== ""
                 ? button.cssClass
-                : "btn-default");
+                : "btn-outline-primary");
             if (this.options.size === ModalDialog.SIZE_LARGE && !/\bbtn-(lg|sm|xs)\b/.test($button.attr("class"))) {
                 $button.addClass("btn-lg");
             }

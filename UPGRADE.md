@@ -23,7 +23,8 @@
 * Media query breakpoints are mixins of the `common/mixins` module (`@use "common/mixins";`), named by Bootstrap 5
   grid tiers: `@media (min-width: @screen-sm)` → `@include mixins.media-up(md)` (768px), `@screen-md` →
   `media-up(lg)` (992px), `@screen-lg` → `media-up(xl)` (1200px), `@screen-xs` → `media-up(xs)` (480px) and
-  `@media (max-width: @screen-sm)` → `@include mixins.media-max(md)`.
+  `@media (max-width: @screen-sm)` → `@include mixins.media-max(md)`. `media-down(md)` matches Bootstrap 5
+  `media-breakpoint-down(md)` (narrower than 768px, e.g. where a navigation bar expanded from `md` is collapsed).
 * Mixins of the former `common/helpers.less`: `.fa-icon();` → `@include mixins.fa-icon;`, `.icon-circle(20px);` →
   `@include mixins.icon-circle(20px);`, `.ellipsis;` → `@extend .ellipsis;` and `.transition(color, .1s, linear);`
   → `transition: color .1s linear;` (vendor prefixes are not needed). `.arrow-*()`, `.multi-column-layout()` and
@@ -37,6 +38,26 @@
   * `libs/bootstrap.js` is Bootstrap 5 with Popper as an AMD module (`bootstrap`, depending on `jquery`), remove
     the `bootstrap` RequireJS shim; the jQuery plugin interface (`$(element).modal(…)`, `tooltip`, `popover`, …)
     remains available, but options, events and `data-bs-*` attributes follow Bootstrap 5.
+* Commons templates use Bootstrap 5 markup; applications that override them have to migrate their copies:
+  * the navigation (`#mainNavHolder`) is a `navbar navbar-expand-md` with `data-bs-theme="dark"`, its items are
+    `nav-item` / `nav-link` and `dropdown-item`, and the `navigation/_NavigationLink` partial takes the link class
+    as the `linkClass` parameter,
+  * panels are cards, profile tabs are `nav-item` / `nav-link` elements, horizontal form groups are rows with
+    `col-form-label` labels and selects are `form-select`,
+  * the default button class (including `ModalDialog` buttons) is `btn-outline-primary` instead of `btn-default`.
+* Commons styles keep providing classes that Bootstrap 5 removed and that commons validation and templates rely on:
+  `form-group` (with validation states `has-feedback`, `has-error`, `has-warning`, `has-success` and
+  `form-control-feedback` icons), `page-header` and `caret`. Labels are bold (except `form-check-label`).
+* The page background is `--wrensec-background-color`; Bootstrap components (cards, dialogs, inputs, …) are white.
+* Bootstrap 3 markup in application templates has to be migrated (see the Bootstrap migration guide), e.g.:
+  grid tiers shift by one (`col-xs-*` → `col-*`, `col-sm-*` → `col-md-*`, `col-md-*` → `col-lg-*`,
+  `col-lg-*` → `col-xl-*`, `col-sm-offset-*` → `offset-md-*`, …), `panel*` → `card*`, `pull-left` / `pull-right` →
+  `float-start` / `float-end`, `text-left` / `text-right` → `text-start` / `text-end`, `sr-only` →
+  `visually-hidden`, `help-block` → `form-text`, `control-label` → `col-form-label`, `input-lg` →
+  `form-control-lg`, `btn-block` → `w-100`, `btn-default` → `btn-outline-primary`, `hidden` → `d-none`,
+  `checkbox` → `form-check`, `data-toggle` / `data-target` / `data-dismiss` → `data-bs-*` and dropdown carets
+  are added by Bootstrap (remove `<span class="caret"></span>` from dropdown toggles, and the `dropdown-toggle` class
+  from icon only toggles that should have no caret).
 * `bootstrap-dialog` library has been replaced by the commons module
   `org/forgerock/commons/ui/common/components/ModalDialog`, which renders the same markup (Bootstrap modal with
   `bootstrap-dialog*` CSS classes, the close button is Bootstrap 5 `.btn-close`) and supports the subset of bootstrap-dialog API used by Wren Security applications

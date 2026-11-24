@@ -31,8 +31,8 @@ const ReactExample = ({ router }) => {
         h("div", { className: "page-header" },
             h("h1", null, "React Example")
         ),
-        h("div", { className: "panel panel-default" },
-            h("div", { className: "panel-body" },
+        h("div", { className: "card" },
+            h("div", { className: "card-body" },
                 h("p", null,
                     "This view is a React ", h("code", null, React.version),
                     " function component rendered by ", h("code", null, "ReactAdapterView"), "."
@@ -45,7 +45,7 @@ const ReactExample = ({ router }) => {
                 ),
                 h("button", {
                     type: "button",
-                    className: "btn btn-default",
+                    className: "btn btn-outline-primary",
                     id: "reactExampleCounter",
                     onClick: () => setCount(count + 1)
                 }, `Clicked ${count} times`)

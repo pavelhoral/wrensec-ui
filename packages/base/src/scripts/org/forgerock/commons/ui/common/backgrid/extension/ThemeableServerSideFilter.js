@@ -12,6 +12,7 @@
  * information: "Portions copyright [year] [name of copyright owner]".
  *
  * Copyright 2015-2016 ForgeRock AS.
+ * Portions Copyright 2026 Wren Security.
  */
 
 /**
@@ -67,7 +68,7 @@ define([
          * @inheritdoc
          */
         template: function (data) {
-            return '<input class="form-control input-sm" type="search" '
+            return '<input class="form-control form-control-sm" type="search" '
                 + (data.placeholder ? 'placeholder="' + data.placeholder + '"' : '')
                 + ' name="' + data.name + '" ' + (data.value ? 'value="' + data.value + '"' : '') + '/>' +
                 '<a class="fa fa-times form-control-feedback" data-backgrid-action="clear" role="button" href="#"></a>';

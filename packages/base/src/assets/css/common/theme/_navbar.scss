@@ -20,117 +20,135 @@
 /*
  * Navbar and SubNav
  */
+#mainNavHolder {
+    --bs-navbar-padding-y: 0;
+    --bs-navbar-nav-link-padding-x: 15px;
+    --bs-navbar-toggler-padding-y: 6px;
+    --bs-navbar-toggler-padding-x: 10px;
+    --bs-navbar-toggler-font-size: 1rem;
+    background-color: #1f2223;
+    border-bottom: 1px solid #070808;
+    font-size: 12px;
 
-.navbar {
+    .navbar-nav .nav-link {
+        line-height: 50px;
+        padding-top: 0;
+        padding-bottom: 0;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 600;
+        transition: color 0.1s linear;
 
-    margin:0;
-
-    &.navbar-inverse{
-
-        background-image: none;
-        font-size:12px;
-
-        .dropdown-menu {
-            background-color: #000;
-            padding-bottom: 10px;
-
-            &>li small,
-            &>li a small {
-              display: block;
-              font-weight: 400;
-            }
-
-            .divider {
-                background-color: #333;
-            }
-
-            &>li.dropdown-header {
-              text-transform: uppercase;
-              font-size: 11px;
-              font-weight: 600;
-            }
-
-            &>li>a {
-                letter-spacing: 1px;
-                color: #999;
-                -webkit-transition: none;
-                -moz-transition: none;
-                -o-transition: none;
-                transition: none;
-                text-transform: uppercase;
-                font-size: 13px;
-                font-weight: 600;
-                line-height: 30px;
-                
-                [class^="icon-"],.fa{
-                    padding-right:3px;
-                    min-width: 22px;
-                }
-                &:hover, &:focus{
-                    color: #fff;
-                    -webkit-transition: none;
-                    -moz-transition: none;
-                    -o-transition: none;
-                    transition: none;
-                }
-
-                i {
-                    font-size: 14px;
-                }
-            }
-
-            &>li.active>a {
-              background-color: inherit;
-              color: #fff;
-            }
-
-            &>li.dropdown-sub>a {
-                text-transform: none;
-                font-weight: 400;
-            }
+        i {
+            text-align: center;
+            font-size: 14px;
         }
 
-        #navDropdownMenu .dropdown-header {
-          color: #999;
-          text-transform: uppercase;
-          letter-spacing: 1px;
-          font-size: 13px;
-          font-weight: 600;
+        /* Active item and open dropdown toggle */
+        &.active, &.show {
+            background-color: #070808;
+            color: #fff;
         }
-
-        .navbar-toggle {
-            border-color:#1f2223;
-            color:var(--wrensec-navbar-toggle-color);
-            margin-top: 20px;
-            padding: 9px 10px;
-        }
-
-        .navbar-nav>li>a {
-            line-height: 50px;
-            padding-top: 0;
-
-            padding-bottom: 0;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 600;
-            transition: color 0.1s linear;
-
-            i {
-                text-align: center;
-                font-size: 14px;
-            }
-
-            .caret{
-                color: #999;
-            }
-        }
-
-        .open .dropdown-menu>li>a:hover, .open .dropdown-menu>li>a:focus{
-            background-color: transparent;
-        }
-
     }
 
+    .navbar-toggler {
+        border-color: #1f2223;
+        color: var(--wrensec-navbar-toggle-color);
+        margin: 20px 0;
+
+        &:hover, &:focus {
+            background-color: #2a2f32;
+        }
+
+        /* Focus ring is shown for keyboard focus only */
+        &:focus:not(:focus-visible) {
+            box-shadow: none;
+        }
+    }
+
+    /* Dropdown menus are attached to the bottom of the navigation bar */
+    .dropdown-menu {
+        --bs-dropdown-spacer: 1px;
+        --bs-dropdown-bg: #000;
+        /* No light border of the dark theme between the navigation bar and its menus */
+        --bs-dropdown-border-color: #000;
+        --bs-dropdown-divider-bg: #333;
+        --bs-dropdown-link-color: #999;
+        --bs-dropdown-link-hover-color: #fff;
+        --bs-dropdown-link-hover-bg: transparent;
+        --bs-dropdown-link-active-color: #fff;
+        --bs-dropdown-link-active-bg: transparent;
+        --bs-dropdown-header-color: #999;
+        padding-bottom: 10px;
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+
+        small {
+            display: block;
+            font-weight: 400;
+        }
+
+        .dropdown-header {
+            text-transform: uppercase;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .dropdown-item {
+            letter-spacing: 1px;
+            transition: none;
+            text-transform: uppercase;
+            font-size: 13px;
+            font-weight: 600;
+            line-height: 30px;
+
+            [class^="icon-"], .fa {
+                padding-right: 3px;
+                min-width: 22px;
+            }
+
+            i {
+                font-size: 14px;
+            }
+        }
+
+        .dropdown-sub > .dropdown-item {
+            text-transform: none;
+            font-weight: 400;
+        }
+    }
+
+    #navDropdownMenu .dropdown-header {
+        color: #999;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+}
+
+/* Collapsed navigation (small devices) spans the whole window width, including its dropdown menus */
+@include mixins.media-down(md) {
+    #mainNavHolder {
+        .navbar-collapse {
+            margin: 0 calc(var(--bs-gutter-x) * -.5);
+            border-top: 1px solid #070808;
+        }
+
+        .navbar-nav .nav-link {
+            padding-left: calc(var(--bs-gutter-x) * .5);
+            padding-right: calc(var(--bs-gutter-x) * .5);
+        }
+
+        /* Menu items are indented under their toggle (as in Bootstrap 3) */
+        .dropdown-menu {
+            --bs-dropdown-item-padding-x: 25px;
+            --bs-dropdown-header-padding-x: 25px;
+            margin-top: 0;
+            border: 0;
+            border-radius: 0;
+        }
+    }
 }
 
 #mainNavBar {
@@ -179,22 +197,16 @@
         display: none;
     }
 
-    .navbar #navbarBrand a {
-        margin: -1px 0 0 -15px;
+    #mainNavHolder .navbar-brand {
+        margin: -1px 15px 0 0;
     }
 
-    .navbar-fixed-top {
-        margin-bottom: 20px;
-        margin-left: 0;
-        margin-right: 0;
-    }
-
-    .navbar.navbar-inverse .navbar-nav>li>a {
+    #mainNavHolder .navbar-nav .nav-link {
         line-height: 70px;
         padding-top: 5px;
     }
 
-    .navbar.navbar-inverse .dropdown-menu>li>a {
+    #mainNavHolder .dropdown-menu .dropdown-item {
         line-height: 20px;
         padding-top: 6px;
         padding-bottom: 6px;
@@ -299,26 +311,18 @@
 
 /* Medium devices (desktops, 992px and up)*/
 @include mixins.media-up(lg) {
-    .navbar-inverse #main-nav {
-        border-right: none;
-    }
-
-    .navbar-inverse #main-nav .nav>li>a {
-        border-left: none;
-    }
-
-    .navbar.navbar-inverse .navbar-admin > li > a > i{
+    #mainNavHolder .navbar-admin .nav-link > i {
         display: none;
     }
 }
 
 /* Medium devices (desktops, 992px and up)*/
 @include mixins.media-up(xl) {
-    .navbar.navbar-inverse .navbar-admin > li > a > i{
+    #mainNavHolder .navbar-admin .nav-link > i {
         display: inline-block;
     }
 
-    .navbar.navbar-inverse{
+    #mainNavHolder {
         font-size: 14px;
     }
 }

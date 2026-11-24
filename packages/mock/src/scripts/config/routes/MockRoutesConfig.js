@@ -23,6 +23,11 @@ define([
             role: "ui-user",
             url: "examples/"
         },
+        "componentsPage" : {
+            view: "org/forgerock/mock/ui/components/ComponentsView",
+            role: "ui-user",
+            url: "components/"
+        },
         "reactExample" : {
             view: "org/forgerock/mock/ui/react/ReactExampleView",
             role: "ui-user",

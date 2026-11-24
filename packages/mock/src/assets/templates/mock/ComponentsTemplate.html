@@ -1,0 +1,226 @@
+<!-- Copyright 2026 Wren Security.
+	License terms: CDDL 1.1, see legal/CDDLv1.1.txt -->
+<div class="styleguide-jumbotron">
+    <div class="container">
+        <h1>Components</h1>
+        <p class="lead">Commons user interface components in action. The style guide shows how things look, this page shows how commons components behave and how applications use them.</p>
+    </div>
+</div>
+<div class="container">
+    <section class="resource-section" id="dialog-examples">
+        <h1>Dialogs</h1>
+        <div class="card">
+            <div class="card-body">
+                <h4 class="sub-header">Types and sizes</h4>
+                <p>
+                    Modal dialogs are created by <code>BootstrapDialog</code> (or its base <code>ModalDialog</code>),
+                    which keeps the bootstrap-dialog API used by Wren Security applications.
+                </p>
+                <div class="d-flex flex-wrap gap-2 mb-2">
+                    <button type="button" class="btn btn-primary" data-dialog-type="type-default">Default</button>
+                    <button type="button" class="btn btn-danger" data-dialog-type="type-danger">Danger</button>
+                </div>
+                <div class="d-flex flex-wrap gap-2">
+                    <button type="button" class="btn btn-outline-primary" data-dialog-size="size-small">Small</button>
+                    <button type="button" class="btn btn-outline-primary" data-dialog-size="size-wide">Wide</button>
+                    <button type="button" class="btn btn-outline-primary" data-dialog-size="size-large">Large</button>
+                    <button type="button" class="btn btn-outline-primary" id="dialogStackedExample">Stacked</button>
+                </div>
+            </div>
+        </div>
+        <div class="example">
+<div class="code">
+    BootstrapDialog.show({
+        type: BootstrapDialog.TYPE_DANGER,
+        size: BootstrapDialog.SIZE_WIDE,
+        title: "Dialog title",
+        message: $("&lt;p&gt;").text("Dialog message"),
+        buttons: [{
+            label: $.t("common.form.close"),
+            action: (dialog) => dialog.close()
+        }]
+    });
+</div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h4 class="sub-header">Confirmation</h4>
+                <p>
+                    <code>BootstrapDialog.confirm</code> asks the user to confirm an action,
+                    <code>UIUtils.confirmDialog</code> does the same with the commons confirmation dialog.
+                </p>
+                <div class="d-flex flex-wrap gap-2">
+                    <button type="button" class="btn btn-danger" id="dialogConfirmExample">Delete something</button>
+                    <button type="button" class="btn btn-primary" id="confirmDialogExample">UIUtils.confirmDialog</button>
+                </div>
+            </div>
+        </div>
+        <div class="example">
+<div class="code">
+    BootstrapDialog.confirm({
+        type: BootstrapDialog.TYPE_DANGER,
+        title: "Delete",
+        message: "Do you really want to delete it?",
+        btnOKLabel: $.t("common.form.delete"),
+        callback: (confirmed) => { ... }
+    });
+
+    UIUtils.confirmDialog("Do you really want to do it?", "danger", () => { ... });
+</div>
+        </div>
+    </section>
+
+    <section class="resource-section" id="notifications">
+        <h1>Notifications</h1>
+        <div class="card">
+            <div class="card-body">
+                <h4 class="sub-header">Messages</h4>
+                <p>Notifications are shown at the top of the page by <code>Messages</code>.</p>
+                <div class="d-flex flex-wrap gap-2">
+                    <button type="button" class="btn btn-outline-primary" data-message-type="success">Success</button>
+                    <button type="button" class="btn btn-outline-primary" data-message-type="info">Info</button>
+                    <button type="button" class="btn btn-outline-primary" data-message-type="warning">Warning</button>
+                    <button type="button" class="btn btn-outline-primary" data-message-type="error">Danger</button>
+                </div>
+            </div>
+        </div>
+        <div class="example">
+<div class="code">
+    Messages.addMessage({
+        type: Messages.TYPE_SUCCESS,
+        message: "Changes have been saved."
+    });
+</div>
+        </div>
+    </section>
+
+    <section class="resource-section" id="validation">
+        <h1>Form validation</h1>
+        <div class="card">
+            <div class="card-body">
+                <h4 class="sub-header">Validators</h4>
+                <p>
+                    Inputs declare their validators (<code>data-validator</code>) and
+                    <code>ValidatorsManager</code> binds them; the view shows the validation state of each field.
+                </p>
+                <form class="form-horizontal" id="validationExample" autocomplete="off">
+                    <div class="form-group row">
+                        <label class="col-md-3 col-form-label text-md-end" for="validationUsername">Username</label>
+                        <div class="col-md-6">
+                            <input class="form-control" type="text" id="validationUsername" name="username"
+                                   data-validator="required" data-validator-event="keyup">
+                            <span class="form-control-feedback"><i class="fa validation-icon"></i></span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 col-form-label text-md-end" for="validationPassword">Password</label>
+                        <div class="col-md-6">
+                            <input class="form-control" type="password" id="validationPassword" name="password"
+                                   minLength="8" data-validator="required minLength" data-validator-event="keyup"
+                                   data-validation-dependents="validationConfirmPassword">
+                            <span class="form-control-feedback"><i class="fa validation-icon"></i></span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-3 col-form-label text-md-end" for="validationConfirmPassword">Confirm password</label>
+                        <div class="col-md-6">
+                            <input class="form-control" type="password" id="validationConfirmPassword"
+                                   data-validator="passwordConfirm" passwordField="validationPassword" data-validator-event="keyup">
+                            <span class="form-control-feedback"><i class="fa validation-icon"></i></span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="example">
+<div class="code">
+    // &lt;input class="form-control" type="password" minLength="8" data-validator="required minLength"
+    //        data-validator-event="keyup"&gt;
+    ValidatorsManager.bindValidators(this.$el.find("form"));
+</div>
+        </div>
+    </section>
+
+    <section class="resource-section" id="selectize">
+        <h1>Selectize</h1>
+        <div class="card">
+            <div class="card-body">
+                <h4 class="sub-header">Single value</h4>
+                <select id="selectizeExample">
+                    <option value="One">One</option>
+                    <option value="Two">Two</option>
+                    <option value="Three">Three</option>
+                </select>
+            </div>
+        </div>
+        <div class="example">
+<div class="code">
+    this.$el.find("#selectizeExample").selectize({
+        create: true
+    });
+</div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h4 class="sub-header">Multiple values</h4>
+                <select id="selectizePillExample" multiple>
+                    <option value="One" selected>One</option>
+                    <option value="Two">Two</option>
+                    <option value="Three">Three</option>
+                </select>
+            </div>
+        </div>
+        <div class="example">
+<div class="code">
+    this.$el.find("#selectizePillExample").selectize({
+        create: true,
+        maxItems: 3
+    });
+</div>
+        </div>
+    </section>
+
+    <section class="resource-section" id="backgrid">
+        <h1>Backgrid</h1>
+        <div class="card">
+            <div class="card-body">
+                <h4 class="sub-header">Grid with paginator and filter</h4>
+                <p>
+                    Sortable columns, <code>ThemeablePaginator</code> and a client side filter with the markup of
+                    <code>ThemeableServerSideFilter</code> (which filters collections on the server).
+                </p>
+                <div id="backgridExample"></div>
+            </div>
+        </div>
+        <div class="example">
+<div class="code">
+    const grid = new Backgrid.Grid({ className: "backgrid table", columns, collection }),
+        paginator = new Backgrid.Extension.ThemeablePaginator({ collection, windowSize: 3 }),
+        filter = new Backgrid.Extension.ThemeableServerSideFilter({ collection, name: "_queryFilter" });
+
+    this.$el.find("#grid").append(filter.render().el, grid.render().el, paginator.render().el);
+</div>
+        </div>
+    </section>
+
+    <section class="resource-section" id="spinner">
+        <h1>Spinner</h1>
+        <div class="card">
+            <div class="card-body">
+                <h4 class="sub-header">Loading spinner</h4>
+                <p>
+                    Displayed automatically during REST calls (unless the call is made with
+                    <code>suppressSpinner</code>). It can be also controlled with <code>SpinnerManager</code>.
+                </p>
+                <button type="button" class="btn btn-outline-primary" id="spinnerExample">Show spinner for 2 seconds</button>
+            </div>
+        </div>
+        <div class="example">
+<div class="code">
+    SpinnerManager.showSpinner();
+    // ... when the work is done
+    SpinnerManager.hideSpinner();
+</div>
+        </div>
+    </section>
+</div>

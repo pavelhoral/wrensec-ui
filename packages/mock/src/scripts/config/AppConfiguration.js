@@ -82,6 +82,11 @@ define([
                                     name: "Style Guide",
                                     icon: "fa fa-compass"
                                 },
+                                components: {
+                                    url : "#components/",
+                                    name: "Components",
+                                    icon: "fa fa-puzzle-piece"
+                                },
                                 react: {
                                     url : "#react/",
                                     name: "React Example",

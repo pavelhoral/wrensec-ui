@@ -20,21 +20,16 @@ define([
     "lodash",
     "org/forgerock/mock/ui/examples/CodeMirror",
     "bootstrap",
-    "selectize",
-    "org/forgerock/commons/ui/common/main/AbstractView",
-    "org/forgerock/commons/ui/common/main/SpinnerManager"
+    "org/forgerock/commons/ui/common/main/AbstractView"
 ], function($, _,
         CodeMirror,
         bootstrap,
-        selectize,
-        AbstractView,
-        SpinnerManager) {
+        AbstractView) {
 
     var ExamplesView = AbstractView.extend({
         template: "templates/mock/ExamplesTemplate.html",
         events: {
-            "click #sidebar a": "slideNavigation",
-            "click #spinnerExample": "showSpinnerExample"
+            "click #sidebar a": "slideNavigation"
         },
         render: function(args, callback) {
             this.parentRender(_.bind(function() {
@@ -70,18 +65,6 @@ define([
                     });
                 });
 
-                /*
-                 Selectize
-                 */
-                this.$el.find('#selectizeExample').selectize({
-                    create: true
-                });
-
-                this.$el.find('#selectizePillExample').selectize({
-                    create: true,
-                    maxItems: 3
-                });
-
                 // Highlight the section in view in the (sticky) side navigation, the scroll spy of the previously
                 // rendered style guide observes removed elements
                 if ($.fn.scrollspy.Constructor.getInstance(document.body)) {
@@ -111,10 +94,6 @@ define([
                     scrollTop: target.offset().top
                 }, 1000);
             }
-        },
-        showSpinnerExample () {
-            SpinnerManager.showSpinner();
-            setTimeout(() => SpinnerManager.hideSpinner(), 2000);
         }
     });
 

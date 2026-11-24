@@ -307,54 +307,6 @@
                 <div class="example">
                 </div>
             </section>
-            <section class="resource-section" id="selectize">
-                <h1>
-                    Selectize
-                </h1>
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="sub-header">
-                            Normal Selectize
-                        </h4>
-<div class="snippet">
-    <select id="selectizeExample">
-        <option value="One">One</option>
-        <option value="Two">Two</option>
-        <option value="Three">Three</option>
-    </select>
-</div>
-                    </div>
-                </div>
-                <div class="example">
-<div class="code">
-    this.$el.find('#selectizeExample').selectize({
-        create: true
-    });
-</div>
-                </div>
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="sub-header">
-                            Pill Selectize
-                        </h4>
-<div class="snippet">
-    <select id="selectizePillExample">
-        <option value="One">One</option>
-        <option value="Two">Two</option>
-        <option value="Three">Three</option>
-    </select>
-</div>
-                    </div>
-                </div>
-                <div class="example">
-<div class="code">
-    this.$el.find('#selectizePillExample').selectize({
-        create: true,
-        maxItems: 3
-    });
-</div>
-                </div>
-            </section>
             <section class="resource-section" id="grids">
                 <h1>
                     Grids
@@ -547,32 +499,6 @@
                 <div class="example">
                 </div>
             </section>
-            <section class="resource-section" id="spinner">
-                <h1>
-                    Spinner
-                </h1>
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="sub-header">
-                            Loading Spinner
-                        </h4>
-                        <p>
-                            Displayed automatically during REST calls (unless the call is made with
-                            <code>suppressSpinner</code>). It can be also controlled with <code>SpinnerManager</code>.
-                        </p>
-<div class="snippet">
-    <button type="button" class="btn btn-outline-primary" id="spinnerExample">Show spinner for 2 seconds</button>
-</div>
-                    </div>
-                </div>
-                <div class="example">
-<div class="code">
-    SpinnerManager.showSpinner();
-    // ... when the work is done
-    SpinnerManager.hideSpinner();
-</div>
-                </div>
-            </section>
         </div>
         <div class="col-lg-3" id="rightCol">
             <ul class="nav flex-column" id="sidebar">
@@ -583,12 +509,10 @@
                 <li class="nav-item"><a class="nav-link" href="#toggles">Toggles</a></li>
                 <li class="nav-item"><a class="nav-link" href="#buttons">Buttons</a></li>
                 <li class="nav-item"><a class="nav-link" href="#alerts">Alerts</a></li>
-                <li class="nav-item"><a class="nav-link" href="#selectize">Selectize</a></li>
                 <li class="nav-item"><a class="nav-link" href="#grids">Grids</a></li>
                 <li class="nav-item"><a class="nav-link" href="#headers">Headers</a></li>
                 <li class="nav-item"><a class="nav-link" href="#forms">Forms</a></li>
                 <li class="nav-item"><a class="nav-link" href="#dialog">Dialog</a></li>
-                <li class="nav-item"><a class="nav-link" href="#spinner">Spinner</a></li>
             </ul>
         </div>
     </div>

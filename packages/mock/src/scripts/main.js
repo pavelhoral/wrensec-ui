@@ -18,6 +18,8 @@
 require.config({
     map: {
         "*" : {
+            // Commons ThemeablePaginator refers to the backgrid paginator as "backgrid.paginator"
+            "backgrid.paginator": "backgrid-paginator",
             "Footer": "org/forgerock/mock/ui/common/components/Footer",
             "ThemeManager": "org/forgerock/mock/ui/common/util/ThemeManager",
             "LoginView": "org/forgerock/commons/ui/common/LoginView",

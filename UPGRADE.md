@@ -2,6 +2,32 @@
 
 ## 23.x -> 24.0
 
+* Commons styles are SCSS instead of Less (`css/common/**/*.scss`, the `*.less` files have been removed). They are
+  Sass modules to be built by applications (Less stylesheets can no longer import them):
+  * `@use "common/common";` is a single entry point for the structure and the theme (replaces
+    `common/structure.less` and `common/theme.less` imported together),
+  * `@use "common/structure";` and `@use "common/theme";` are entry points for applications that build the
+    structure and the theme as separate stylesheets,
+  * `common/list`, `common/structure/backgrid` and `common/structure/notification` are optional partials not
+    included in the structure (replace `@import "common/list.less";` with `@use "common/list";`, …).
+* Build styles with `useScssStyles` of `@wrensecurity/commons-ui-build` (Sass with modules resolved from the base
+  path and `pkg:` URLs from Node packages). Library CSS can be imported with plain CSS imports after the `@use`
+  rules (`@import "selectize.css";`), which are inlined with relative URLs rebased. Other relative URLs are relative
+  to the built stylesheet. `useLessStyles` is deprecated and will be removed in 25.0.
+* Less variables of the former `common/forgerock-variables.less` (remove its import) are CSS custom properties, so
+  themes can change them at runtime: `@base-theme-color` → `var(--wrensec-base-theme-color)`, … Their defaults are
+  Sass variables of the `common/variables` module, which can be configured when the module is loaded for the first
+  time: `@use "common/variables" with ($base-theme-color: #123456);`. `darken(@base-theme-color, 5%)` →
+  `var(--wrensec-base-theme-color-dark)` (new property derived from the accent color). Other color functions need
+  the Sass variables (`variables.$base-theme-color`, resolved at build time) or CSS `color-mix()`.
+* Media query breakpoints are mixins of the `common/mixins` module (`@use "common/mixins";`), named by Bootstrap 5
+  grid tiers: `@media (min-width: @screen-sm)` → `@include mixins.media-up(md)` (768px), `@screen-md` →
+  `media-up(lg)` (992px), `@screen-lg` → `media-up(xl)` (1200px), `@screen-xs` → `media-up(xs)` (480px) and
+  `@media (max-width: @screen-sm)` → `@include mixins.media-max(md)`.
+* Mixins of the former `common/helpers.less`: `.fa-icon();` → `@include mixins.fa-icon;`, `.icon-circle(20px);` →
+  `@include mixins.icon-circle(20px);`, `.ellipsis;` → `@extend .ellipsis;` and `.transition(color, .1s, linear);`
+  → `transition: color .1s linear;` (vendor prefixes are not needed). `.arrow-*()`, `.multi-column-layout()` and
+  `.nocache-background-image()` have been removed.
 * `bootstrap-dialog` library has been replaced by the commons module
   `org/forgerock/commons/ui/common/components/ModalDialog`, which renders the same markup (Bootstrap modal with
   `bootstrap-dialog*` CSS classes) and supports the subset of bootstrap-dialog API used by Wren Security applications

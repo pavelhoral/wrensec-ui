@@ -12,6 +12,7 @@
  * information: "Portions copyright [year] [name of copyright owner]".
  *
  * Copyright 2011-2016 ForgeRock AS.
+ * Portions Copyright 2026 Wren Security.
  */
 
 define([
@@ -59,7 +60,7 @@ define([
             return $.Deferred().resolve({
                 "path": "",
                 "icon": "favicon.ico",
-                "stylesheets": ["css/bootstrap.css", "css/structure.css", "css/theme.css"],
+                "stylesheets": ["css/bootstrap.css", "css/main.css"],
                 "settings": {
                     "logo": {
                         "src": "images/logo-horizontal.png",

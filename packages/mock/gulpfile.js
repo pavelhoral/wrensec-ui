@@ -18,7 +18,7 @@ const {
     useEslint,
     useLocalResources,
     useModuleResources,
-    useLessStyles,
+    useScssStyles,
     useBuildRequire,
     useBuildModule
 } = require("@wrensecurity/commons-ui-build");
@@ -65,9 +65,8 @@ gulp.task("build:compose", useLocalResources({ "../user/dist/**": "" }, { dest: 
 
 gulp.task("build:libs", useModuleResources(MODULE_RESOURCES, { path: __filename, dest: TARGET_PATH }));
 
-gulp.task("build:styles", useLessStyles({
-    "build/www/css/structure.less": "css/structure.css",
-    "build/www/css/theme.less": "css/theme.css"
+gulp.task("build:styles", useScssStyles({
+    "src/styles/main.scss": "css/main.css"
 }, { base: join(TARGET_PATH, "css"), dest: TARGET_PATH }));
 
 gulp.task("build:editor", useBuildModule({

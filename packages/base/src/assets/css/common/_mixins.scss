@@ -1,0 +1,73 @@
+/**
+ * The contents of this file are subject to the terms of the Common Development and
+ * Distribution License (the License). You may not use this file except in compliance with the
+ * License.
+ *
+ * You can obtain a copy of the License at legal/CDDLv1.0.txt. See the License for the
+ * specific language governing permission and limitations under the License.
+ *
+ * When distributing Covered Software, include this CDDL Header Notice in each file and include
+ * the License file at legal/CDDLv1.0.txt. If applicable, add the following below the CDDL
+ * Header, with the fields enclosed by brackets [] replaced by your own identifying
+ * information: "Portions copyright [year] [name of copyright owner]".
+ *
+ * Copyright 2015 ForgeRock AS.
+ * Portions Copyright 2026 Wren Security.
+ */
+
+@use "sass:map";
+@use "sass:math";
+@use "variables";
+
+@function -breakpoint($name) {
+    @if not map.has-key(variables.$breakpoints, $name) {
+        @error "Unknown breakpoint `#{$name}`, expected one of #{map.keys(variables.$breakpoints)}.";
+    }
+    @return map.get(variables.$breakpoints, $name);
+}
+
+// Media query for screens at least as wide as the breakpoint (like Bootstrap 5 media-breakpoint-up()).
+// Example: @include mixins.media-up(md) { ... }
+@mixin media-up($name) {
+    @media (min-width: -breakpoint($name)) {
+        @content;
+    }
+}
+
+// Media query for screens at most as wide as the breakpoint, including the breakpoint width (unlike Bootstrap 5
+// media-breakpoint-down(), which excludes it).
+// Example: @include mixins.media-max(md) { ... }
+@mixin media-max($name) {
+    @media (max-width: -breakpoint($name)) {
+        @content;
+    }
+}
+
+// Font Awesome icon font on an element that is not an icon (the glyph is set by the content property).
+@mixin fa-icon {
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+// Circle with a centered icon.
+// Example: <span class="your-class"><i class="fa fa-your-icon"></i></span>
+// .your-class { @include mixins.icon-circle(20px); color: white; background: black; }
+@mixin icon-circle($diameter: 76px) {
+    width: $diameter;
+    height: $diameter;
+    border-radius: 50%;
+    line-height: $diameter;
+    font-size: math.div($diameter, 2);
+    display: table;
+    text-align: center;
+    overflow: hidden;
+
+    .fa {
+        display: table-cell;
+        vertical-align: middle;
+    }
+}

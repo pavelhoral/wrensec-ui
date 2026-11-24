@@ -1,0 +1,82 @@
+/**
+ * The contents of this file are subject to the terms of the Common Development and
+ * Distribution License (the License). You may not use this file except in compliance with the
+ * License.
+ *
+ * You can obtain a copy of the License at legal/CDDLv1.0.txt. See the License for the
+ * specific language governing permission and limitations under the License.
+ *
+ * When distributing Covered Software, include this CDDL Header Notice in each file and include
+ * the License file at legal/CDDLv1.0.txt. If applicable, add the following below the CDDL
+ * Header, with the fields enclosed by brackets [] replaced by your own identifying
+ * information: "Portions copyright [year] [name of copyright owner]".
+ *
+ * Copyright 2015 ForgeRock AS.
+ * Portions Copyright 2026 Wren Security.
+ */
+
+@use "sass:color";
+
+// Theme variables. Commons styles use them through CSS custom properties (--wrensec-*), so a theme can change them
+// at runtime (:root { --wrensec-base-theme-color: ...; }). The Sass variables set the default values and can be
+// configured when the module is loaded for the first time: @use "common/variables" with ($base-theme-color: ...);
+
+// Accent color for elements not related to Bootstrap (similar to Bootstrap primary color)
+$base-theme-color: #519387 !default;
+
+// Darker accent color (hover and focus states, borders), derived from the accent color
+$base-theme-color-dark: color.adjust($base-theme-color, $lightness: -5%) !default;
+
+// Panel hover color
+$panel-hover-color: #36625a !default;
+
+// Background color of the page
+$background-color: #f7f7f7 !default;
+
+// Validation colors
+$success-color: #80b7ab !default;
+$failure-color: #a94442 !default;
+$warning-color: #8a6d3b !default;
+
+// Color of the responsive navigation toggle button
+$navbar-toggle-color: #979797 !default;
+
+// Responsive sub-navigation colors
+$subnav-small-device-hover: #777777 !default;
+$subnav-small-device-active-background: #080808 !default;
+$subnav-small-device-active-color: #ffffff !default;
+
+// Modal background shim color
+$modal-background-color: #2a2f32 !default;
+
+// Footer height
+$footer-height: 70px !default;
+
+// Media query breakpoints used by the media-up() and media-max() mixins. The values are the Bootstrap breakpoints,
+// named by Bootstrap 5 grid tiers (they used to be Bootstrap 3 @screen-xs/sm/md/lg):
+// - xs: extra small devices (Bootstrap 3 @screen-xs, no Bootstrap 5 equivalent),
+// - md: medium devices (Bootstrap 5 md, Bootstrap 3 @screen-sm),
+// - lg: large devices (Bootstrap 5 lg, Bootstrap 3 @screen-md),
+// - xl: extra large devices (Bootstrap 5 xl, Bootstrap 3 @screen-lg).
+$breakpoints: (
+    xs: 480px,
+    md: 768px,
+    lg: 992px,
+    xl: 1200px
+) !default;
+
+:root {
+    --wrensec-base-theme-color: #{$base-theme-color};
+    --wrensec-base-theme-color-dark: #{$base-theme-color-dark};
+    --wrensec-panel-hover-color: #{$panel-hover-color};
+    --wrensec-background-color: #{$background-color};
+    --wrensec-success-color: #{$success-color};
+    --wrensec-failure-color: #{$failure-color};
+    --wrensec-warning-color: #{$warning-color};
+    --wrensec-navbar-toggle-color: #{$navbar-toggle-color};
+    --wrensec-subnav-small-device-hover: #{$subnav-small-device-hover};
+    --wrensec-subnav-small-device-active-background: #{$subnav-small-device-active-background};
+    --wrensec-subnav-small-device-active-color: #{$subnav-small-device-active-color};
+    --wrensec-modal-background-color: #{$modal-background-color};
+    --wrensec-footer-height: #{$footer-height};
+}

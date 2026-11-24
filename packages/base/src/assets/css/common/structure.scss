@@ -1,0 +1,87 @@
+/**
+ * The contents of this file are subject to the terms of the Common Development and
+ * Distribution License (the License). You may not use this file except in compliance with the
+ * License.
+ *
+ * You can obtain a copy of the License at legal/CDDLv1.0.txt. See the License for the
+ * specific language governing permission and limitations under the License.
+ *
+ * When distributing Covered Software, include this CDDL Header Notice in each file and include
+ * the License file at legal/CDDLv1.0.txt. If applicable, add the following below the CDDL
+ * Header, with the fields enclosed by brackets [] replaced by your own identifying
+ * information: "Portions copyright [year] [name of copyright owner]".
+ *
+ * Copyright 2015 ForgeRock AS.
+ * Portions Copyright 2026 Wren Security.
+ */
+
+@use "variables";
+
+/*
+ * The rules included in this file are necessary for the correct functioning of the app. They should always be
+ * included on any page, regardless of which Bootstrap theme is being used.
+ */
+
+/* Base: All base HTML tags. No IDs or Classes should be included here. */
+@use "structure/base";
+
+/* Generic css helpers and functions */
+@use "helpers";
+
+/* Navbar and SubNav */
+@use "structure/navbar";
+
+/* Dropdown-menus - The drop down menu in the Navbar is styled within navbar.css */
+@use "structure/dropdown-menu";
+
+/* Page Footer */
+@use "structure/page-footer";
+
+/* Page Header */
+@use "structure/page-header";
+
+/* Tab Styles */
+@use "structure/tabs";
+
+/* Sortable List */
+@use "structure/sortable-list";
+
+/* Popovers */
+@use "structure/popover";
+
+/* Validation Rules */
+@use "structure/validation-rules";
+
+/* Forms */
+@use "structure/form";
+
+/* Alert System */
+@use "structure/alert-system";
+
+/* Dialogs */
+@use "structure/dialogs";
+
+/* Toolbar */
+@use "structure/toolbar";
+
+/* Generic buttons CSS */
+@use "structure/buttons";
+
+/* Toggle CSS */
+@use "structure/toggle";
+
+/* Panel Styles */
+@use "structure/panel";
+
+/* Loading Spinner */
+@use "structure/spinner";
+
+
+/* Self-Service (Registration and Password Reset) */
+@use "structure/selfservice";
+
+/* Items for review (not used in projects yet) */
+@use "review";
+
+/* Login */
+@use "structure/login";

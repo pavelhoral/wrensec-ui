@@ -49,6 +49,13 @@
     pointer-events: none;
 }
 
+/* Feedback links and buttons (e.g. clearing a search) are actions */
+a.form-control-feedback,
+button.form-control-feedback {
+    pointer-events: auto;
+    cursor: pointer;
+}
+
 .form-horizontal .form-control-feedback {
     right: calc(var(--bs-gutter-x) * .5);
 }

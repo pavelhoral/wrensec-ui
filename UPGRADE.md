@@ -60,6 +60,10 @@
   from icon only toggles that should have no caret).
 * `css/selectize.css` is the Selectize Bootstrap 5 theme (commons structure adapts it to the Bootstrap theme colors)
   and the backgrid paginator (`ThemeablePaginator`) renders Bootstrap 5 pagination (`page-item` / `page-link`).
+* Sortable backgrid column headers are buttons (as rendered by backgrid 0.3.8) instead of links, which makes sorting
+  work again and the headers keyboard accessible; styles of `th.sortable > a` have to target `th.sortable > button`.
+* Links and buttons with the `form-control-feedback` class (e.g. clearing a search) are clickable, and search inputs
+  have no native clear button (as in Bootstrap 3).
 * titatoggle has been removed (remove `@import "titatoggle.css";`), use Bootstrap 5 switches instead:
   `<div class="checkbox checkbox-slider-primary checkbox-slider checkbox-slider--b"><label><input type="checkbox">
   <span>Label</span></label></div>` → `<div class="form-check form-switch"><input class="form-check-input"

@@ -34,3 +34,8 @@ body {
 table {
     font-size: 14px;
 }
+
+/* Search inputs have no native clear button (as in Bootstrap 3), applications provide their own when needed */
+input[type="search"]::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+}

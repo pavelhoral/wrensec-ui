@@ -12,6 +12,7 @@
  * information: "Portions copyright [year] [name of copyright owner]".
  *
  * Copyright 2015-2016 ForgeRock AS.
+ * Portions Copyright 2026 Wren Security.
  */
 
 define([
@@ -31,7 +32,9 @@ define([
             sortable = Backgrid.callByNeed(column.sortable(), column, this.collection),
             label;
         if (sortable) {
-            label = $("<a>").text(column.get("label")).append("<b class='sort-caret'></b>");
+            // sorting is handled by Backgrid on click of the button
+            label = $("<button type='button'>").text(column.get("label"))
+                .append("<span class='sort-caret' aria-hidden='true'></span>");
         } else {
             label = document.createTextNode(column.get("label"));
         }

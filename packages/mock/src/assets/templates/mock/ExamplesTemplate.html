@@ -183,20 +183,26 @@
                 <div class="example">
                 </div>
             </section>
-            <section class="resource-section" id="panels">
+            <section class="resource-section" id="cards">
                 <h1>
-                    Panels
+                    Cards
                 </h1>
+                <p class="text-muted">Bootstrap: <a href="https://getbootstrap.com/docs/5.3/components/card/">https://getbootstrap.com/docs/5.3/components/card/</a></p>
                 <div class="card">
                     <div class="card-body">
                         <h4 class="sub-header">
-                            Default Panel
+                            Card with header and footer
                         </h4>
 <div class="snippet">
     <div class="card">
+        <div class="card-header">
+            Header
+        </div>
         <div class="card-body">
+            Body
         </div>
         <div class="card-footer">
+            Footer
         </div>
     </div>
 </div>
@@ -256,13 +262,13 @@
                     <div class="card-body">
                         <h4 class="sub-header">Dark Button Group <span class="admin-only">Admin Only</span></h4>
 <div class="snippet">
-    <div class="btn-group btn-icon" data-bs-toggle="btns">
-        <a class="btn toggle-view-btn fr-btn-secondary active" href="#connectorCardContainer" data-bs-toggle="tab">
+    <div class="btn-group btn-icon" role="group" aria-label="View">
+        <button type="button" class="btn toggle-view-btn fr-btn-secondary active" aria-label="Cards">
             <i class="fa fa-th"></i>
-        </a>
-        <a class="btn toggle-view-btn fr-btn-secondary" href="#connectorGridContainer" data-bs-toggle="tab">
+        </button>
+        <button type="button" class="btn toggle-view-btn fr-btn-secondary" aria-label="List">
             <i class="fa fa-list"></i>
-        </a>
+        </button>
     </div>
 </div>
                     </div>
@@ -272,13 +278,23 @@
                 <div class="card">
                     <div class="card-body">
                         <h4 class="sub-header">Button Types</h4>
+                        <p>
+                            Primary buttons confirm the main action, default (outline) buttons other actions and
+                            outline secondary buttons dismiss dialogs (cancel, close).
+                        </p>
 <div class="snippet">
-    <button type="button" class="btn btn-outline-primary">Default</button>
-    <button type="button" class="btn btn-outline-primary disabled">Default Disable</button>
-    <button type="button" class="btn btn-primary">Primary</button>
-    <button type="button" class="btn btn-primary disabled">Primary</button>
-    <button type="button" class="btn btn-danger">Danger</button>
-    <button type="button" class="btn btn-danger disabled">Danger Disable</button>
+    <div class="d-flex flex-wrap gap-2 mb-2">
+        <button type="button" class="btn btn-primary">Primary</button>
+        <button type="button" class="btn btn-outline-primary">Default</button>
+        <button type="button" class="btn btn-outline-secondary">Dismiss</button>
+        <button type="button" class="btn btn-danger">Danger</button>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+        <button type="button" class="btn btn-primary" disabled>Primary</button>
+        <button type="button" class="btn btn-outline-primary" disabled>Default</button>
+        <button type="button" class="btn btn-outline-secondary" disabled>Dismiss</button>
+        <button type="button" class="btn btn-danger" disabled>Danger</button>
+    </div>
 </div>
                     </div>
                 </div>
@@ -292,7 +308,7 @@
                 <div class="card">
 <div class="snippet card-body">
     <div class="alert alert-message alert-success" role="alert">
-        <i class="alert-message-icon"></i>Sucess
+        <i class="alert-message-icon"></i>Success
     </div>
     <div class="alert alert-message alert-info" role="alert">
         <i class="alert-message-icon"></i>Info
@@ -314,12 +330,15 @@
                 <div class="card">
                     <div class="card-body">
                         <h4 class="sub-header">Backgrid</h4>
+                        <p>Backgrid table markup, see the Components page for a live grid with sorting, paging and filtering.</p>
 <div class="snippet">
     <table class="backgrid table">
         <thead>
-            <th>Column</th>
-            <th>Column</th>
-            <th>Column</th>
+            <tr>
+                <th>Column</th>
+                <th>Column</th>
+                <th>Column</th>
+            </tr>
         </thead>
         <tbody>
             <tr>
@@ -385,12 +404,12 @@
                 </h1>
                 <div class="card">
 <div class="snippet card-body">
-    <form class="form-horizontal" id="userProfileForm">
+    <form class="form-horizontal">
         <h4 class="page-type">Error form field</h4>
         <div class="form-group row has-feedback has-error">
             <label class="col-md-3 col-form-label text-md-end" for="error">Error</label>
             <div class="col-md-6">
-                <input class="form-control" type="text" id="error" name="error" value="" autofocus="" data-validation-status="error" required="" data-original-title="" title=""/>
+                <input class="form-control" type="text" id="error" name="error" data-validation-status="error" required>
                 <div class="validation-message"></div>
                 <span class="form-control-feedback"><i class="fa validation-icon"></i></span>
             </div>
@@ -402,12 +421,12 @@
                 </div>
                 <div class="card">
 <div class="snippet card-body">
-    <form class="form-horizontal" id="userProfileForm">
+    <form class="form-horizontal">
         <h4 class="page-type">Normal form field</h4>
         <div class="form-group row has-feedback">
             <label class="col-md-3 col-form-label text-md-end" for="normal">Normal</label>
             <div class="col-md-6">
-                <input class="form-control" type="text" id="normal" name="normal" value="" autofocus=""  required="" data-original-title="" title="">
+                <input class="form-control" type="text" id="normal" name="normal" required>
                 <div class="validation-message"></div>
                 <span class="form-control-feedback"><i class="fa validation-icon"></i></span>
             </div>
@@ -425,6 +444,73 @@
                 </div>
                 <div class="example">
                 </div>
+                <div class="card">
+<div class="snippet card-body">
+    <form class="form-horizontal">
+        <h4 class="page-type">Form controls</h4>
+        <div class="form-group row">
+            <label class="col-md-3 col-form-label text-md-end" for="controlText">Text</label>
+            <div class="col-md-6">
+                <input class="form-control" type="text" id="controlText" aria-describedby="controlTextHelp">
+                <div class="form-text" id="controlTextHelp">Help text</div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-md-3 col-form-label text-md-end" for="controlSelect">Select</label>
+            <div class="col-md-6">
+                <select class="form-select" id="controlSelect">
+                    <option>One</option>
+                    <option>Two</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-md-3 col-form-label text-md-end" for="controlTextarea">Textarea</label>
+            <div class="col-md-6">
+                <textarea class="form-control" id="controlTextarea" rows="3"></textarea>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-md-3 col-form-label text-md-end" for="controlUrl">Input group</label>
+            <div class="col-md-6">
+                <div class="input-group">
+                    <span class="input-group-text">https://</span>
+                    <input class="form-control" type="text" id="controlUrl">
+                    <button class="btn btn-outline-primary" type="button">Check</button>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-3 col-form-label text-md-end fw-bold">Checkboxes</div>
+            <div class="col-md-6 pt-md-2">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="controlCheck1" checked>
+                    <label class="form-check-label" for="controlCheck1">Checked</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="controlCheck2">
+                    <label class="form-check-label" for="controlCheck2">Unchecked</label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-3 col-form-label text-md-end fw-bold">Radios</div>
+            <div class="col-md-6 pt-md-2">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="controlRadio" id="controlRadio1" checked>
+                    <label class="form-check-label" for="controlRadio1">One</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="controlRadio" id="controlRadio2">
+                    <label class="form-check-label" for="controlRadio2">Two</label>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+                </div>
+                <div class="example">
+                </div>
             </section>
             <section class="resource-section" id="dialog">
                 <h1>
@@ -432,7 +518,7 @@
                 </h1>
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="page-type">Normal Dialog</h4>
+                        <h4 class="sub-header">Normal Dialog</h4>
 <div class="snippet">
     <div class="modal position-static d-block">
         <div class="modal-dialog">
@@ -458,13 +544,13 @@
                 </div>
                 <div class="card">
                     <div class="card-body">
-                        <h4 class="page-type">Delete Dialog</h4>
+                        <h4 class="sub-header">Delete Dialog</h4>
 <div class="snippet">
     <div class="modal position-static d-block">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5 text-danger">Danger Dialog</h1>
+                    <h1 class="modal-title fs-5 text-danger">Delete Dialog</h1>
                     <button type="button" class="btn-close" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -489,7 +575,7 @@
                 <li class="nav-item"><a class="nav-link active" href="#colors">Colors</a></li>
                 <li class="nav-item"><a class="nav-link" href="#typography">Typography</a></li>
                 <li class="nav-item"><a class="nav-link" href="#tabs">Tabs</a></li>
-                <li class="nav-item"><a class="nav-link" href="#panels">Panels</a></li>
+                <li class="nav-item"><a class="nav-link" href="#cards">Cards</a></li>
                 <li class="nav-item"><a class="nav-link" href="#toggles">Toggles</a></li>
                 <li class="nav-item"><a class="nav-link" href="#buttons">Buttons</a></li>
                 <li class="nav-item"><a class="nav-link" href="#alerts">Alerts</a></li>

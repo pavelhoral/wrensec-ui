@@ -51,7 +51,6 @@ const MODULE_RESOURCES = {
     "lodash": "libs/lodash.js",
     "moment/min/moment.min.js": "libs/moment.js",
     "requirejs/require.js": "libs/requirejs.js",
-    "titatoggle/dist/titatoggle-dist-min.css": "css/titatoggle.css",
     "underscore/underscore-umd.js": "libs/underscore.js",
     "xdate/src/xdate.js": "libs/xdate.js"
 };

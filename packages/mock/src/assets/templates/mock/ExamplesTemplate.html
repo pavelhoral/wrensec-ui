@@ -209,33 +209,24 @@
                 <h1>
                     Toggles
                 </h1>
-                <p class="text-muted">Library: <a href="http://kleinejan.github.io/titatoggle/">http://kleinejan.github.io/titatoggle/</a></p>
+                <p class="text-muted">Bootstrap: <a href="https://getbootstrap.com/docs/5.3/forms/checks-radios/#switches">https://getbootstrap.com/docs/5.3/forms/checks-radios/#switches</a></p>
                 <div class="card">
                     <div class="card-body">
                         <h4 class="sub-header">
-                            Toggles <span class="admin-only">Admin Only</span>
+                            Switches
                         </h4>
-
-                        <div class="checkbox checkbox-slider-primary checkbox-slider checkbox-slider--b">
-                            <label>
-                                <input type="checkbox"><span></span>
-                            </label>
-                        </div>
 <div class="snippet">
-    <div class="checkbox checkbox-slider-warning checkbox-slider checkbox-slider--b">
-        <label>
-            <input type="checkbox"><span></span>
-        </label>
+    <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" role="switch" id="switchExample">
+        <label class="form-check-label" for="switchExample">Switch</label>
     </div>
-    <div class="checkbox checkbox-slider-danger checkbox-slider checkbox-slider--b">
-        <label>
-            <input type="checkbox"><span></span>
-        </label>
+    <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" role="switch" id="switchCheckedExample" checked>
+        <label class="form-check-label" for="switchCheckedExample">Checked switch</label>
     </div>
-    <div class="checkbox checkbox-slider-info checkbox-slider checkbox-slider--b">
-        <label>
-            <input type="checkbox"><span></span>
-        </label>
+    <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" role="switch" id="switchDisabledExample" disabled>
+        <label class="form-check-label" for="switchDisabledExample">Disabled switch</label>
     </div>
 </div>
                     </div>
@@ -472,13 +463,8 @@
         <div class="form-group row">
             <label class="col-md-3 col-form-label text-md-end" for="checkboxSlider">Active</label>
             <div class="col-md-6">
-                <div class="control-group">
-                    <div class="checkbox checkbox-slider-primary checkbox-slider checkbox-slider--b">
-                        <label>
-                            <input id="checkboxSlider" type="checkbox" data-field="active" checked>
-                            <span></span>
-                        </label>
-                    </div>
+                <div class="form-check form-switch mt-2">
+                    <input id="checkboxSlider" class="form-check-input" type="checkbox" role="switch" data-field="active" checked>
                 </div>
             </div>
         </div>

@@ -58,6 +58,10 @@
   `checkbox` → `form-check`, `data-toggle` / `data-target` / `data-dismiss` → `data-bs-*` and dropdown carets
   are added by Bootstrap (remove `<span class="caret"></span>` from dropdown toggles, and the `dropdown-toggle` class
   from icon only toggles that should have no caret).
+* titatoggle has been removed (remove `@import "titatoggle.css";`), use Bootstrap 5 switches instead:
+  `<div class="checkbox checkbox-slider-primary checkbox-slider checkbox-slider--b"><label><input type="checkbox">
+  <span>Label</span></label></div>` → `<div class="form-check form-switch"><input class="form-check-input"
+  type="checkbox" role="switch" id="active"><label class="form-check-label" for="active">Label</label></div>`.
 * `bootstrap-dialog` library has been replaced by the commons module
   `org/forgerock/commons/ui/common/components/ModalDialog`, which renders the same markup (Bootstrap modal with
   `bootstrap-dialog*` CSS classes, the close button is Bootstrap 5 `.btn-close`) and supports the subset of bootstrap-dialog API used by Wren Security applications

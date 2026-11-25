@@ -2,6 +2,8 @@
 
 ## 23.x -> 24.0
 
+* Supported browsers are Chrome and Edge 111, Firefox 114 and Safari 16.4 or newer (see `README.md`); commons
+  styles and scripts use features of these browsers (e.g. CSS custom properties and `color-mix()`).
 * Commons styles are SCSS instead of Less (`css/common/**/*.scss`, the `*.less` files have been removed). They are
   Sass modules to be built by applications (Less stylesheets can no longer import them):
   * `@use "common/common";` is a single entry point for the structure and the theme (replaces
@@ -32,9 +34,16 @@
 * Bootstrap has been upgraded from 3.4.1 to 5.3 (see https://getbootstrap.com/docs/5.3/migration/):
   * commons no longer ships a built `css/bootstrap.css`; applications build Bootstrap with the Wren Security theme from
     `@use "common/bootstrap";` (by `useScssStyles`), which can override any Bootstrap variable including the Wren
-    defaults (`@use "common/bootstrap" with ($primary: #123456);`), and runtime themes can change the `--bs-*` CSS
-    custom properties (e.g. Wren:IDM themes in `ui-themeconfig.json` refer to the application's built stylesheet);
-    the Bootstrap sources are a dependency of `@wrensecurity/commons-ui-build`, applications do not install them,
+    defaults (`@use "common/bootstrap" with ($primary: #123456);`); the Bootstrap sources are a dependency of
+    `@wrensecurity/commons-ui-build`, applications do not install them,
+  * custom themes (e.g. stylesheets of Wren:IDM themes in `ui-themeconfig.json`) written for Bootstrap 3 do not
+    apply any more: a stylesheet compiled from Bootstrap 3 Less has to be replaced by the application's
+    `css/bootstrap.css` and overrides of Bootstrap 3 selectors have to be ported. Colors are best changed by
+    custom properties in a stylesheet loaded after the application styles (`:root { --bs-primary: #123456;
+    --bs-primary-rgb: 18, 52, 86; --wrensec-base-theme-color: #123456; --wrensec-base-theme-color-dark: #0e2b48; }`,
+    derived colors are not computed at runtime). Colors compiled into components (e.g. `btn-primary` backgrounds)
+    need component properties (`.btn-primary { --bs-btn-bg: #123456; … }`) or a Bootstrap build with a configured
+    `$primary`,
   * `libs/bootstrap.js` is Bootstrap 5 with Popper as an AMD module (`bootstrap`, depending on `jquery`), remove
     the `bootstrap` RequireJS shim; the jQuery plugin interface (`$(element).modal(…)`, `tooltip`, `popover`, …)
     remains available, but options, events and `data-bs-*` attributes follow Bootstrap 5.

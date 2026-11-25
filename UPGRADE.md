@@ -2,6 +2,11 @@
 
 ## 23.x -> 24.0
 
+* Commons packages are always named `*-0.0.0.tgz`, so `package-lock.json` tells versions apart only by their
+  integrity hashes: `npm ci` and `npm install` keep installing the cached tarball of the previous version (or fail
+  with an integrity error without the cache). After changing `wrensec-ui.version` (including between 24.0
+  milestones), refresh the lock file entries with `npm update @wrensecurity/commons-ui-build` (and the other commons
+  packages the application depends on).
 * Supported browsers are Chrome and Edge 111, Firefox 114 and Safari 16.4 or newer (see `README.md`); commons
   styles and scripts use features of these browsers (e.g. CSS custom properties and `color-mix()`).
 * Commons styles are SCSS instead of Less (`css/common/**/*.scss`, the `*.less` files have been removed). They are

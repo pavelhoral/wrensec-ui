@@ -74,6 +74,11 @@ define([
         assert.equal(dialog.$modal.attr("aria-describedby"), "testDescription", "described by description");
         assert.equal(dialog.$modal.attr("tabindex"), "-1", "default tabindex");
         assert.ok(dialog.getBootstrapDialog().hasClass("modal-lg"), "wide dialog is large modal");
+        assert.ok(dialog.getModal().is(dialog.$modal), "modal accessor");
+        assert.ok(dialog.getModalContent().is(".modal-content"), "content accessor");
+        assert.ok(dialog.getModalHeader().is(".modal-header"), "header accessor");
+        assert.ok(dialog.getModalBody().is(".modal-body"), "body accessor");
+        assert.ok(dialog.getModalFooter().is(".modal-footer"), "footer accessor");
         assert.equal(dialog.$modal.find("#testDialog_title.bootstrap-dialog-title").text(), "Title", "title");
         assert.equal(dialog.$modal.find(".bootstrap-dialog-message").html(), "Line 1<br>Line 2",
             "new lines converted to line breaks");

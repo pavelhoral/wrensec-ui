@@ -246,11 +246,11 @@ define([
 
     QUnit.test("confirms", function (assert) {
         // Confirmation dialogs are animated, the choice is made once each is shown
-        function confirm (choose) {
+        function confirm (choose, options) {
             $(document).one("shown.bs.modal", function (event) {
                 choose($(event.target));
             });
-            return ModalDialog.confirm({ title: "Delete", body: "Sure?", variant: "danger" });
+            return ModalDialog.confirm($.extend({ title: "Delete", body: "Sure?", variant: "danger" }, options));
         }
 
         return confirm(function ($dialog) {
@@ -272,6 +272,15 @@ define([
             });
         }).then(function (result) {
             assert.strictEqual(result, false, "dismissed");
+            return confirm(function ($dialog) {
+                var $buttons = $dialog.find(".modal-footer > .btn");
+                assert.equal($buttons.eq(0).text(), "Keep", "cancel label");
+                assert.equal($buttons.eq(1).text(), "Remove", "confirm label");
+                assert.ok($buttons.eq(1).hasClass("btn-warning"), "confirm button class");
+                $buttons.eq(1).trigger("click");
+            }, { confirmLabel: "Remove", cancelLabel: "Keep", confirmClassName: "btn-warning" });
+        }).then(function (result) {
+            assert.strictEqual(result, true, "confirmed with custom buttons");
         });
     });
 });

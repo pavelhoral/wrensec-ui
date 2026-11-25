@@ -15,6 +15,7 @@
  * Portions Copyright 2026 Wren Security.
  */
 
+@use "../fontawesome";
 @use "../mixins";
 
 .alert-system {
@@ -35,11 +36,10 @@
 .alert-message.alert-warning {
     .alert-message-icon {
         @include mixins.fa-icon;
-        font-weight: bold;
         margin-right: 15px;
 
         &:before {
-          content: "\f06a";
+          content: fontawesome.fa-content(fontawesome.$var-circle-exclamation);
         }
     }
 }
@@ -47,11 +47,10 @@
 .alert-message.alert-danger{
     .alert-message-icon {
         @include mixins.fa-icon;
-        font-weight: bold;
         margin-right: 15px;
 
         &:before {
-          content: "\f06a";
+          content: fontawesome.fa-content(fontawesome.$var-circle-exclamation);
         }
     }
 }
@@ -60,22 +59,20 @@
     .alert-message-icon {
         @include mixins.fa-icon;
         margin-right: 15px;
-        font-weight: bold;
 
         &:before {
-          content: "\f05a";
+          content: fontawesome.fa-content(fontawesome.$var-circle-info);
         }
     }
 }
 
 .alert-message.alert-success {
   .alert-message-icon {
-    @include mixins.fa-icon;
+    @include mixins.fa-icon(regular);
     margin-right: 15px;
-    font-weight: bold;
 
     &:before {
-      content: "\f05d";
+      content: fontawesome.fa-content(fontawesome.$var-circle-check);
     }
   }
 }

@@ -15,6 +15,7 @@
  * Portions Copyright 2026 Wren Security.
  */
 
+@use "../fontawesome";
 @use "../mixins";
 
 .validationRules .has-error,
@@ -22,7 +23,7 @@
     .validation-icon {
         @include mixins.fa-icon;
         &:before {
-            content: "\f06a";
+            content: fontawesome.fa-content(fontawesome.$var-circle-exclamation);
         }
     }
 }
@@ -38,5 +39,5 @@
 }
 
 .validationRules .has-success .validation-icon:before {
-    content: "\f00c";
+    content: fontawesome.fa-content(fontawesome.$var-check);
 }

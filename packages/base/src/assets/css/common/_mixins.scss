@@ -52,10 +52,11 @@
     }
 }
 
-// Font Awesome icon font on an element that is not an icon (the glyph is set by the content property).
-@mixin fa-icon {
+// Font Awesome icon font (solid, regular or brands style) on an element that is not an icon, the glyph is set by the
+// content property, e.g. content: fontawesome.fa-content(fontawesome.$var-check); with @use "common/fontawesome".
+@mixin fa-icon($style: solid) {
     display: inline-block;
-    font: normal normal normal 14px/1 FontAwesome;
+    font: var(--fa-font-#{$style});
     font-size: inherit;
     text-rendering: auto;
     -webkit-font-smoothing: antialiased;

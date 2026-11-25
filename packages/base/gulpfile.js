@@ -22,7 +22,14 @@ const {
 } = require("@wrensecurity/commons-ui-build");
 const gulp = require("gulp");
 
+// Font Awesome font files, loaded by the commons Font Awesome styles from css/fontawesome/webfonts
+const FONTAWESOME_WEBFONTS = ["fa-brands-400", "fa-regular-400", "fa-solid-900", "fa-v4compatibility"];
+
 const MODULE_RESOURCES = {
+    ...Object.fromEntries(FONTAWESOME_WEBFONTS.map((font) => [
+        `@fortawesome/fontawesome-free/webfonts/${font}.woff2`,
+        `css/fontawesome/webfonts/${font}.woff2`
+    ])),
     "@selectize/selectize/dist/css/selectize.bootstrap3.css": "css/selectize.css",
     "@selectize/selectize/dist/js/selectize.min.js": "libs/selectize.js",
     "backbone-relational/backbone-relational.js": "libs/backbone-relational.js",
@@ -36,14 +43,6 @@ const MODULE_RESOURCES = {
     "backgrid/lib/backgrid.min.css": "css/backgrid.css",
     "backgrid/lib/backgrid.min.js": "libs/backgrid.js",
     "dragula/dist/dragula.min.js": "libs/dragula.js",
-    "font-awesome/css/font-awesome.min.css": "css/fontawesome/css/font-awesome.css",
-    "font-awesome/fonts/fontawesome-webfont.eot": "css/fontawesome/fonts/fontawesome-webfont.eot",
-    "font-awesome/fonts/fontawesome-webfont.svg": "css/fontawesome/fonts/fontawesome-webfont.svg",
-    "font-awesome/fonts/fontawesome-webfont.ttf": "css/fontawesome/fonts/fontawesome-webfont.ttf",
-    "font-awesome/fonts/fontawesome-webfont.woff": "css/fontawesome/fonts/fontawesome-webfont.woff",
-    "font-awesome/fonts/fontawesome-webfont.woff2": "css/fontawesome/fonts/fontawesome-webfont.woff2",
-    "font-awesome/fonts/FontAwesome.otf": "css/fontawesome/fonts/FontAwesome.otf",
-    "font-awesome/less/variables.less": "css/fontawesome/less/variables.less",
     "form2js/src/form2js.js": "libs/form2js.js",
     "form2js/src/js2form.js": "libs/js2form.js",
     "handlebars/dist/handlebars.js": "libs/handlebars.js",

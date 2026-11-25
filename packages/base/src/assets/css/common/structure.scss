@@ -17,6 +17,9 @@
 
 @use "variables";
 
+/* Font Awesome icons (Font Awesome 7 with Font Awesome 4 compatibility) */
+@use "fontawesome";
+
 /*
  * The rules included in this file are necessary for the correct functioning of the app. They should always be
  * included on any page, regardless of which Bootstrap theme is being used.

@@ -62,6 +62,17 @@
   `<div class="checkbox checkbox-slider-primary checkbox-slider checkbox-slider--b"><label><input type="checkbox">
   <span>Label</span></label></div>` → `<div class="form-check form-switch"><input class="form-check-input"
   type="checkbox" role="switch" id="active"><label class="form-check-label" for="active">Label</label></div>`.
+* Font Awesome has been upgraded from 4.7 to 7 Free (see https://docs.fontawesome.com/web/setup/upgrade/):
+  * commons structure includes Font Awesome (module `common/fontawesome`), remove imports of
+    `fontawesome/css/font-awesome.css` and `fontawesome/less/variables.less`; the fonts are provided in
+    `css/fontawesome/webfonts` and loaded relative to the built stylesheet, which can be configured with
+    `@use "common/fontawesome" with ($font-path: "…");` (the Font Awesome sources are a dependency of
+    `@wrensecurity/commons-ui-build`, applications do not install them),
+  * Font Awesome 4 class names (`fa fa-*`, including renamed icons) keep working through the Font Awesome v4 shims,
+    and so does the `FontAwesome` font family with Font Awesome 4 code points,
+  * styles can use `@include mixins.fa-icon(solid);` (or `regular`, `brands`) with named glyphs:
+    `content: fontawesome.fa-content(fontawesome.$var-circle-check);` (`@use "common/fontawesome";`),
+  * icons are fixed width by default (`fa-fw` is not needed any more, `fa-width-auto` restores the natural width).
 * jQuery has been upgraded from 3 to 4 (see https://jquery.com/upgrade-guide/4.0/):
   * removed APIs have native replacements: `$.trim(s)` → `s.trim()`, `$.isArray(a)` → `Array.isArray(a)`,
     `$.parseJSON(s)` → `JSON.parse(s)`, `$.isFunction(f)` → `typeof f === "function"`, `$.now()` → `Date.now()`,

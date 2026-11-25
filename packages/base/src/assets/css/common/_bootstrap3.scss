@@ -1,0 +1,611 @@
+/*
+ * The contents of this file are subject to the terms of the Common Development and
+ * Distribution License (the License). You may not use this file except in compliance with the
+ * License.
+ *
+ * You can obtain a copy of the License at legal/CDDLv1.1.txt. See the License for the
+ * specific language governing permission and limitations under the License.
+ *
+ * When distributing Covered Software, include this CDDL Header Notice in each file and include
+ * the License file at legal/CDDLv1.1.txt. If applicable, add the following below the CDDL
+ * Header, with the fields enclosed by brackets [] replaced by your own identifying
+ * information: "Portions copyright [year] [name of copyright owner]".
+ *
+ * Copyright 2026 Wren Security.
+ */
+
+// Bootstrap 3 compatibility (deprecated since 24.0, will be removed in 25.0). Basic Bootstrap 3 classes, so that
+// legacy markup (e.g. customized templates) is not broken by Bootstrap 5: panels, wells, media objects, form and
+// button classes, helper classes and the "in" state class. Grid classes (col-xs-*, col-*-offset-*, …) and complex
+// components (modals, navbars, …) are not covered. Bootstrap 3 data attributes (data-toggle, …) are handled by the
+// commons Bootstrap module (libs/bootstrap.js).
+//
+// Rules extend Bootstrap 5 classes, so the module has to be used in the stylesheet that builds Bootstrap:
+// @use "common/bootstrap";
+// @use "common/bootstrap3";
+@use "bootstrap";
+@use "mixins";
+
+/*
+ * Helpers
+ */
+.pull-left {
+    float: left !important;
+}
+
+.pull-right {
+    float: right !important;
+}
+
+/* Floats have no effect in flex containers (e.g. Bootstrap 5 button toolbars) */
+.btn-toolbar > .pull-right:not(.pull-right ~ .pull-right) {
+    margin-left: auto;
+}
+
+.center-block {
+    display: block;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.hidden, .hide {
+    display: none !important;
+}
+
+.sr-only {
+    @extend .visually-hidden;
+}
+
+.sr-only-focusable {
+    @extend .visually-hidden-focusable;
+}
+
+.text-left {
+    text-align: left !important;
+}
+
+.text-right {
+    text-align: right !important;
+}
+
+.img-responsive {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+/* Bootstrap 3 shown state of faded and collapsed elements */
+.fade.in {
+    opacity: 1;
+}
+
+.collapse.in {
+    display: block;
+}
+
+/* Bootstrap 3 columns are positioned (absolutely positioned content is placed in its column) */
+@each $tier in xs, sm, md, lg {
+    @for $i from 1 through 12 {
+        .col-#{$tier}-#{$i} {
+            position: relative;
+        }
+    }
+}
+
+/*
+ * Bootstrap 3 columns are floated, so they are laid out also outside of rows. Floats have no effect on columns in
+ * rows (flex containers), so the Bootstrap 5 grid is not affected.
+ */
+@each $tier in sm, md, lg {
+    @include bootstrap.media-breakpoint-up($tier) {
+        @for $i from 1 through 12 {
+            .col-#{$tier}-#{$i} {
+                float: left;
+            }
+        }
+    }
+}
+
+/* Responsive visibility with Bootstrap 3 breakpoints (xs < 768px ≤ sm < 992px ≤ md < 1200px ≤ lg) */
+.visible-xs, .visible-sm, .visible-md, .visible-lg {
+    display: none !important;
+}
+
+@include mixins.media-down(md) {
+    .hidden-xs {
+        display: none !important;
+    }
+
+    .visible-xs {
+        display: block !important;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .hidden-sm {
+        display: none !important;
+    }
+
+    .visible-sm {
+        display: block !important;
+    }
+}
+
+@media (min-width: 992px) and (max-width: 1199.98px) {
+    .hidden-md {
+        display: none !important;
+    }
+
+    .visible-md {
+        display: block !important;
+    }
+}
+
+@include mixins.media-up(xl) {
+    .hidden-lg {
+        display: none !important;
+    }
+
+    .visible-lg {
+        display: block !important;
+    }
+}
+
+/*
+ * Buttons
+ */
+.btn-default {
+    @extend .btn-outline-primary;
+
+    /* Stays outlined when focused like other outline buttons (see theme/_buttons.scss) */
+    &:focus-visible:not(:hover):not(:active) {
+        color: var(--bs-btn-color);
+        background-color: transparent;
+        border-color: var(--bs-btn-border-color);
+    }
+}
+
+.btn-xs {
+    --bs-btn-padding-y: 1px;
+    --bs-btn-padding-x: 5px;
+    --bs-btn-font-size: 12px;
+    --bs-btn-border-radius: var(--bs-border-radius-sm);
+}
+
+.btn-block {
+    display: block;
+    width: 100%;
+
+    + .btn-block {
+        margin-top: 5px;
+    }
+}
+
+/* Bootstrap 3 close icon (Bootstrap 5 uses .btn-close) */
+.close {
+    float: right;
+    font-size: 21px;
+    font-weight: bold;
+    line-height: 1;
+    color: #000;
+    text-shadow: 0 1px 0 #fff;
+    opacity: .2;
+
+    &:hover, &:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+        opacity: .5;
+    }
+}
+
+button.close {
+    padding: 0;
+    background: transparent;
+    border: 0;
+    appearance: none;
+}
+
+/* Bootstrap 5 badges have no background color by default */
+.badge:not([class*="bg-"]) {
+    background-color: var(--bs-secondary);
+}
+
+/*
+ * Forms
+ */
+.control-label {
+    display: inline-block;
+    max-width: 100%;
+    margin-bottom: 5px;
+}
+
+/* Horizontal form groups are grid rows (the children rule has no specificity, so that column classes apply) */
+.form-horizontal .form-group {
+    --bs-gutter-x: #{bootstrap.$grid-gutter-width};
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: calc(-.5 * var(--bs-gutter-x));
+    margin-left: calc(-.5 * var(--bs-gutter-x));
+}
+
+:where(.form-horizontal .form-group) > * {
+    flex-shrink: 0;
+    width: 100%;
+    max-width: 100%;
+    padding-right: calc(var(--bs-gutter-x) * .5);
+    padding-left: calc(var(--bs-gutter-x) * .5);
+}
+
+.form-horizontal {
+    .control-label {
+        @extend .col-form-label;
+    }
+
+    @include mixins.media-up(md) {
+        .control-label {
+            text-align: right;
+        }
+    }
+}
+
+.help-block {
+    display: block;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    color: var(--bs-secondary-color);
+}
+
+/* Validation state color (commons provides --wrensec-feedback-color for has-error, has-warning and has-success) */
+.has-error, .has-warning, .has-success {
+    .control-label, .help-block {
+        color: var(--wrensec-feedback-color);
+    }
+}
+
+.input-lg {
+    @extend .form-control-lg;
+}
+
+.input-sm {
+    @extend .form-control-sm;
+}
+
+.form-control-static {
+    @extend .form-control-plaintext;
+}
+
+/* Selects without .form-select have no dropdown arrow in Bootstrap 5 */
+select.form-control:not([multiple]):not([size]) {
+    padding-right: 2.25rem;
+    background-image: bootstrap.escape-svg(bootstrap.$form-select-indicator);
+    background-repeat: no-repeat;
+    background-position: right .75rem center;
+    background-size: 16px 12px;
+}
+
+.checkbox, .radio {
+    position: relative;
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 10px;
+
+    label {
+        min-height: 20px;
+        padding-left: 20px;
+        margin-bottom: 0;
+        font-weight: normal;
+        cursor: pointer;
+    }
+
+    input[type="checkbox"], input[type="radio"] {
+        position: absolute;
+        margin-top: 4px;
+        margin-left: -20px;
+    }
+
+    + .checkbox, + .radio {
+        margin-top: -5px;
+    }
+}
+
+.checkbox-inline, .radio-inline {
+    position: relative;
+    display: inline-block;
+    padding-left: 20px;
+    margin-bottom: 0;
+    font-weight: normal;
+    vertical-align: middle;
+    cursor: pointer;
+
+    input[type="checkbox"], input[type="radio"] {
+        position: absolute;
+        margin-top: 4px;
+        margin-left: -20px;
+    }
+
+    + .checkbox-inline, + .radio-inline {
+        margin-left: 10px;
+    }
+}
+
+/* titatoggle sliders (checkbox-slider*) are shown as Bootstrap 5 switches */
+[class*="checkbox-slider"] {
+    label {
+        padding-left: bootstrap.$form-switch-padding-start;
+    }
+
+    input[type="checkbox"] {
+        @extend .form-check-input;
+        --bs-form-switch-bg: #{bootstrap.escape-svg(bootstrap.$form-switch-bg-image)};
+        position: absolute;
+        width: bootstrap.$form-switch-width;
+        margin-top: .25em;
+        margin-left: bootstrap.$form-switch-padding-start * -1;
+        background-image: var(--bs-form-switch-bg);
+        background-position: left center;
+        border-radius: bootstrap.$form-switch-border-radius;
+        transition: bootstrap.$form-switch-transition;
+
+        &:focus {
+            --bs-form-switch-bg: #{bootstrap.escape-svg(bootstrap.$form-switch-focus-bg-image)};
+        }
+
+        &:checked {
+            --bs-form-switch-bg: #{bootstrap.escape-svg(bootstrap.$form-switch-checked-bg-image)};
+            background-position: right center;
+        }
+    }
+}
+
+@include mixins.media-up(md) {
+    .form-inline {
+        .form-group {
+            display: inline-block;
+            margin-bottom: 0;
+            vertical-align: middle;
+        }
+
+        .form-control {
+            display: inline-block;
+            width: auto;
+            vertical-align: middle;
+        }
+
+        .control-label {
+            margin-bottom: 0;
+            vertical-align: middle;
+        }
+
+        .input-group {
+            display: inline-flex;
+            width: auto;
+        }
+    }
+}
+
+.input-group-addon {
+    @extend .input-group-text;
+}
+
+/* Buttons wrapped in .input-group-btn (Bootstrap 5 input group buttons are its direct children) */
+.input-group-btn {
+    display: flex;
+
+    > .btn {
+        position: relative;
+    }
+}
+
+.input-group > .input-group-btn:not(:last-child) > .btn {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.input-group > .input-group-btn:not(:first-child) > .btn {
+    margin-left: calc(var(--bs-border-width) * -1);
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+/*
+ * Dropdowns (menu items without .dropdown-item)
+ */
+.dropdown-menu > li > a:not(.dropdown-item) {
+    @extend .dropdown-item;
+}
+
+.dropdown-menu > .active > a:not(.dropdown-item) {
+    color: var(--bs-dropdown-link-active-color);
+    text-decoration: none;
+    background-color: var(--bs-dropdown-link-active-bg);
+}
+
+.dropdown-menu > .disabled > a:not(.dropdown-item) {
+    color: var(--bs-dropdown-link-disabled-color);
+    pointer-events: none;
+    background-color: transparent;
+}
+
+.dropdown-menu .divider {
+    @extend .dropdown-divider;
+}
+
+.dropdown-menu-right {
+    @extend .dropdown-menu-end;
+}
+
+/* Bootstrap 3 dropdown toggles (with data-toggle) have no automatic caret, they may have a .caret element */
+.dropdown-toggle[data-toggle]::after {
+    display: none;
+}
+
+/*
+ * Navs (items without .nav-link)
+ */
+.nav > li > a:not(.nav-link) {
+    @extend .nav-link;
+}
+
+.nav-tabs > li.active > a:not(.nav-link) {
+    color: var(--bs-nav-tabs-link-active-color);
+    background-color: var(--bs-nav-tabs-link-active-bg);
+    border-color: var(--bs-nav-tabs-link-active-border-color);
+}
+
+.nav-pills > li.active > a:not(.nav-link) {
+    color: var(--bs-nav-pills-link-active-color);
+    background-color: var(--bs-nav-pills-link-active-bg);
+}
+
+.breadcrumb > li {
+    display: inline-block;
+
+    + li::before {
+        padding: 0 5px;
+        color: #ccc;
+        content: "/\00a0";
+    }
+}
+
+/*
+ * Panels
+ */
+.panel {
+    @extend .card;
+    margin-bottom: 20px;
+}
+
+.panel-heading {
+    @extend .card-header;
+}
+
+.panel-body {
+    @extend .card-body;
+}
+
+.panel-footer {
+    @extend .card-footer;
+}
+
+.panel-title {
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 16px;
+    color: inherit;
+
+    > a {
+        color: inherit;
+    }
+}
+
+.panel-group {
+    margin-bottom: 20px;
+
+    .panel {
+        margin-bottom: 0;
+
+        + .panel {
+            margin-top: 5px;
+        }
+    }
+}
+
+.panel-primary {
+    --bs-card-border-color: var(--bs-primary);
+
+    > .panel-heading {
+        color: #fff;
+        background-color: var(--bs-primary);
+        border-color: var(--bs-primary);
+    }
+}
+
+@each $state in success, info, warning, danger {
+    .panel-#{$state} {
+        --bs-card-border-color: var(--bs-#{$state}-border-subtle);
+
+        > .panel-heading {
+            color: var(--bs-#{$state}-text-emphasis);
+            background-color: var(--bs-#{$state}-bg-subtle);
+            border-color: var(--bs-#{$state}-border-subtle);
+        }
+    }
+}
+
+/*
+ * Wells
+ */
+.well {
+    min-height: 20px;
+    padding: 19px;
+    margin-bottom: 20px;
+    background-color: #f5f5f5;
+    border: 1px solid #e3e3e3;
+    border-radius: 4px;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .05);
+}
+
+.well-lg {
+    padding: 24px;
+    border-radius: 6px;
+}
+
+.well-sm {
+    padding: 9px;
+    border-radius: 3px;
+}
+
+/*
+ * Media objects
+ */
+.media {
+    margin-top: 15px;
+
+    &:first-child {
+        margin-top: 0;
+    }
+}
+
+.media, .media-body {
+    overflow: hidden;
+}
+
+.media-body {
+    width: 10000px;
+}
+
+.media-object {
+    display: block;
+}
+
+.media-left, .media-right, .media-body {
+    display: table-cell;
+    vertical-align: top;
+}
+
+.media-left {
+    padding-right: 10px;
+}
+
+.media-right {
+    padding-left: 10px;
+}
+
+.media-middle {
+    vertical-align: middle;
+}
+
+.media-bottom {
+    vertical-align: bottom;
+}
+
+.media-heading {
+    margin-top: 0;
+    margin-bottom: 5px;
+}
+
+.media-list {
+    padding-left: 0;
+    list-style: none;
+}

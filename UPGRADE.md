@@ -51,7 +51,24 @@
   `form-group` (with validation states `has-feedback`, `has-error`, `has-warning`, `has-success` and
   `form-control-feedback` icons), `page-header` and `caret`. Labels are bold (except `form-check-label`).
 * The page background is `--wrensec-background-color`; Bootstrap components (cards, dialogs, inputs, …) are white.
-* Bootstrap 3 markup in application templates has to be migrated (see the Bootstrap migration guide), e.g.:
+* Bootstrap 3 markup in application templates (including customer template overrides) keeps basic styling with the
+  deprecated Bootstrap 3 compatibility (will be removed in 25.0):
+  * `@use "common/bootstrap3";` (in the stylesheet that uses `common/bootstrap`) provides panels, wells, media
+    objects, `btn-default` / `btn-xs` / `btn-block`, `close`, `control-label` and horizontal form groups as rows,
+    `help-block`, `checkbox` / `radio` / `*-inline`, `form-inline`, `input-group-addon` / `input-group-btn`,
+    `input-lg` / `input-sm`, dropdown and nav items without `dropdown-item` / `nav-link`, `divider`,
+    `dropdown-menu-right`, `pull-left` / `pull-right`, `center-block`, `hidden` / `hide`, `hidden-*` / `visible-*`,
+    `sr-only`, `text-left` / `text-right`, `img-responsive`, the `in` state class, dropdown arrows of selects with
+    `form-control`, validation state colors of `control-label` and `help-block`, titatoggle sliders
+    (`checkbox-slider*`) as switches and positioned columns, which are floated, so that they are laid out also outside
+    of rows (columns in rows are not affected),
+  * `libs/bootstrap.js` handles Bootstrap 3 data attributes (`data-toggle`, `data-target`, `data-dismiss`, …) of
+    dropdowns, collapsible elements, tabs and alerts, accepts `"true"` / `"false"` strings as boolean tooltip and
+    popover options (Bootstrap 5 rejects them) and provides a minimal `$.fn.affix` (affix and affix-top classes by
+    the scroll position),
+  * the grid (`col-xs-*`, `col-*-offset-*` and the shifted breakpoints) and complex components (modals, navbars,
+    tooltip and popover placement, …) are not covered.
+* Bootstrap 3 markup in application templates should be migrated (see the Bootstrap migration guide), e.g.:
   grid tiers shift by one (`col-xs-*` → `col-*`, `col-sm-*` → `col-md-*`, `col-md-*` → `col-lg-*`,
   `col-lg-*` → `col-xl-*`, `col-sm-offset-*` → `offset-md-*`, …), `panel*` → `card*`, `pull-left` / `pull-right` →
   `float-start` / `float-end`, `text-left` / `text-right` → `text-start` / `text-end`, `sr-only` →

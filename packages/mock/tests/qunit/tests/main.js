@@ -22,6 +22,7 @@ define([
     "./commons/Base64",
     "./commons/form2js",
     "./commons/i18nManager",
+    "./commons/Bootstrap3Compatibility",
     "./commons/BootstrapDialog",
     "./commons/ModalDialog",
     "./commons/OAuth",

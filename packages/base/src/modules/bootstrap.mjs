@@ -15,5 +15,7 @@
  */
 // Bootstrap registers its jQuery plugins ($.fn.modal, …) when jQuery is available while Bootstrap is being loaded
 import "jquery";
+// Bootstrap 3 data attributes in legacy markup (deprecated, removed in 25.0)
+import "./bootstrap3-compatibility.mjs";
 
 export * from "bootstrap";

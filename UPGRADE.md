@@ -51,6 +51,16 @@
   `form-group` (with validation states `has-feedback`, `has-error`, `has-warning`, `has-success` and
   `form-control-feedback` icons), `page-header` and `caret`. Labels are bold (except `form-check-label`).
 * The page background is `--wrensec-background-color`; Bootstrap components (cards, dialogs, inputs, …) are white.
+* Wren Security logos are SVG images, update theme configurations and templates that refer to them (Wren:IDM
+  `conf/ui-themeconfig.json`, error pages and `InstallTemplate.html`, Wren:AM `ThemeConfiguration.js`, Wren:IG
+  `ThemeManager.js`):
+  * `images/logo-horizontal.png` → `images/logo-horizontal.svg` (navigation logo),
+  * `images/login-logo.png` → `images/login-logo.svg` (login page logo),
+  * SVG images scale to the space they get, so set the logo size by the `height` / `width` theme settings (the mock
+    application uses `"height": "48px"` for the navigation logo and `"width": "300px"` for the login logo).
+* `favicon.ico` contains 16, 32 and 48 px icons (instead of a single 24 px icon) and `favicon.svg` is its scalable
+  variant for browsers that support SVG icons (`<link rel="icon" type="image/svg+xml" href="favicon.svg">`).
+* Unused images `images/datatable/*` (DataTables sorting icons) and `images/passphrase/*` have been removed.
 * Bootstrap 3 markup in application templates (including customer template overrides) keeps basic styling with the
   deprecated Bootstrap 3 compatibility (will be removed in 25.0):
   * `@use "common/bootstrap3";` (in the stylesheet that uses `common/bootstrap`) provides panels, wells, media

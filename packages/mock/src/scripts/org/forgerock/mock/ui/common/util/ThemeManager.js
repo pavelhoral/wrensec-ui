@@ -27,17 +27,14 @@ define([
     obj.loadThemeCSS = function (theme) {
         $('head').find('link[href*=favicon]').remove();
 
-        $("<link/>", {
-            rel: "icon",
-            type: "image/x-icon",
-            href: theme.path + theme.icon
-        }).appendTo("head");
-
-        $("<link/>", {
-            rel: "shortcut icon",
-            type: "image/x-icon",
-            href: theme.path + theme.icon
-        }).appendTo("head");
+        _.forEach(theme.icons || [theme.icon], icon => {
+            $("<link/>", {
+                rel: "icon",
+                type: icon.type || "image/x-icon",
+                href: icon.href || icon,
+                sizes: icon.sizes
+            }).appendTo("head");
+        });
 
         _.forEach(theme.stylesheets, function(stylesheet) {
             $("<link/>", {
@@ -59,18 +56,23 @@ define([
         } else {
             return $.Deferred().resolve({
                 "path": "",
-                "icon": "favicon.ico",
+                "icons": [
+                    { "href": "favicon.ico", "sizes": "32x32" },
+                    { "href": "favicon.svg", "type": "image/svg+xml" }
+                ],
                 "stylesheets": ["css/main.css"],
                 "settings": {
                     "logo": {
-                        "src": "images/logo-horizontal.png",
+                        "src": "images/logo-horizontal.svg",
                         "title": "Wren Security",
-                        "alt": "Wren Security"
+                        "alt": "Wren Security",
+                        "height": "48px"
                     },
                     "loginLogo": {
-                        "src": "images/login-logo.png",
+                        "src": "images/login-logo.svg",
                         "title": "Wren Security",
-                        "alt": "Wren Security"
+                        "alt": "Wren Security",
+                        "width": "300px"
                     },
                     "footer": {
                         "mailto": "info@wrensecurity.org"

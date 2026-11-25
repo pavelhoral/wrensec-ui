@@ -26,7 +26,7 @@
 
     <groupId>org.wrensecurity.commons</groupId>
     <artifactId>wrensec-ui-commons</artifactId>
-    <version>23.5.1-SNAPSHOT</version>
+    <version>24.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>Wren Security UI Commons</name>

@@ -1,0 +1,79 @@
+/*
+ * The contents of this file are subject to the terms of the Common Development and
+ * Distribution License (the License). You may not use this file except in compliance with the
+ * License.
+ *
+ * You can obtain a copy of the License at legal/CDDLv1.1.txt. See the License for the
+ * specific language governing permission and limitations under the License.
+ *
+ * When distributing Covered Software, include this CDDL Header Notice in each file and include
+ * the License file at legal/CDDLv1.1.txt. If applicable, add the following below the CDDL
+ * Header, with the fields enclosed by brackets [] replaced by your own identifying
+ * information: "Portions copyright [year] [name of copyright owner]".
+ *
+ * Copyright 2026 Wren Security.
+ */
+
+// Bootstrap 5 with the Wren Security theme. Applications build it as a separate stylesheet (@use "common/bootstrap";)
+// and can override any Bootstrap variable, including the Wren Security defaults below:
+// @use "common/bootstrap" with ($primary: #123456);
+// Bootstrap also emits its values as CSS custom properties (--bs-*), which themes can change at runtime.
+//
+// The Wren Security defaults keep the look of the former Bootstrap 3 theme. Values that follow the primary color refer
+// to var(--bs-primary), so they follow both a configured $primary and a runtime theme.
+@forward "pkg:bootstrap/scss/bootstrap" with (
+    // Theme colors (info, warning and danger keep the Bootstrap 3 palette)
+    $primary: #519387 !default,
+    $success: #3a776c !default,
+    $info: #5bc0de !default,
+    $warning: #f0ad4e !default,
+    $danger: #d9534f !default,
+
+    // Contextual (alert, list group, badge) colors of the Bootstrap 3 states
+    $success-text-emphasis: #3a776c !default,
+    $success-bg-subtle: #d4ece6 !default,
+    $success-border-subtle: #cbe2dc !default,
+    $info-text-emphasis: #31708f !default,
+    $info-bg-subtle: #d9edf7 !default,
+    $info-border-subtle: #bce8f1 !default,
+    $warning-text-emphasis: #8a6d3b !default,
+    $warning-bg-subtle: #fcf8e3 !default,
+    $warning-border-subtle: #faebcc !default,
+    $danger-text-emphasis: #a94442 !default,
+    $danger-bg-subtle: #f2dede !default,
+    $danger-border-subtle: #ebccd1 !default,
+
+    // Page
+    $body-bg: #f7f7f7 !default,
+    $body-color: #2a2f32 !default,
+
+    // Links (underlined on hover only)
+    $link-decoration: none !default,
+    $link-hover-color: #777777 !default,
+    $link-hover-decoration: underline !default,
+
+    // Typography (14px base font)
+    $font-family-sans-serif: ("Helvetica Neue", Helvetica, Arial, sans-serif) !default,
+    $font-size-base: .875rem !default,
+    $line-height-base: 1.428571429 !default,
+
+    // Border radius
+    $border-radius: .25rem !default,
+    $border-radius-sm: .1875rem !default,
+    $border-radius-lg: .375rem !default,
+
+    // Dropdowns (hovered items are highlighted by the primary color)
+    $dropdown-link-hover-color: #fff !default,
+    $dropdown-link-hover-bg: var(--bs-primary) !default,
+
+    // Tabs (active tab in the primary color on the page background)
+    $nav-tabs-link-hover-border-color: transparent !default,
+    $nav-tabs-link-active-color: var(--bs-primary) !default,
+
+    // Dark navigation bar
+    $navbar-dark-color: #999 !default,
+    $navbar-dark-hover-color: #fff !default,
+    $navbar-dark-active-color: #fff !default,
+    $navbar-dark-brand-color: #999 !default,
+    $navbar-dark-toggler-border-color: #979797 !default
+);

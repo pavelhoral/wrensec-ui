@@ -28,9 +28,18 @@
   `@include mixins.icon-circle(20px);`, `.ellipsis;` → `@extend .ellipsis;` and `.transition(color, .1s, linear);`
   → `transition: color .1s linear;` (vendor prefixes are not needed). `.arrow-*()`, `.multi-column-layout()` and
   `.nocache-background-image()` have been removed.
+* Bootstrap has been upgraded from 3.4.1 to 5.3 (see https://getbootstrap.com/docs/5.3/migration/):
+  * commons no longer ships a built `css/bootstrap.css`; applications build Bootstrap with the Wren Security theme from
+    `@use "common/bootstrap";` (by `useScssStyles`), which can override any Bootstrap variable including the Wren
+    defaults (`@use "common/bootstrap" with ($primary: #123456);`), and runtime themes can change the `--bs-*` CSS
+    custom properties (e.g. Wren:IDM themes in `ui-themeconfig.json` refer to the application's built stylesheet);
+    the Bootstrap sources are a dependency of `@wrensecurity/commons-ui-build`, applications do not install them,
+  * `libs/bootstrap.js` is Bootstrap 5 with Popper as an AMD module (`bootstrap`, depending on `jquery`), remove
+    the `bootstrap` RequireJS shim; the jQuery plugin interface (`$(element).modal(…)`, `tooltip`, `popover`, …)
+    remains available, but options, events and `data-bs-*` attributes follow Bootstrap 5.
 * `bootstrap-dialog` library has been replaced by the commons module
   `org/forgerock/commons/ui/common/components/ModalDialog`, which renders the same markup (Bootstrap modal with
-  `bootstrap-dialog*` CSS classes) and supports the subset of bootstrap-dialog API used by Wren Security applications
+  `bootstrap-dialog*` CSS classes, the close button is Bootstrap 5 `.btn-close`) and supports the subset of bootstrap-dialog API used by Wren Security applications
   (`ModalDialog.show(options)`, `new ModalDialog(options).open()`, `close()`, `getButton(id)` with `enable()` /
   `disable()`, `getData()` / `setData()`, `getModal*()` accessors and `onshow` / `onshown` / `onhide` /
   `onhidden` callbacks):

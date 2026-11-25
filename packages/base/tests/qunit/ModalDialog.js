@@ -32,6 +32,16 @@ define([
         dialog.$modal.trigger($.Event("keyup", { which: which }));
     }
 
+    /** Bootstrap uses native event listeners, so native events are dispatched. */
+    function pressEscape (dialog) {
+        dialog.$modal[0].dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+    }
+
+    function clickBackdrop (dialog) {
+        dialog.$modal[0].dispatchEvent(new MouseEvent("mousedown", { bubbles: true }));
+        dialog.$modal[0].click();
+    }
+
     QUnit.module("ModalDialog", {
         beforeEach: function () {
             opened = [];
@@ -199,19 +209,20 @@ define([
             fixed = show({ id: "fixed", closable: false });
 
         assert.notOk(fixed.$modal.find(".bootstrap-dialog-close-button").is(":visible"), "close button hidden");
-        keyup(fixed, 27);
-        fixed.$modal.trigger("click");
+        pressEscape(fixed);
+        clickBackdrop(fixed);
         assert.ok(fixed.isOpened(), "not closable dialog stays opened");
+        assert.notOk(fixed.$modal.hasClass("modal-static"), "not closable dialog is not animated");
         fixed.close();
         assert.notOk(fixed.isOpened(), "not closable dialog closed programmatically");
 
         closable.$modal.find(".bootstrap-dialog-message").trigger("click");
         assert.ok(closable.isOpened(), "click inside the dialog does not close it");
-        keyup(closable, 27);
+        pressEscape(closable);
         assert.notOk(closable.isOpened(), "escape closes the dialog");
 
         closable = show({ id: "closable" });
-        closable.$modal.trigger("click");
+        clickBackdrop(closable);
         assert.notOk(closable.isOpened(), "backdrop click closes the dialog");
 
         closable = show({ id: "closable" });
@@ -224,17 +235,34 @@ define([
             second = show({ id: "second" }),
             $backdrops = $(".modal-backdrop");
 
-        assert.equal(first.$modal.css("z-index"), "1050", "first dialog z-index");
-        assert.equal(second.$modal.css("z-index"), "1070", "second dialog z-index");
+        assert.equal(first.$modal.css("z-index"), "1055", "first dialog z-index");
+        assert.equal(second.$modal.css("z-index"), "1075", "second dialog z-index");
         assert.equal($backdrops.length, 2, "backdrop for each dialog");
-        assert.equal($backdrops.last().css("z-index"), "1060", "second backdrop between the dialogs");
+        assert.equal($backdrops.last().css("z-index"), "1070", "second backdrop between the dialogs");
 
-        second.close();
+        assert.ok(second.$modal.is(document.activeElement), "top dialog is focused");
+        pressEscape(second);
+        assert.notOk(second.isOpened(), "escape closes the top dialog");
+        assert.ok(first.isOpened(), "previous dialog stays opened");
         assert.ok($(document.body).hasClass("modal-open"), "page stays in modal mode with remaining dialog");
         assert.ok(first.$modal.is(document.activeElement), "remaining dialog is focused");
 
         first.close();
         assert.notOk($(document.body).hasClass("modal-open"), "page leaves modal mode");
+    });
+
+    QUnit.test("closes dialog closed while it is being shown", function (assert) {
+        var done = assert.async(),
+            dialog = ModalDialog.show({
+                id: "fastClose",
+                onhidden: function (dialog) {
+                    assert.notOk(dialog.isOpened(), "dialog closed once it is shown");
+                    done();
+                }
+            });
+
+        dialog.close();
+        assert.ok(dialog.isOpened(), "dialog is still being shown");
     });
 
     QUnit.module("BootstrapDialog", {
@@ -261,29 +289,37 @@ define([
     });
 
     QUnit.test("confirms", function (assert) {
-        var results = [],
-            confirm = function () {
-                return BootstrapDialog.confirm({
-                    type: BootstrapDialog.TYPE_DANGER,
-                    title: "Confirm",
-                    message: "Sure?",
-                    btnOKLabel: "Delete",
-                    callback: function (result) {
-                        results.push(result);
-                    }
+        var done = assert.async(),
+            results = [];
+
+        // Confirmation dialogs are animated, the choice is made once each is shown
+        function confirm (choice, callback) {
+            var dialog = BootstrapDialog.confirm({
+                type: BootstrapDialog.TYPE_DANGER,
+                title: "Confirm",
+                message: "Sure?",
+                btnOKLabel: "Delete",
+                callback: function (result) {
+                    results.push(result);
+                }
+            });
+            dialog.$modal.one("shown.bs.modal", function () {
+                dialog.$modalFooter.find("button").eq(choice).trigger("click");
+            });
+            dialog.$modal.one("hidden.bs.modal", callback);
+            return dialog;
+        }
+
+        var dialog = confirm(1, function () {
+                confirm(0, function () {
+                    assert.deepEqual(results, [true, false], "callback called with the choice");
+                    done();
                 });
-            },
-            dialog = confirm(),
+            }),
             $buttons = dialog.$modalFooter.find("button");
 
         assert.notOk(dialog.options.closable, "confirmation is not closable");
         assert.equal($buttons.eq(1).text(), "Delete", "confirm button label");
         assert.ok($buttons.eq(1).hasClass("btn-danger"), "confirm button class by type");
-        $buttons.eq(1).trigger("click");
-
-        dialog = confirm();
-        dialog.$modalFooter.find("button").eq(0).trigger("click");
-
-        assert.deepEqual(results, [true, false], "callback called with the choice");
     });
 });

@@ -16,7 +16,6 @@
 const {
     useBuildScripts,
     useEslint,
-    useLessStyles,
     useLocalResources,
     useModuleResources,
     useBuildModule
@@ -36,7 +35,6 @@ const MODULE_RESOURCES = {
     "backgrid-select-all/backgrid-select-all.min.js": "libs/backgrid-select-all.js",
     "backgrid/lib/backgrid.min.css": "css/backgrid.css",
     "backgrid/lib/backgrid.min.js": "libs/backgrid.js",
-    "bootstrap/dist/js/bootstrap.min.js": "libs/bootstrap.js",
     "dragula/dist/dragula.min.js": "libs/dragula.js",
     "font-awesome/css/font-awesome.min.css": "css/fontawesome/css/font-awesome.css",
     "font-awesome/fonts/fontawesome-webfont.eot": "css/fontawesome/fonts/fontawesome-webfont.eot",
@@ -78,11 +76,16 @@ gulp.task("build:libs", async () => {
         dest: "dist/libs/i18next.js",
         transpile: true
     })();
+    // Bootstrap with Popper, transpiled so that the RequireJS optimizer is able to parse it
+    await useBuildModule({
+        id: "bootstrap",
+        src: "src/modules/bootstrap.mjs",
+        dest: "dist/libs/bootstrap.js",
+        external: ["jquery"],
+        transpile: true,
+        minify: true
+    })();
 });
-
-gulp.task("build:styles", useLessStyles({
-    "dist/css/bootstrap/bootstrap.less": "css/bootstrap.css"
-}));
 
 gulp.task("build", gulp.series(
     gulp.parallel(
@@ -90,8 +93,7 @@ gulp.task("build", gulp.series(
         "build:scripts",
         "build:modules"
     ),
-    "build:libs",
-    "build:styles"
+    "build:libs"
 ));
 
 gulp.task("watch", () => {

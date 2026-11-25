@@ -20,6 +20,7 @@ import { createRequire } from "module";
 import { dirname, join } from "path";
 import { Transform } from "stream";
 import { finished } from "stream/promises";
+import { fileURLToPath } from "url";
 
 /**
  * @typedef {import("gulp").TaskFunction} TaskFunction
@@ -147,9 +148,11 @@ export function useLessStyles(resources, options = {}) {
  */
 
 /**
- * Build SCSS styles using Sass. Modules are resolved from the base path, `pkg:` URLs from Node packages.
+ * Build SCSS styles using Sass. Modules are resolved from the base path, `pkg:` URLs from Node packages installed
+ * with this package (which brings Bootstrap and Font Awesome used by commons styles) or by the application.
  * Plain CSS imports (`@import "library.css";`) are inlined with their relative URLs rebased to the target file.
- * Other relative URLs are relative to the target file. The result is minified.
+ * Other relative URLs are relative to the target file. Warnings of dependencies (stylesheets loaded through the base
+ * path or Node packages) are not reported. The result is minified.
  * @param {Record<string, string>} resources - resource map
  * @param {ScssStylesOptions} [options]
  * @returns {TaskFunction}
@@ -171,7 +174,10 @@ export function useScssStyles(resources, options = {}) {
             const destination = join(options.dest || "dist", target);
             const compiled = await sass.compileAsync(source, {
                 loadPaths: [base],
-                importers: [new sass.NodePackageImporter(dirname(source))]
+                // Node packages of commons (e.g. Bootstrap) are resolved from this package, which depends on them
+                importers: [new sass.NodePackageImporter(dirname(fileURLToPath(import.meta.url)))],
+                // Deprecation warnings of dependencies (e.g. Bootstrap) cannot be fixed by the application
+                quietDeps: true
             });
             const processed = await processor.process(compiled.css, {
                 from: destination,

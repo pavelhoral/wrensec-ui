@@ -14,6 +14,9 @@
  * Copyright 2026 Wren Security.
  */
 
+/* Bootstrap with the Wren Security theme */
+@use "common/bootstrap";
+
 /* Commons styles */
 @use "common/structure";
 

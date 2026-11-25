@@ -82,9 +82,6 @@ require.config({
         form2js: {
             exports: "form2js"
         },
-        bootstrap: {
-            deps: ["jquery"]
-        },
         selectize: {
             deps: ["jquery"]
         },

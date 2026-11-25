@@ -20,10 +20,9 @@ define([
     "bootstrap"
 ], function ($, _) {
     var NAMESPACE = "bootstrap-dialog",
-        ZINDEX_BACKDROP = 1040,
-        ZINDEX_MODAL = 1050,
+        ZINDEX_BACKDROP = 1050,
+        ZINDEX_MODAL = 1055,
         ZINDEX_STEP = 20,
-        KEY_ESCAPE = 27,
         /** Dialogs currently opened (in the order of opening). */
         openedDialogs = [],
         ModalDialog;
@@ -109,6 +108,7 @@ define([
         this.registeredButtonHotkeys = {};
         this.realized = false;
         this.opened = false;
+        this.shown = false;
     };
 
     ModalDialog.NAMESPACE = NAMESPACE;
@@ -184,16 +184,18 @@ define([
             this.$modalFooter.append($("<div></div>").addClass(NAMESPACE + "-footer").append(this.createButtons()));
             this.$modalFooter.toggle(options.buttons.length > 0);
 
-            // Backdrop and keyboard are handled by the dialog itself (depending on closable option)
-            this.$modal.modal({ backdrop: "static", keyboard: false, show: false });
+            // Bootstrap closes the dialog by Escape key and by clicking outside of it, unless it is not closable
+            this.$modal.modal({ backdrop: options.closable ? true : "static", keyboard: options.closable });
             this.handleModalEvents();
             this.realized = true;
             return this;
         },
 
         createCloseButton: function () {
+            var $button = $('<button type="button" class="btn-close"></button>')
+                .attr("aria-label", $.t("common.form.close"));
             return $("<div></div>").addClass(NAMESPACE + "-close-button")
-                .append('<button type="button" class="close">&times;</button>')
+                .append($button)
                 .toggle(this.options.closable)
                 .on("click", _.bind(this.close, this));
         },
@@ -261,8 +263,20 @@ define([
                 return result;
             });
             this.$modal.on("shown.bs.modal", function (event) {
-                if (isModalEvent(event) && _.isFunction(dialog.options.onshown)) {
+                if (!isModalEvent(event)) {
+                    return;
+                }
+                dialog.shown = true;
+                if (openedDialogs.length > 1) {
+                    // Focus trap of the previous dialog moved the focus while this dialog was being shown
+                    dialog.$modal.trigger("focus");
+                }
+                if (_.isFunction(dialog.options.onshown)) {
                     dialog.options.onshown(dialog);
+                }
+                if (dialog.closeRequested) {
+                    dialog.closeRequested = false;
+                    dialog.close();
                 }
             });
             this.$modal.on("hide.bs.modal", function (event) {
@@ -284,11 +298,12 @@ define([
                 if (!isModalEvent(event)) {
                     return;
                 }
+                dialog.shown = false;
                 if (_.isFunction(dialog.options.onhidden)) {
                     dialog.options.onhidden(dialog);
                 }
                 _.pull(openedDialogs, dialog);
-                dialog.$modal.remove();
+                dialog.$modal.modal("dispose").remove();
                 // Bootstrap resets the page state when any modal is hidden, restore it for the remaining dialogs
                 lastDialog = _.last(openedDialogs);
                 if (lastDialog) {
@@ -296,16 +311,14 @@ define([
                     lastDialog.$modal.trigger("focus");
                 }
             });
-            this.$modal.on("click", function (event) {
-                if (event.target === this && dialog.options.closable) {
-                    dialog.close();
-                }
+            // Not closable dialogs are not animated when closing is attempted (Bootstrap would animate them and its
+            // pending animation callbacks would fail if the dialog was closed and disposed in the meantime)
+            this.$modal.on("hidePrevented.bs.modal", function (event) {
+                return !isModalEvent(event);
             });
             this.$modal.on("keyup", function (event) {
                 var $button = dialog.registeredButtonHotkeys[event.which];
-                if (event.which === KEY_ESCAPE && dialog.options.closable) {
-                    dialog.close();
-                } else if ($button && !$button.prop("disabled")) {
+                if ($button && !$button.prop("disabled")) {
                     $button.trigger("focus").trigger("click");
                 }
             });
@@ -336,7 +349,10 @@ define([
          * @returns {ModalDialog} this dialog
          */
         close: function () {
-            if (this.realized) {
+            if (this.opened && !this.shown) {
+                // Bootstrap ignores hiding while the dialog is being shown
+                this.closeRequested = true;
+            } else if (this.realized) {
                 this.$modal.modal("hide");
             }
             return this;

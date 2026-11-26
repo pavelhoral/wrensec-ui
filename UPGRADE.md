@@ -98,9 +98,10 @@
   `float-start` / `float-end`, `text-left` / `text-right` → `text-start` / `text-end`, `sr-only` →
   `visually-hidden`, `help-block` → `form-text`, `control-label` → `col-form-label`, `input-lg` →
   `form-control-lg`, `btn-block` → `w-100`, `btn-default` → `btn-outline-primary`, `hidden` → `d-none`,
-  `checkbox` → `form-check`, `data-toggle` / `data-target` / `data-dismiss` → `data-bs-*` and dropdown carets
-  are added by Bootstrap (remove `<span class="caret"></span>` from dropdown toggles, and the `dropdown-toggle` class
-  from icon only toggles that should have no caret).
+  `text-muted` → `text-body-secondary` (deprecated in Bootstrap 5.3, used by commons markup), `checkbox` →
+  `form-check`, `data-toggle` / `data-target` / `data-dismiss` → `data-bs-*` and dropdown carets are added by
+  Bootstrap (remove `<span class="caret"></span>` from dropdown toggles, and the `dropdown-toggle` class from icon
+  only toggles that should have no caret).
 * `css/selectize.css` is the Selectize Bootstrap 5 theme (commons structure adapts it to the Bootstrap theme colors)
   and the backgrid paginator (`ThemeablePaginator`) renders Bootstrap 5 pagination (`page-item` / `page-link`).
 * Sortable backgrid column headers are buttons (as rendered by backgrid 0.3.8) instead of links, which makes sorting

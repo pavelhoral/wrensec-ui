@@ -111,7 +111,7 @@ define([
         var returnDate = "";
         if (date) {
             returnDate = DateUtil.formatDate(date, "MMM dd, yyyy") +
-            " <small class='text-muted'>" +
+            " <small class='text-body-secondary'>" +
             DateUtil.formatDate(date, "h:mm:ss TT") +
             "</small>";
         }
@@ -250,7 +250,7 @@ define([
 
                     _.each(filteredCols, _.bind(function (col) {
                         var cellView,
-                            label = "<span class='text-muted'>" + col.label + ":</span> ",
+                            label = "<span class='text-body-secondary'>" + col.label + ":</span> ",
                             cellWrapper;
 
                         if (_.isObject(col.cell)) {

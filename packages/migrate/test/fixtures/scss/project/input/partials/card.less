@@ -1,0 +1,57 @@
+// Cards
+@card-padding: 15px;
+@prefix: card;
+
+.@{prefix}-container {
+    padding: @card-padding;
+    border: 1px solid @card-border;
+    background: url("images/@{prefix}.svg") no-repeat;
+    color: darken(@base-theme-color, 5%);
+    border-left-color: lighten(@and-color, 25%);
+    box-shadow: 0 1px 2px fade(#000, 24%);
+    width: ~"calc(100% - @{card-padding})";
+    .transition(border-color, 0.3s);
+    .transition(~"border 0.15s ease-in-out, color 0.15s ease-in-out");
+
+    .title {
+        .ellipsis;
+        color: @gray-light;
+    }
+
+    .icon {
+        .icon-circle(28px);
+
+        &:before {
+            .fa-icon();
+            content: @icon;
+        }
+    }
+
+    @media (min-width: @screen-sm) {
+        padding: 0;
+    }
+
+    @media (max-width: @screen-md) {
+        padding: 5px;
+    }
+
+    @media (min-width: @screen-sm) and (max-width: @screen-md) {
+        margin: 0;
+    }
+
+    &:extend(.panel);
+    .highlighted;
+    .arrow-up(@card-border);
+}
+
+.invalid(@bg: #ffd4d4) {
+    background: @bg;
+}
+
+.guarded(@color) when (iscolor(@color)) {
+    color: @color;
+}
+
+.lib {
+    @import "../lib/checkbox.less";
+}

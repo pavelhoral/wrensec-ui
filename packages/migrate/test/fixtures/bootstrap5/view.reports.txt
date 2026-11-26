@@ -1,0 +1,8 @@
+3:5 removed-library
+10:13 plugin-api
+14:20 concatenated
+18:36 has-class
+19:39 in
+23:27 class-string
+24:27 jquery4
+25:20 jquery4

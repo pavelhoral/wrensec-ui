@@ -1,0 +1,10 @@
+@use "sass:color";
+@use "common/variables";
+@use "nested" as *;
+
+$partial-color: color.mix(variables.$base-theme-color, #fff, 50%);
+
+.partial {
+    color: $partial-color;
+    border-bottom: 1px solid $highlight-border;
+}

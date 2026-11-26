@@ -1,0 +1,39 @@
+/*
+ * Converted and compiled with the commons modules by the tests.
+ */
+
+@use "sass:color";
+@use "sass:meta";
+@use "common/mixins";
+@use "common/helpers";
+@use "common/common";
+@use "partial";
+
+@import "dragula.css";
+
+$highlight: #f5f5f5;
+
+.box {
+    background: $highlight;
+    color: var(--wrensec-base-theme-color);
+    border-color: var(--wrensec-base-theme-color-dark);
+    outline-color: color.adjust($highlight, $lightness: 2%);
+    transition: color .1s linear;
+
+    .label {
+        @extend .ellipsis;
+        @include mixins.fa-icon;
+    }
+
+    @include mixins.media-up(lg) {
+        @include mixins.icon-circle(20px);
+    }
+
+    @include mixins.media-max(md) {
+        display: none;
+    }
+}
+
+.nested {
+    @include meta.load-css("nested");
+}

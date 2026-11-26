@@ -1,0 +1,35 @@
+/*
+ * Converted and compiled with the commons modules by the tests.
+ */
+
+@import "dragula.css";
+@import "common/structure.less";
+@import "common/theme.less";
+@import "partial.less";
+
+@highlight: #f5f5f5;
+
+.box {
+    background: @highlight;
+    color: @base-theme-color;
+    border-color: darken(@base-theme-color, 5%);
+    outline-color: lighten(@highlight, 2%);
+    .transition(color, .1s, linear);
+
+    .label {
+        .ellipsis;
+        .fa-icon();
+    }
+
+    @media (min-width: @screen-md) {
+        .icon-circle(20px);
+    }
+
+    @media (max-width: @screen-sm) {
+        display: none;
+    }
+}
+
+.nested {
+    @import "nested.less";
+}

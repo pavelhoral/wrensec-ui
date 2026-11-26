@@ -1,0 +1,20 @@
+/*
+ * License header.
+ */
+
+/* Library css */
+
+/* Commons */
+@use "common/structure";
+@use "common/structure/backgrid";
+
+/* Application */
+@use "partials/variables" as *;
+@use "partials/card";
+@use "theme/card" as theme-card;
+
+@import "selectize.css";
+
+.page {
+    color: $accent;
+}

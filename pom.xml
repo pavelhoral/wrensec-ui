@@ -141,6 +141,7 @@
                 <configuration>
                     <descriptors>
                         <descriptor>packages/build/assembly.xml</descriptor>
+                        <descriptor>packages/migrate/assembly.xml</descriptor>
                         <descriptor>packages/base/assembly.xml</descriptor>
                         <descriptor>packages/user/assembly.xml</descriptor>
                     </descriptors>

@@ -1,0 +1,40 @@
+{
+  "name": "@wrensecurity/commons-ui-migrate",
+  "version": "0.0.0",
+  "description": "Wren Security UI Commons - Migration from Bootstrap 3 and Less",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "wrensec-ui-migrate": "./bin/wrensec-ui-migrate.mjs"
+  },
+  "files": [
+    "bin",
+    "src"
+  ],
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "eslint . && node ./scripts/build.mjs",
+    "lint": "eslint .",
+    "test": "node --test \"test/*.test.mjs\""
+  },
+  "dependencies": {
+    "@babel/parser": "^7.29.0",
+    "@babel/traverse": "^7.29.0",
+    "diff": "^9.0.0",
+    "magic-string": "^0.30.21",
+    "postcss": "8.5.33",
+    "postcss-less": "^6.0.0",
+    "postcss-scss": "^4.0.9",
+    "postcss-selector-parser": "^7.2.1"
+  },
+  "devDependencies": {
+    "@wrensecurity/eslint-config": "^0.5.0",
+    "eslint": "^10.15.0",
+    "globals": "^17.14.0",
+    "rimraf": "^6.1.4",
+    "sass": "1.108.2"
+  }
+}

@@ -1,0 +1,24 @@
+<form class="form-horizontal">
+    <div class="form-group">
+        <label class="col-form-label col-md-3" for="name">Name</label>
+        <div class="col-md-9 col-12">
+            <input class="form-control form-control-sm" id="name" {{#if readonly}}readonly{{/if}}>
+            <p class="form-text text-body-secondary">Help</p>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="offset-md-3 col-md-9">
+            <select class="form-select form-select-lg" name="type"></select>
+            <p class="form-control-plaintext">Static</p>
+            <div class="input-group">
+                <span class="input-group-text">@</span>
+                <input class="form-control" type="text">
+                <span class="input-group-btn"><button class="btn btn-outline-primary">Go</button></span>
+            </div>
+            <div class="checkbox"><label><input type="checkbox"> Remember</label></div>
+        </div>
+    </div>
+    <div class="col-md-3 col-lg-2 col-xl-2 hidden-xs"></div>
+    <div class="{{#if wide}}col-md-12{{else}}col-md-6{{/if}} col-md-{{size}}"></div>
+    <button type="submit" class="btn btn-primary w-100 btn-sm {{#if disabled}}disabled{{/if}}">Save</button>
+</form>

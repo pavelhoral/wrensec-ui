@@ -6,6 +6,7 @@
   "type": "module",
   "workspaces": [
     "packages/build",
+    "packages/migrate",
     "packages/base",
     "packages/user",
     "packages/mock"

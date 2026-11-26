@@ -1,0 +1,14 @@
+partials/card.less 18:9 less-variable
+partials/card.less 38:5 breakpoint-variable
+partials/card.less 38:5 breakpoint-variable
+partials/card.less 43:5 less-mixin
+partials/card.less 44:5 removed-mixin
+partials/card.less 47:1 less-mixin
+partials/card.less 51:1 less-guard
+partials/variables.less 3:1 build-time-color
+partials/variables.less 4:1 less-variable
+structure.less 7:1 removed-import
+structure.less 8:1 removed-import
+structure.less 9:1 removed-import
+structure.less 10:1 removed-import
+theme.less 1:1 commons-variable

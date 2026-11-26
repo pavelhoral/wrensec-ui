@@ -9,6 +9,11 @@
   packages the application depends on).
 * Supported browsers are Chrome and Edge 111, Firefox 114 and Safari 16.4 or newer (see `README.md`); commons
   styles and scripts use features of these browsers (e.g. CSS custom properties and `color-mix()`).
+* The `migrate` assembly is a command line tool (`@wrensecurity/commons-ui-migrate`) that makes most of the changes
+  below in application sources and customer template overrides, and reports what it can't change with the file, line
+  and replacement (see `packages/migrate/README.md`): run `wrensec-ui-migrate scss` (Less to SCSS), then
+  `wrensec-ui-migrate bootstrap5` (Bootstrap 3 classes and data attributes), fix the reported items and remove
+  `@use "common/bootstrap3";`.
 * Commons styles are SCSS instead of Less (`css/common/**/*.scss`, the `*.less` files have been removed). They are
   Sass modules to be built by applications (Less stylesheets can no longer import them):
   * `@use "common/common";` is a single entry point for the structure and the theme (replaces

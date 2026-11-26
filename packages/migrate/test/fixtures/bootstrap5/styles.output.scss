@@ -1,0 +1,35 @@
+@use "common/mixins";
+
+.panel-default > .card-header {
+    color: red;
+}
+
+.card {
+    margin: 0;
+}
+
+select.form-select:not(.d-none),
+.btn-outline-primary.btn-sm,
+.navbar [data-bs-toggle="dropdown"] {
+    color: blue;
+}
+
+.card.card-body {
+    @extend .float-end;
+
+    &.in {
+        opacity: 1;
+    }
+}
+
+.fade.show, .table-sm td, .nav-tabs > li {
+    opacity: 1;
+}
+
+.checkbox label, .col-md-6 {
+    padding: 0;
+}
+
+.icon-#{$name} .panel-body {
+    color: red;
+}

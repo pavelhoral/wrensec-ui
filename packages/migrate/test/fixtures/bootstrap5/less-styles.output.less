@@ -1,0 +1,14 @@
+.card-body {
+    .fa-icon();
+    color: @base-theme-color;
+}
+
+.mixin(@color) when (iscolor(@color)) {
+    .form-text {
+        color: @color;
+    }
+}
+
+.btn-outline-primary:extend(.btn all) {
+    border: 0;
+}

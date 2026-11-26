@@ -1,0 +1,6 @@
+@use "common/variables";
+
+$card-border: #eee;
+$accent: var(--wrensec-base-theme-color);
+$and-color: variables.$base-theme-color;
+$icon: $fa-var-check;

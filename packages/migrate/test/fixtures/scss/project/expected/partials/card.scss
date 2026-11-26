@@ -1,0 +1,64 @@
+// Cards
+@use "sass:color";
+@use "sass:meta";
+@use "common/variables";
+@use "common/mixins";
+@use "common/helpers";
+@use "variables" as *;
+
+$card-padding: 15px;
+$prefix: card;
+
+.#{$prefix}-container {
+    padding: $card-padding;
+    border: 1px solid $card-border;
+    background: url("images/#{$prefix}.svg") no-repeat;
+    color: var(--wrensec-base-theme-color-dark);
+    border-left-color: color.adjust($and-color, $lightness: 25%);
+    box-shadow: 0 1px 2px color.change(#000, $alpha: 0.24);
+    width: calc(100% - #{$card-padding});
+    transition: border-color 0.3s;
+    transition: border 0.15s ease-in-out, color 0.15s ease-in-out;
+
+    .title {
+        @extend .ellipsis;
+        color: $gray-light;
+    }
+
+    .icon {
+        @include mixins.icon-circle(28px);
+
+        &:before {
+            @include mixins.fa-icon;
+            content: $icon;
+        }
+    }
+
+    @include mixins.media-up(md) {
+        padding: 0;
+    }
+
+    @include mixins.media-max(lg) {
+        padding: 5px;
+    }
+
+    @media (min-width: $screen-sm) and (max-width: $screen-md) {
+        margin: 0;
+    }
+
+    @extend .panel;
+    .highlighted;
+    .arrow-up(@card-border);
+}
+
+.invalid($bg: #ffd4d4) {
+    background: $bg;
+}
+
+.guarded($color) when (iscolor($color)) {
+    color: $color;
+}
+
+.lib {
+    @include meta.load-css("../lib/checkbox");
+}

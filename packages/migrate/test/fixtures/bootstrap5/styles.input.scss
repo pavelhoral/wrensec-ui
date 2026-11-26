@@ -1,0 +1,35 @@
+@use "common/mixins";
+
+.panel-default > .panel-heading {
+    color: red;
+}
+
+.panel.panel-default {
+    margin: 0;
+}
+
+select.form-control:not(.hidden),
+.btn-default.btn-xs,
+.navbar [data-toggle="dropdown"] {
+    color: blue;
+}
+
+.well {
+    @extend .pull-right;
+
+    &.in {
+        opacity: 1;
+    }
+}
+
+.fade.in, .table-condensed td, .nav-tabs > li {
+    opacity: 1;
+}
+
+.checkbox label, .col-sm-6 {
+    padding: 0;
+}
+
+.icon-#{$name} .panel-body {
+    color: red;
+}

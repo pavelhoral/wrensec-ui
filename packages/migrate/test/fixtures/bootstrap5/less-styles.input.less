@@ -1,0 +1,14 @@
+.panel-body {
+    .fa-icon();
+    color: @base-theme-color;
+}
+
+.mixin(@color) when (iscolor(@color)) {
+    .help-block {
+        color: @color;
+    }
+}
+
+.btn-default:extend(.btn all) {
+    border: 0;
+}

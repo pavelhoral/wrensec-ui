@@ -65,7 +65,7 @@ define([
 
             //close all existing dialogs
             if (typeof $.prototype.modal === "function") {
-                $('.modal.in').modal('hide');
+                $('.modal.show').modal('hide');
             }
 
             obj.currentDialog = null;

@@ -379,7 +379,7 @@ define([
                             dialog.close();
                         });
                     } else if (typeof $.prototype.modal === "function") {
-                        $(".modal.in").modal("hide");
+                        $(".modal.show").modal("hide");
                         // There are some cases, when user is presented with login modal panel,
                         // rather than a normal login view. backgroundLogin property is used to
                         // indicate such cases. It should be deleted afterwards for correct
